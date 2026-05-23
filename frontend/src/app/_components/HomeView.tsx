@@ -120,11 +120,16 @@ function Hero() {
             <Link className="btn hero-btn-outline" href="/quote">
               <span>Get a Quote</span>
             </Link>
-            <button type="button" className="hero-play" onClick={() => setShowVideoModal(true)}>
+            <button
+              type="button"
+              className="hero-play"
+              onClick={() => setShowVideoModal(true)}
+              aria-label={t('h.cta2')}
+              title={t('h.cta2')}
+            >
               <span className="play-icon">
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1l8 5-8 5V1z"/></svg>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1l8 5-8 5V1z"/></svg>
               </span>
-              <span>{t('h.cta2')}</span>
             </button>
           </div>
 

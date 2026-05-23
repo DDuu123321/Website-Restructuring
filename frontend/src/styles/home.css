@@ -598,21 +598,24 @@
   margin-bottom: 30px;
 }
 
-/* 3 advantages strip — sits *below* the CTA row, like the legacy hero */
+/* 3 advantages strip — sits *below* the CTA row, like the legacy hero.
+   Single row on desktop/tablet; only stacks on narrow mobile. */
 .hero-advantages {
   list-style: none;
   margin: 32px 0 0;
   padding: 22px 0 0;
   border-top: 1px solid rgba(255, 255, 255, 0.16);
   display: flex;
-  flex-wrap: wrap;
-  gap: 22px 40px;
-  max-width: 880px;
+  flex-wrap: nowrap;
+  gap: 22px 28px;
+  max-width: none;
 }
 .hero-advantages li {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .hero-adv-check {
   width: 26px;
@@ -668,8 +671,8 @@
 .hero-cta-row {
   display: flex;
   align-items: center;
-  gap: 26px;
-  flex-wrap: wrap;
+  gap: 18px;
+  flex-wrap: nowrap;
 }
 /* Hero CTA scaled up vs. the site-wide .btn */
 .hero-cta-row .btn {
@@ -677,25 +680,38 @@
   padding: 16px 32px;
 }
 .hero-cta-row .btn .arrow { font-size: 19px; }
+/* Watch-video trigger — icon-only circular pill, sits with the other CTAs */
 .hero-play {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--bv-white);
-  font-weight: 600;
-  font-size: 17px;
-  cursor: pointer;
-}
-.hero-play .play-icon {
-  width: 48px; height: 48px;
-  display: grid; place-items: center;
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
   border-radius: 50%;
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: var(--bv-white);
+  cursor: pointer;
+  flex-shrink: 0;
   transition: all 0.25s var(--ease-out);
 }
-.hero-play .play-icon svg { width: 14px; height: 14px; }
-.hero-play:hover .play-icon { background: var(--bv-teal-500); border-color: var(--bv-teal-500); transform: scale(1.06); }
+.hero-play .play-icon {
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  color: inherit;
+}
+.hero-play .play-icon svg { width: 12px; height: 12px; }
+.hero-play:hover {
+  background: var(--bv-teal-500);
+  border-color: var(--bv-teal-500);
+  color: var(--bv-ink-900);
+  transform: scale(1.06);
+}
+@media (max-width: 720px) {
+  .hero-cta-row { gap: 12px; flex-wrap: wrap; }
+}
 
 .hero-floating {
   position: absolute;
