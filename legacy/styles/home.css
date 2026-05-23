@@ -1,0 +1,82 @@
+/* ============================================================
+   Home — supplemental styles
+   ============================================================
+   The home page (index.html) is built around the cinematic
+   `fx-*` system defined in scroll-fx.css and an inline <style>
+   block at the top of the document. This file only carries
+   small bits of polish that don't belong in either:
+
+   - section-eye / section-h / section-lede are duplicated here
+     so they're available to inner pages too (inner.css imports
+     a similar set; this is the home-side mirror).
+   - `.section` rhythm
+   - utility .container if not already present in design-system
+
+   Everything else (hero, packages, brands, calculator,
+   testimonials, news cards, CTA bottom, process grid) lives
+   inline in index.html so each cinematic block stays self-
+   contained and easy to direct-edit.
+   ============================================================ */
+
+/* ---------- Section rhythm ---------- */
+.section {
+  position: relative;
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+
+/* ---------- Section heading trio (mirrors inner.css) ---------- */
+.section-eye {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bv-amber-600);
+  margin-bottom: 18px;
+}
+
+.section-h {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0 0 24px;
+  max-width: 22ch;
+  color: var(--bv-navy-950);
+}
+.section-h-light { color: var(--bv-white); }
+
+.section-lede {
+  font-size: clamp(15px, 1.2vw, 19px);
+  color: var(--bv-gray-600);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+.section-lede-light { color: rgba(255,255,255,0.75); }
+
+/* ---------- Container ---------- */
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+@media (max-width: 640px) {
+  .container { padding: 0 20px; }
+}
+
+/* ---------- Generic arrow nudge on hover ---------- */
+a:hover > .arrow,
+button:hover > .arrow {
+  transform: translateX(4px);
+}
+.arrow {
+  display: inline-block;
+  transition: transform 0.3s var(--ease-out);
+}
+
+/* ---------- Shared pulse glow used by hero/floating dots ---------- */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.6); }
+  50% { box-shadow: 0 0 0 8px rgba(245,158,11,0); }
+}

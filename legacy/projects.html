@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Our Projects — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+</head>
+<body data-screen-label="03 Projects">
+
+<header class="page-head" data-screen-label="Projects Header">
+  <div class="container">
+    <div class="page-head-inner reveal">
+      <span class="text-eyebrow">Our work · 4,200+ installs</span>
+      <h1>Real Australian projects.<br/>Real numbers.</h1>
+      <p class="lede">Every install is documented — design, delivery, performance after one year. Browse by location, system size or use case.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-cream);padding-top:60px">
+  <div class="container">
+    <div class="proj-filters reveal">
+      <button class="proj-filter active" data-f="all">All projects · 24</button>
+      <button class="proj-filter" data-f="res">Residential · 18</button>
+      <button class="proj-filter" data-f="com">Commercial · 6</button>
+      <button class="proj-filter" data-f="bat">With battery · 14</button>
+      <button class="proj-filter" data-f="ev">With EV charger · 9</button>
+      <button class="proj-filter" data-f="nsw">NSW</button>
+      <button class="proj-filter" data-f="vic">VIC</button>
+      <button class="proj-filter" data-f="qld">QLD</button>
+    </div>
+
+    <div class="proj-grid grid-3" id="projGrid"></div>
+
+    <div style="text-align:center;margin-top:48px">
+      <button class="btn btn-secondary" id="loadMore">Load more projects</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bv-white)">
+  <div class="container">
+    <div class="section-head row reveal">
+      <div>
+        <span class="text-eyebrow">Have a project in mind?</span>
+        <h2>Let's design yours next.</h2>
+      </div>
+      <a class="btn btn-primary" href="quote.html">Get a free design <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>
+window.bvMountChrome('projects');
+
+const projects = [
+  { tags:['res','nsw','bat'], loc:'Mosman, NSW', tag:'Residential', title:'13.2 kW + Tesla Powerwall 3', desc:'Heritage roof, three pitches, complex tree shading. 32-panel design with optimisers.', stats:[['92%','self-use'],['$4,200','annual save'],['4.6 yrs','payback']], img:'Mosman residence · drone' },
+  { tags:['com','nsw'], loc:'Manly, NSW', tag:'Commercial', title:'50 kW commercial array', desc:'Coastal café running freezers and 6 heat-pumps. Sungrow string + load-shifting.', stats:[['41%','peak cut'],['$22k','annual save'],['3.2 yrs','payback']], img:'Manly café · rooftop' },
+  { tags:['res','nsw','ev','bat'], loc:'Parramatta, NSW', tag:'Residential + EV', title:'10 kW + 13.5 kWh + Zappi', desc:'Family of five with two EVs. Solar-aware Zappi pulls grid only when battery full.', stats:[['87%','self-use'],['$3,800','annual save'],['4.1 yrs','payback']], img:'Parramatta family' },
+  { tags:['res','vic','bat'], loc:'Brighton, VIC', tag:'Residential', title:'8.8 kW + 10 kWh SigenStor', desc:'1920s weatherboard, two-storey. North-east + west split with separate MPPT zones.', stats:[['83%','self-use'],['$2,900','annual save'],['4.3 yrs','payback']], img:'Brighton home' },
+  { tags:['com','vic'], loc:'Geelong, VIC', tag:'Commercial', title:'120 kW warehouse array', desc:'Light-industrial print shop running 3 heavy presses. Demand response enabled.', stats:[['58%','peak cut'],['$48k','annual save'],['3.0 yrs','payback']], img:'Geelong warehouse' },
+  { tags:['res','qld','bat','ev'], loc:'Noosa, QLD', tag:'Residential + EV', title:'13.2 kW + 20 kWh + Tesla wall', desc:'Off-grid-ready new build. Whole-home backup, three-phase, solar-aware EV charger.', stats:[['96%','self-use'],['$4,800','annual save'],['5.0 yrs','payback']], img:'Noosa new build' },
+  { tags:['res','nsw','bat'], loc:'Hornsby, NSW', tag:'Residential', title:'13.2 kW + 20 kWh', desc:'Family home, prepped paperwork & STCs handled, zero hassle install.', stats:[['89%','self-use'],['$4,400','annual save'],['4.4 yrs','payback']], img:'Hornsby family home' },
+  { tags:['res','nsw'], loc:'Bondi, NSW', tag:'Residential', title:'6.6 kW Starter Pack', desc:'First-time solar buyer. Single-phase, 16 panels on north pitch.', stats:[['68%','self-use'],['$1,800','annual save'],['3.3 yrs','payback']], img:'Bondi terrace' },
+  { tags:['com','qld'], loc:'Brisbane, QLD', tag:'Commercial', title:'200 kW industrial site', desc:'Cold-storage facility. Largest install of 2025. PPA financed, $0 upfront.', stats:[['72%','demand cover'],['$130k','annual save'],['—','PPA']], img:'Brisbane cold-storage' },
+  { tags:['res','vic','ev'], loc:'St Kilda, VIC', tag:'Residential + EV', title:'10 kW + Zappi 22 kW', desc:'Three-phase, two-EV household. No battery — direct solar-to-EV scheduling.', stats:[['78%','EV from solar'],['$3,100','annual save'],['3.7 yrs','payback']], img:'St Kilda home' },
+  { tags:['com','nsw'], loc:'Sydney CBD', tag:'Commercial', title:'80 kW co-working office', desc:'Strata-approved rooftop install on a 1980s commercial building. Tight access, crane lift.', stats:[['44%','peak cut'],['$32k','annual save'],['3.6 yrs','payback']], img:'Sydney CBD rooftop' },
+  { tags:['res','qld','bat'], loc:'Sunshine Coast, QLD', tag:'Residential', title:'10 kW + 10 kWh Tesla', desc:'Coastal home, salt-spray rated mounting. Whole-home backup for storm season.', stats:[['85%','self-use'],['$3,300','annual save'],['4.0 yrs','payback']], img:'Sunshine Coast home' },
+];
+
+const grid = document.getElementById('projGrid');
+const filters = document.querySelectorAll('.proj-filter');
+let visible = 9;
+let currentF = 'all';
+
+function render() {
+  const list = projects.filter(p => currentF === 'all' || p.tags.includes(currentF));
+  grid.innerHTML = list.slice(0, visible).map((p, i) => `
+    <a class="proj-card reveal delay-${(i % 3) + 1}" href="#">
+      <div class="proj-img img-placeholder">[ ${p.img} ]</div>
+      <div class="proj-meta"><span class="tag tag-amber">${p.tag}</span><span>${p.loc}</span></div>
+      <h3>${p.title}</h3>
+      <p>${p.desc}</p>
+      <div class="proj-stats">
+        ${p.stats.map(s => `<div><b>${s[0]}</b><span>${s[1]}</span></div>`).join('')}
+      </div>
+    </a>
+  `).join('');
+  if (window.bvObserveReveals) window.bvObserveReveals();
+  document.getElementById('loadMore').style.display = list.length > visible ? '' : 'none';
+}
+filters.forEach(f => f.addEventListener('click', () => {
+  filters.forEach(x => x.classList.remove('active'));
+  f.classList.add('active');
+  currentF = f.dataset.f;
+  visible = 9;
+  render();
+}));
+document.getElementById('loadMore').addEventListener('click', () => { visible += 6; render(); });
+render();
+</script>
+</body>
+</html>

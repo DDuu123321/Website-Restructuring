@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Insights & News — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+<style>
+  .featured-article {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 0;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    background: var(--bv-navy-900);
+    color: var(--bv-white);
+    margin-bottom: 60px;
+  }
+  @media (max-width: 900px) { .featured-article { grid-template-columns: 1fr; } }
+  .featured-article .img-placeholder { aspect-ratio: 4/3; }
+  .featured-article .body { padding: clamp(36px, 4vw, 56px); display: flex; flex-direction: column; justify-content: center; }
+  .featured-article .meta { display: flex; gap: 12px; margin-bottom: 16px; font-size: 12.5px; color: rgba(255,255,255,0.6); }
+  .featured-article h2 { color: var(--bv-white); margin: 0 0 16px; font-size: clamp(28px,3vw,42px); }
+  .featured-article p { color: rgba(255,255,255,0.75); font-size: 15.5px; line-height: 1.6; margin-bottom: 24px; }
+  .featured-article .author { display: flex; align-items: center; gap: 12px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .featured-article .author-av { width: 36px; height: 36px; border-radius: 50%; background: var(--bv-amber-500); color: var(--bv-navy-900); display: grid; place-items: center; font-weight: 700; }
+  .featured-article .author b { font-size: 13.5px; }
+  .featured-article .author span { font-size: 12px; color: rgba(255,255,255,0.6); display: block; }
+
+  .insights-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+  .insights-tabs button {
+    padding: 9px 16px;
+    border-radius: var(--radius-full);
+    font-size: 13.5px;
+    font-weight: 500;
+    background: var(--bv-white);
+    border: 1px solid var(--bv-gray-200);
+    color: var(--bv-gray-700);
+    transition: all 0.2s;
+  }
+  .insights-tabs button:hover { border-color: var(--bv-navy-900); }
+  .insights-tabs button.active { background: var(--bv-navy-900); color: var(--bv-white); border-color: var(--bv-navy-900); }
+
+  .article {
+    background: var(--bv-white);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--bv-gray-100);
+    transition: all 0.4s var(--ease-out);
+    display: block;
+    color: inherit;
+  }
+  .article:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .article .img-placeholder { aspect-ratio: 16/10; }
+  .article .body { padding: 22px 24px; }
+  .article .meta { display: flex; gap: 10px; font-size: 12px; color: var(--bv-gray-500); margin-bottom: 10px; }
+  .article h3 { font-size: 19px; margin: 0 0 8px; line-height: 1.3; }
+  .article p { font-size: 14px; color: var(--bv-gray-600); line-height: 1.55; margin-bottom: 14px; }
+  .article .read { font-size: 13px; font-weight: 600; color: var(--bv-amber-500); }
+
+  .news-side {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 60px;
+    align-items: start;
+  }
+  @media (max-width: 1000px) { .news-side { grid-template-columns: 1fr; } }
+  .side-card {
+    background: var(--bv-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--bv-gray-100);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .side-card h5 { font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--bv-gray-500); margin: 0 0 14px; }
+  .side-card .news-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--bv-gray-100); }
+  .side-card .news-item:last-child { border-bottom: 0; }
+  .side-card .news-item .num { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--bv-amber-500); width: 26px; flex-shrink: 0; }
+  .side-card .news-item span { font-size: 13.5px; color: var(--bv-navy-800); line-height: 1.4; font-weight: 500; }
+
+  .newsletter {
+    background: linear-gradient(120deg, var(--bv-navy-900), var(--bv-navy-800));
+    color: var(--bv-white);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+  }
+  .newsletter h5 { color: var(--bv-amber-400); margin-bottom: 12px; }
+  .newsletter p { font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 16px; line-height: 1.5; }
+  .newsletter form { display: flex; gap: 8px; }
+  .newsletter input {
+    flex: 1; padding: 10px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.06);
+    color: var(--bv-white);
+    font-size: 13px;
+  }
+  .newsletter input::placeholder { color: rgba(255,255,255,0.5); }
+  .newsletter button {
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    background: var(--bv-amber-500);
+    color: var(--bv-navy-900);
+    font-weight: 600;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body data-screen-label="06 News">
+
+<header class="page-head" data-screen-label="News Header">
+  <div class="container">
+    <div class="page-head-inner reveal">
+      <span class="text-eyebrow">Insights · industry · rebates</span>
+      <h1>Australian energy.<br/>Demystified.</h1>
+      <p class="lede">Plain-English guides to rebates, system sizing, batteries and EV charging — written by the engineers who design the systems, not by SEO writers.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-cream);padding-top:60px">
+  <div class="container">
+    <a class="featured-article reveal" href="#federal-battery-rebate">
+      <div class="img-placeholder">[ Federal battery rebate · hero shot ]</div>
+      <div class="body">
+        <div class="meta">
+          <span class="tag tag-amber">Rebates</span>
+          <span>5 min read · 3 May 2026</span>
+        </div>
+        <h2>Federal Battery Rebate 2026: how much you'll actually get back.</h2>
+        <p>The Cheaper Home Batteries Program is now live nationwide. Here's the real-world calculation for a 10 kWh system in NSW, VIC and QLD — including how it stacks with state rebates.</p>
+        <div class="author">
+          <div class="author-av">L</div>
+          <div>
+            <b>Liam Walsh</b>
+            <span>Founder · Bluven Energy</span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <div class="insights-tabs reveal">
+      <button class="active">All</button>
+      <button>Rebates</button>
+      <button>Battery</button>
+      <button>Solar</button>
+      <button>EV</button>
+      <button>Commercial</button>
+      <button>Buying guide</button>
+    </div>
+
+    <div class="news-side">
+      <div class="article-list">
+        <a href="#" class="article reveal delay-1">
+          <div class="img-placeholder">[ VPP article ]</div>
+          <div class="body">
+            <div class="meta"><span class="tag tag-navy">Battery</span><span>4 min read</span></div>
+            <h3>VPPs explained: should you join one?</h3>
+            <p>Virtual Power Plants pay you for letting the grid use your battery. Here's the trade-off most installers don't tell you about.</p>
+            <span class="read">Read article →</span>
+          </div>
+        </a>
+        <a href="#" class="article reveal delay-2">
+          <div class="img-placeholder">[ EV tariff article ]</div>
+          <div class="body">
+            <div class="meta"><span class="tag tag-navy">EV</span><span>3 min read</span></div>
+            <h3>EV-only off-peak tariffs: which retailer wins in 2026?</h3>
+            <p>We compared every NSW retailer's overnight EV plan against running on solar surplus.</p>
+            <span class="read">Read article →</span>
+          </div>
+        </a>
+        <a href="#" class="article reveal delay-3">
+          <div class="img-placeholder">[ Sizing guide ]</div>
+          <div class="body">
+            <div class="meta"><span class="tag tag-navy">Buying guide</span><span>6 min read</span></div>
+            <h3>How to size a solar + battery system from your bill alone.</h3>
+            <p>The 5-step calculation our engineers use before even seeing your roof. Includes free spreadsheet.</p>
+            <span class="read">Read article →</span>
+          </div>
+        </a>
+        <a href="#" class="article reveal delay-1">
+          <div class="img-placeholder">[ Net meter article ]</div>
+          <div class="body">
+            <div class="meta"><span class="tag tag-navy">Solar</span><span>4 min read</span></div>
+            <h3>Net metering 2.0: why your feed-in tariff just got worse.</h3>
+            <p>Retailers are quietly halving feed-in tariffs. Here's what that means for your payback — and how a battery flips it back.</p>
+            <span class="read">Read article →</span>
+          </div>
+        </a>
+        <a href="#" class="article reveal delay-2">
+          <div class="img-placeholder">[ Commercial article ]</div>
+          <div class="body">
+            <div class="meta"><span class="tag tag-navy">Commercial</span><span>7 min read</span></div>
+            <h3>How a Manly café cut its peak-demand charges by 41%.</h3>
+            <p>Real case-study with exact bill comparisons. The trick wasn't more solar — it was load-shifting.</p>
+            <span class="read">Read article →</span>
+          </div>
+        </a>
+        <a href="#" class="article reveal delay-3">
+          <div class="img-placeholder">[ Inverter article ]</div>
+          <div class="body">
+            <div class="meta"><span class="tag tag-navy">Solar</span><span>5 min read</span></div>
+            <h3>String vs. micro vs. hybrid: the inverter you actually need.</h3>
+            <p>A simple decision tree based on your roof, battery plans and budget. No marketing fluff.</p>
+            <span class="read">Read article →</span>
+          </div>
+        </a>
+      </div>
+
+      <aside>
+        <div class="side-card">
+          <h5>Most read this month</h5>
+          <div class="news-item"><span class="num">01</span><span>How to size a solar + battery system from your bill alone</span></div>
+          <div class="news-item"><span class="num">02</span><span>Federal Battery Rebate 2026: real numbers</span></div>
+          <div class="news-item"><span class="num">03</span><span>VPPs explained: should you join one?</span></div>
+          <div class="news-item"><span class="num">04</span><span>Net metering 2.0 and your feed-in tariff</span></div>
+          <div class="news-item"><span class="num">05</span><span>String vs. micro vs. hybrid inverters</span></div>
+        </div>
+        <div class="newsletter">
+          <h5>Bluven monthly</h5>
+          <p>One email a month. Rebate changes, real install numbers, no fluff. 8,200 readers.</p>
+          <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='✓ Subscribed'">
+            <input type="email" placeholder="you@email.com" required />
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>window.bvMountChrome('news');</script>
+</body>
+</html>

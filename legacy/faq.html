@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FAQ — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+<style>
+  .faq-cats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    justify-content: center;
+  }
+  .faq-cats button {
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    font-size: 13.5px;
+    font-weight: 500;
+    background: var(--bv-white);
+    border: 1px solid var(--bv-gray-200);
+    color: var(--bv-gray-700);
+    transition: all 0.2s;
+  }
+  .faq-cats button.active { background: var(--bv-navy-900); color: var(--bv-white); border-color: var(--bv-navy-900); }
+  .faq-search {
+    max-width: 520px;
+    margin: 0 auto 28px;
+    position: relative;
+  }
+  .faq-search input {
+    width: 100%;
+    padding: 16px 18px 16px 48px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--bv-gray-200);
+    background: var(--bv-white);
+    font-size: 15px;
+    box-shadow: var(--shadow-sm);
+  }
+  .faq-search input:focus {
+    outline: none;
+    border-color: var(--bv-amber-500);
+    box-shadow: 0 0 0 4px rgba(245,158,11,0.15);
+  }
+  .faq-search svg {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--bv-gray-400);
+  }
+</style>
+</head>
+<body data-screen-label="07 FAQ">
+
+<header class="page-head" data-screen-label="FAQ Header">
+  <div class="container">
+    <div class="page-head-inner reveal" style="margin:0 auto;text-align:center">
+      <span class="text-eyebrow">Frequently asked questions</span>
+      <h1>Got questions?<br/>We've got answers.</h1>
+      <p class="lede" style="margin-left:auto;margin-right:auto">Everything you need to know about solar, batteries, EV charging, rebates and what to expect from a Bluven install.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-cream);padding-top:60px">
+  <div class="container">
+    <div class="faq-search reveal">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="faqSearch" placeholder="Search 60+ FAQs…" />
+    </div>
+
+    <div class="faq-cats reveal">
+      <button class="active" data-c="all">All · 24</button>
+      <button data-c="general">Getting started</button>
+      <button data-c="rebates">Rebates &amp; pricing</button>
+      <button data-c="install">Installation</button>
+      <button data-c="battery">Batteries</button>
+      <button data-c="ev">EV charging</button>
+      <button data-c="warranty">Warranty &amp; support</button>
+    </div>
+
+    <div class="faq-list reveal" id="faqList"></div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bv-white)" data-screen-label="Still">
+  <div class="container">
+    <div class="section-head center reveal" style="text-align:center">
+      <span class="text-eyebrow">Still have questions?</span>
+      <h2>Talk to a real engineer.</h2>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+        <a class="btn btn-primary" href="quote.html">Get a quote <span class="arrow">→</span></a>
+        <a class="btn btn-secondary" href="contact.html">Contact us</a>
+        <a class="btn btn-ghost" href="tel:+61400000000">📞 1300 BLUVEN</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>
+window.bvMountChrome('faq');
+
+const faqs = [
+  { c:'general', q:'How do I know if my roof is suitable for solar?', a:'Most Australian roofs work — even south-facing in some cases. Our engineers do a free desktop assessment from satellite imagery first, then a 30-minute site visit to confirm pitch, shading, structural condition and switchboard space. Tile, tin and Klip-Lok are all supported.' },
+  { c:'general', q:'What size system do I need?', a:'A rough rule of thumb: take your average daily usage (kWh) from your bill and aim to generate 1.5× that on a sunny day. For most Sydney households that lands around 6.6 – 10 kW. Add a battery if you want to use more than 50% of your generation at home.' },
+  { c:'general', q:'How long does a quote take?', a:'A free desktop quote takes 60 seconds via our online sizer. A full engineered design (with 3D shade modelling and switchboard inspection) takes 3–5 business days after your site visit.' },
+  { c:'rebates', q:'How does the Federal Battery Rebate work in 2026?', a:'The Cheaper Home Batteries Program offers a discount of up to ~$372/kWh on eligible battery systems installed from July 2025. For a 10 kWh battery that\'s ~$3,720 off — and we handle all the paperwork. It stacks with state rebates in NSW and VIC.' },
+  { c:'rebates', q:'What rebates are available in my state?', a:'Federal: STCs (small-scale) for solar, Federal Battery Rebate for storage. State: NSW PDRS and Empowering Homes loan; VIC Solar Homes rebate; QLD interest-free loans. We confirm exactly what you qualify for in your written quote.' },
+  { c:'rebates', q:'Do I need to apply for rebates myself?', a:'No. We handle every form — STC creation, federal rebate paperwork, state rebate applications, and the meter reconfiguration with your retailer. You sign once. We do the rest.' },
+  { c:'rebates', q:'Are there finance options?', a:'Yes. We partner with green finance providers offering 0% interest options up to 7 years on approved solar + battery installs. We also offer PPAs for commercial sites. Final terms confirmed in your quote.' },
+  { c:'rebates', q:'What\'s a net meter and do I need a new one?', a:'A net meter records both how much you import from the grid and how much you export back. Most homes installed since 2017 already have one. If yours doesn\'t, we coordinate the upgrade with your retailer at install — usually no extra cost.' },
+  { c:'install', q:'How long does installation take?', a:'A typical 6.6 – 10 kW residential install takes 1 – 2 days. Adding a battery adds half a day. Commercial 50 – 200 kW installs take 1 – 3 weeks depending on access and electrical work.' },
+  { c:'install', q:'Will you damage my roof?', a:'No. Our installers are CEC-accredited and use roof-specific mounting systems (KlipLok, tile-foot, fold-back tin). Every penetration is sealed with butyl + flashing, and we provide a workmanship warranty covering any roof leak caused by our install.' },
+  { c:'install', q:'Do I need to be home during install?', a:'You need to be home for ~15 minutes at the start (briefing) and end (commissioning walk-through and app setup). Otherwise, you\'re free to head out — we\'ll text updates and a final report.' },
+  { c:'install', q:'What happens if it rains on install day?', a:'We\'ll reschedule. Safety first — wet roofs are no place for installers. We typically have spare slots within the same week.' },
+  { c:'battery', q:'Is a battery worth it for my home?', a:'For most NSW households generating > 8 kW with a daily usage > 25 kWh, yes — payback is 4 – 6 years depending on rebates. Below those thresholds it\'s a lifestyle choice (blackout protection, energy independence) more than a financial one. Our engineers run the exact calc for your bill.' },
+  { c:'battery', q:'What\'s the difference between essential and whole-home backup?', a:'Essential backup keeps a few key circuits (fridge, lights, internet, one power point) running during a blackout. Whole-home backup keeps everything running. Whole-home requires a more sophisticated battery + gateway and is ~$2,500 more.' },
+  { c:'battery', q:'How long does a battery last?', a:'Most modern LiFePO₄ batteries are warrantied for 10 years and 6,000 – 10,000 cycles. Real-world expected life is 12 – 15 years before they degrade to ~70% of original capacity.' },
+  { c:'battery', q:'Can I add a battery to my existing solar?', a:'Almost always, yes. We do this regularly — using AC-coupled batteries (Tesla Powerwall, Alpha SMILE) that talk to your existing inverter, or replacing your inverter with a hybrid if it makes more economic sense.' },
+  { c:'ev', q:'Will my solar power my EV?', a:'Yes — and there are smart ways to do it. A solar-aware charger (Zappi, Ocular IQ) can be set to "Eco+" mode, which only charges your EV from solar surplus. On a sunny day with a 10 kW system, you can fully charge most EVs in 4 – 6 hours of free sunshine.' },
+  { c:'ev', q:'Do I need a battery to charge my EV from solar?', a:'No, but it helps for evening charging. Without a battery, you\'ll only solar-charge during daylight. With one, surplus solar fills the battery first then powers the car overnight at off-peak rates.' },
+  { c:'ev', q:'Can I install an EV charger now and add solar later?', a:'Yes. We pre-wire the home for solar at the same time so the future install is half the price.' },
+  { c:'warranty', q:'What warranties come with my system?', a:'25 years on panels (product), 30 years on panels (performance), 10+ years on inverters and batteries, and 10+ years Bluven workmanship warranty on the install itself. All in writing, all backed by manufacturers with Australian offices.' },
+  { c:'warranty', q:'What if my system stops working?', a:'Our app pings us before you notice anything\'s off. If something does go wrong, we have an Australian support team and most issues are resolved within 24 hours. Engineers visit on-site if needed — included in workmanship warranty.' },
+  { c:'warranty', q:'Do you offer ongoing monitoring?', a:'Yes — included with every system, free for life. The Bluven Live app tracks generation, battery state, household loads, EV charging, plus alerts you to anything unusual.' },
+  { c:'warranty', q:'What if I sell my house?', a:'Our warranties are transferable to the new owner at no charge — we\'ll even do a free system health-check before settlement to keep things smooth.' },
+  { c:'warranty', q:'Are you a CEC Approved Retailer?', a:'Yes — we\'re a CEC Approved Retailer and a signatory to the New Energy Tech Consumer Code (NETCC). It\'s the highest consumer-protection benchmark in Australian solar.' },
+];
+
+const list = document.getElementById('faqList');
+const cats = document.querySelectorAll('.faq-cats button');
+const search = document.getElementById('faqSearch');
+let cur = 'all';
+
+function render() {
+  const q = (search.value || '').toLowerCase();
+  const filtered = faqs.filter(f => (cur === 'all' || f.c === cur) && (!q || f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q)));
+  list.innerHTML = filtered.map(f => `
+    <div class="faq-item">
+      <div class="faq-q">${f.q}<div class="faq-icon">+</div></div>
+      <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
+    </div>
+  `).join('') || '<p style="text-align:center;color:var(--bv-gray-500);padding:40px">No matches. Try a different search.</p>';
+  list.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => item.classList.toggle('open'));
+  });
+}
+cats.forEach(b => b.addEventListener('click', () => {
+  cats.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  cur = b.dataset.c;
+  render();
+}));
+search.addEventListener('input', render);
+render();
+</script>
+</body>
+</html>

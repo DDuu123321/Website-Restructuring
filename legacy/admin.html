@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Console — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<style>
+  body { background: var(--bv-gray-50); font-family: var(--font-body); color: var(--bv-navy-900); }
+  .admin {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+  .sidebar {
+    background: var(--bv-navy-900);
+    color: rgba(255,255,255,0.85);
+    padding: 24px 16px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 8px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+  .logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--bv-amber-500); display: grid; place-items: center; color: var(--bv-navy-900); font-weight: 700; font-family: var(--font-display); }
+  .logo-name { font-family: var(--font-display); font-weight: 700; color: var(--bv-white); }
+  .logo-name small { display: block; font-size: 10px; color: var(--bv-amber-400); letter-spacing: 0.18em; font-weight: 500; font-family: var(--font-mono); margin-top: 2px;}
+  .nav-section { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); padding: 16px 12px 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 12px; border-radius: 8px;
+    font-size: 13.5px; color: rgba(255,255,255,0.7);
+    cursor: pointer; transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--bv-white); }
+  .nav-item.active { background: rgba(245,158,11,0.12); color: var(--bv-amber-300); }
+  .nav-item .ico { width: 16px; height: 16px; flex-shrink: 0; }
+  .nav-item .badge {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: var(--bv-amber-500); color: var(--bv-navy-900);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .main { padding: 28px 36px; max-width: 1480px; }
+  .topbar {
+    display: flex; align-items: center; gap: 18px;
+    margin-bottom: 28px;
+  }
+  .topbar h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; flex: 1; }
+  .topbar .search {
+    position: relative; flex: 0 0 360px;
+  }
+  .topbar .search input {
+    width: 100%; padding: 9px 14px 9px 36px;
+    border-radius: 10px;
+    border: 1px solid var(--bv-gray-200);
+    background: var(--bv-white);
+    font-size: 13px;
+  }
+  .topbar .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--bv-gray-400); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bv-amber-500); color: var(--bv-navy-900); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat {
+    background: var(--bv-white);
+    padding: 20px 22px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--bv-gray-100);
+  }
+  .stat-label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--bv-gray-500); margin-bottom: 12px; font-family: var(--font-mono); }
+  .stat-num { font-family: var(--font-display); font-size: 30px; font-weight: 700; line-height: 1; }
+  .stat-trend { font-size: 12px; margin-top: 8px; color: var(--bv-success); font-weight: 600; }
+  .stat-trend.down { color: #dc2626; }
+
+  .panel-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; margin-bottom: 18px; }
+  @media (max-width: 1100px) { .panel-grid { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--bv-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--bv-gray-100);
+    padding: 20px 22px;
+  }
+  .panel-h {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 14px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--bv-gray-100);
+  }
+  .panel-h h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+  .panel-h .btn-link { font-size: 12.5px; color: var(--bv-amber-600); font-weight: 600; }
+
+  .lead-row {
+    display: grid;
+    grid-template-columns: 32px 1.5fr 1fr 1fr 100px 100px 80px;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--bv-gray-100);
+    font-size: 13px;
+  }
+  .lead-row:last-child { border-bottom: 0; }
+  .lead-row.head { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bv-gray-500); padding: 0 0 10px; font-family: var(--font-mono); }
+  .lead-row .av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 11px; color: var(--bv-navy-900); }
+  .lead-row b { display: block; font-size: 13.5px; font-weight: 600; }
+  .lead-row span.sub { font-size: 11.5px; color: var(--bv-gray-500); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .pill::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+  }
+  .pill.new { background: rgba(245,158,11,0.12); color: var(--bv-amber-700); }
+  .pill.new::before { background: var(--bv-amber-500); }
+  .pill.qual { background: rgba(15,93,166,0.1); color: var(--bv-navy-800); }
+  .pill.qual::before { background: var(--bv-navy-700); }
+  .pill.won { background: rgba(16,148,82,0.12); color: var(--bv-success); }
+  .pill.won::before { background: var(--bv-success); }
+  .pill.lost { background: #fee; color: #c33; }
+  .pill.lost::before { background: #c33; }
+
+  .activity-item {
+    display: flex; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--bv-gray-100);
+  }
+  .activity-item:last-child { border-bottom: 0; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bv-amber-500); margin-top: 6px; flex-shrink: 0; }
+  .activity-item p { font-size: 13px; line-height: 1.45; margin: 0; }
+  .activity-item p b { font-weight: 600; }
+  .activity-item small { font-size: 11px; color: var(--bv-gray-500); display: block; margin-top: 2px; }
+
+  /* Chart */
+  .chart {
+    height: 220px;
+    position: relative;
+  }
+  .chart svg { width: 100%; height: 100%; }
+  .chart-tabs { display: flex; gap: 6px; }
+  .chart-tabs button { font-size: 11.5px; font-family: var(--font-mono); padding: 4px 10px; border-radius: 6px; background: transparent; color: var(--bv-gray-500); }
+  .chart-tabs button.active { background: var(--bv-cream); color: var(--bv-navy-900); }
+
+  /* Review queue */
+  .review {
+    padding: 14px;
+    background: var(--bv-cream);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .review-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .review-meta b { font-size: 13px; }
+  .review-meta .stars { color: var(--bv-amber-500); font-size: 12px; letter-spacing: 1px; }
+  .review p { font-size: 12.5px; line-height: 1.5; color: var(--bv-gray-700); margin-bottom: 10px; }
+  .review-actions { display: flex; gap: 6px; }
+  .review-actions button {
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 11.5px; font-weight: 600;
+  }
+  .btn-approve { background: var(--bv-success); color: #fff; }
+  .btn-edit { background: var(--bv-white); color: var(--bv-navy-900); border: 1px solid var(--bv-gray-200); }
+  .btn-reject { background: var(--bv-white); color: #c33; border: 1px solid var(--bv-gray-200); }
+
+  .demo-strip {
+    background: var(--bv-amber-100);
+    border: 1px solid rgba(245,158,11,0.4);
+    color: var(--bv-amber-700);
+    padding: 10px 18px;
+    text-align: center;
+    font-size: 12.5px;
+    font-family: var(--font-mono);
+  }
+  .demo-strip a { color: var(--bv-navy-900); font-weight: 600; }
+</style>
+</head>
+<body data-screen-label="10 Admin">
+
+<div class="demo-strip">DEMO MODE · This is the admin console for site managers — leads, content, reviews, projects, news. <a href="index.html">← Back to public site</a></div>
+
+<div class="admin">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">B</div>
+      <div class="logo-name">Bluven<small>ADMIN</small></div>
+    </div>
+    <div class="nav-section">Workspace</div>
+    <div class="nav-item active">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Leads <span class="badge">7</span>
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Quotes
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat sessions
+    </div>
+    <div class="nav-section">Content</div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Pages
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      News &amp; insights
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Projects
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Reviews <span class="badge">3</span>
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Brands &amp; products
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 11l-3-3-3 3M11 18V8"/><path d="M2 9.5V19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9.5"/><path d="M22 9.5L12 2 2 9.5"/></svg>
+      Media library
+    </div>
+    <div class="nav-section">System</div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+      SEO &amp; meta
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </div>
+    <div class="nav-item">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+      Team &amp; roles
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h1>Dashboard</h1>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input placeholder="Search leads, projects, articles…" />
+      </div>
+      <button style="background:var(--bv-amber-500); color:var(--bv-navy-900); padding:9px 18px; border-radius:10px; font-weight:600; font-size:13px">+ New project</button>
+      <div class="avatar">SM</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">New leads · 7 days</div>
+        <div class="stat-num">42</div>
+        <div class="stat-trend">▲ +18% vs last week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Quote conversions</div>
+        <div class="stat-num">31%</div>
+        <div class="stat-trend">▲ +4.2 pts</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Pipeline value</div>
+        <div class="stat-num">$1.42M</div>
+        <div class="stat-trend">▲ +$210k</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg. response time</div>
+        <div class="stat-num">2.4 h</div>
+        <div class="stat-trend down">▼ −1.1 h</div>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Lead pipeline</h3>
+          <div class="chart-tabs">
+            <button>Today</button>
+            <button class="active">7 days</button>
+            <button>30 days</button>
+            <button>Year</button>
+          </div>
+        </div>
+        <div class="chart">
+          <svg viewBox="0 0 600 220" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <g stroke="#e9eaee" stroke-width="1">
+              <line x1="0" y1="55" x2="600" y2="55"/><line x1="0" y1="110" x2="600" y2="110"/><line x1="0" y1="165" x2="600" y2="165"/>
+            </g>
+            <path d="M0 165 L86 130 L172 145 L258 95 L344 105 L430 65 L516 80 L600 40 L600 220 L0 220 Z" fill="url(#g1)" />
+            <path d="M0 165 L86 130 L172 145 L258 95 L344 105 L430 65 L516 80 L600 40" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+            <g fill="#0e1830">
+              <circle cx="86" cy="130" r="3.5"/><circle cx="172" cy="145" r="3.5"/><circle cx="258" cy="95" r="3.5"/><circle cx="344" cy="105" r="3.5"/><circle cx="430" cy="65" r="3.5"/><circle cx="516" cy="80" r="3.5"/><circle cx="600" cy="40" r="3.5"/>
+            </g>
+            <g fill="#9ea2ad" font-family="JetBrains Mono, monospace" font-size="10">
+              <text x="0" y="215">Mon</text><text x="86" y="215">Tue</text><text x="172" y="215">Wed</text><text x="258" y="215">Thu</text><text x="344" y="215">Fri</text><text x="430" y="215">Sat</text><text x="516" y="215">Sun</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h3>Recent activity</h3></div>
+        <div class="activity-item">
+          <span class="activity-dot"></span>
+          <div>
+            <p><b>Sarah Mendez</b> submitted a quote (10 kW + 13 kWh battery — Mosman NSW)</p>
+            <small>2 min ago · auto-routed to Liam</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--bv-success)"></span>
+          <div>
+            <p><b>James &amp; Emily Robertson</b> approved their final design</p>
+            <small>14 min ago · install scheduled May 12</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--bv-navy-700)"></span>
+          <div>
+            <p><b>Coastal Roasters</b> requested commercial proposal (78 kW)</p>
+            <small>1h ago · Priya assigned</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot"></span>
+          <div>
+            <p>New customer review submitted — pending approval</p>
+            <small>3h ago · 5 stars</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#9aa1ad"></span>
+          <div>
+            <p>News article <b>"Federal Battery Rebate 2026"</b> published</p>
+            <small>Yesterday · 2,841 views</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-grid" style="grid-template-columns: 1.6fr 1fr">
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Recent leads</h3>
+          <a class="btn-link" href="#">View all 42 →</a>
+        </div>
+        <div class="lead-row head">
+          <span></span><span>Customer</span><span>Suburb</span><span>System</span><span>Value</span><span>Stage</span><span>Action</span>
+        </div>
+        <div class="lead-row">
+          <div class="av" style="background:#fde68a">SM</div>
+          <div><b>Sarah Mendez</b><span class="sub">sarah.m@email.com · 0412 ███ ███</span></div>
+          <span>Mosman, NSW</span>
+          <span>10kW + 13kWh</span>
+          <span style="font-weight:600">$24.6k</span>
+          <span class="pill new">New</span>
+          <button style="font-size:11.5px;color:var(--bv-amber-600);font-weight:600">Open →</button>
+        </div>
+        <div class="lead-row">
+          <div class="av" style="background:#bfdbfe">JR</div>
+          <div><b>James Robertson</b><span class="sub">james.r@email.com · 0413 ███ ███</span></div>
+          <span>Glen Iris, VIC</span>
+          <span>13kW + 16kWh</span>
+          <span style="font-weight:600">$32.8k</span>
+          <span class="pill qual">Qualified</span>
+          <button style="font-size:11.5px;color:var(--bv-amber-600);font-weight:600">Open →</button>
+        </div>
+        <div class="lead-row">
+          <div class="av" style="background:#a7f3d0">CR</div>
+          <div><b>Coastal Roasters</b><span class="sub">commercial · john.c@coastal.com.au</span></div>
+          <span>Manly, NSW</span>
+          <span>78kW commercial</span>
+          <span style="font-weight:600">$118k</span>
+          <span class="pill qual">Qualified</span>
+          <button style="font-size:11.5px;color:var(--bv-amber-600);font-weight:600">Open →</button>
+        </div>
+        <div class="lead-row">
+          <div class="av" style="background:#fcd5ce">EW</div>
+          <div><b>Emma Wong</b><span class="sub">emma.w@email.com · 0414 ███ ███</span></div>
+          <span>Northbridge, NSW</span>
+          <span>6.6kW only</span>
+          <span style="font-weight:600">$8.4k</span>
+          <span class="pill won">Won</span>
+          <button style="font-size:11.5px;color:var(--bv-amber-600);font-weight:600">Open →</button>
+        </div>
+        <div class="lead-row">
+          <div class="av" style="background:#e9d5ff">DK</div>
+          <div><b>David &amp; Kim Park</b><span class="sub">park.fam@email.com · 0419 ███ ███</span></div>
+          <span>Hawthorn, VIC</span>
+          <span>16kW + 19kWh + EV</span>
+          <span style="font-weight:600">$41.2k</span>
+          <span class="pill new">New</span>
+          <button style="font-size:11.5px;color:var(--bv-amber-600);font-weight:600">Open →</button>
+        </div>
+        <div class="lead-row">
+          <div class="av" style="background:#fed7aa">RT</div>
+          <div><b>Rachel Tan</b><span class="sub">rachel.t@email.com · 0421 ███ ███</span></div>
+          <span>South Yarra, VIC</span>
+          <span>6.6kW + 10kWh</span>
+          <span style="font-weight:600">$16.8k</span>
+          <span class="pill lost">Cold</span>
+          <button style="font-size:11.5px;color:var(--bv-amber-600);font-weight:600">Open →</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Reviews to moderate</h3>
+          <a class="btn-link" href="#">3 pending</a>
+        </div>
+        <div class="review">
+          <div class="review-meta">
+            <b>Sarah M. · Mosman</b>
+            <span class="stars">★★★★★</span>
+          </div>
+          <p>"Liam quoted on Tuesday, installed on Thursday. The Bluven Live app is honestly the best part — I can see exactly when my EV is charging from solar surplus. 10/10."</p>
+          <div class="review-actions">
+            <button class="btn-approve">Approve</button>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-reject">Reject</button>
+          </div>
+        </div>
+        <div class="review">
+          <div class="review-meta">
+            <b>James R. · Glen Iris</b>
+            <span class="stars">★★★★★</span>
+          </div>
+          <p>"Got three quotes, Bluven was middle-of-pack on price but the only one whose quote actually showed the engineering. Battery sized properly first time."</p>
+          <div class="review-actions">
+            <button class="btn-approve">Approve</button>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-reject">Reject</button>
+          </div>
+        </div>
+        <div class="review">
+          <div class="review-meta">
+            <b>Marcus T. · South Yarra</b>
+            <span class="stars">★★★★☆</span>
+          </div>
+          <p>"Install was great, scheduling had a hiccup (rescheduled twice for rain) but I get it. System has been generating exactly what they predicted."</p>
+          <div class="review-actions">
+            <button class="btn-approve">Approve</button>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-reject">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => {
+  document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+  n.classList.add('active');
+}));
+document.querySelectorAll('.chart-tabs button').forEach(b => b.addEventListener('click', () => {
+  b.parentElement.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+}));
+document.querySelectorAll('.review-actions button').forEach(b => b.addEventListener('click', () => {
+  const r = b.closest('.review');
+  r.style.transition = 'all 0.4s'; r.style.opacity = '0.4';
+  setTimeout(() => { r.style.height = r.offsetHeight + 'px'; r.style.height = '0'; r.style.padding = '0'; r.style.margin = '0'; r.style.overflow = 'hidden'; }, 200);
+}));
+</script>
+</body>
+</html>

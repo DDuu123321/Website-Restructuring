@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 60px;
+    align-items: start;
+  }
+  @media (max-width: 1000px) { .contact-grid { grid-template-columns: 1fr; } }
+  .channels { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 28px; margin-bottom: 48px; }
+  @media (max-width: 600px) { .channels { grid-template-columns: 1fr; } }
+  .channel {
+    padding: 24px;
+    background: var(--bv-white);
+    border: 1px solid var(--bv-gray-100);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .channel:hover { border-color: var(--bv-amber-500); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .channel .icon { width: 36px; height: 36px; border-radius: 8px; background: var(--bv-cream); color: var(--bv-amber-600); display: grid; place-items: center; margin-bottom: 14px; font-size: 18px; }
+  .channel h4 { font-size: 15px; margin: 0 0 4px; }
+  .channel p { font-size: 13.5px; color: var(--bv-gray-600); margin-bottom: 4px; }
+  .channel b { font-size: 14.5px; color: var(--bv-navy-900); }
+
+  .office {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding: 28px;
+    background: var(--bv-white);
+    border-radius: var(--radius-xl);
+    margin-bottom: 16px;
+    border: 1px solid var(--bv-gray-100);
+    transition: all 0.3s;
+  }
+  .office:hover { border-color: var(--bv-navy-900); box-shadow: var(--shadow-md); }
+  .office .img-placeholder { aspect-ratio: 4/3; border-radius: 10px; }
+  .office h4 { font-size: 19px; margin: 0 0 6px; }
+  .office .city-tag { display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--bv-amber-500); background: var(--bv-cream); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 10px; }
+  .office p { font-size: 13.5px; color: var(--bv-gray-600); line-height: 1.5; margin-bottom: 4px; }
+  .office .hours { font-size: 12.5px; color: var(--bv-gray-500); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--bv-gray-100); }
+
+  .map-card {
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    background: var(--bv-navy-900);
+    height: 480px;
+    position: relative;
+  }
+  .map-svg { width: 100%; height: 100%; }
+  .map-pin {
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .map-pin:hover { transform: scale(1.2); }
+  .map-card .legend {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(20px);
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: var(--bv-navy-900);
+  }
+  .map-card .legend b { display: block; margin-bottom: 4px; font-size: 12px; }
+
+  .quick-form {
+    background: var(--bv-white);
+    padding: 32px;
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--bv-gray-100);
+  }
+  .quick-form h3 { font-size: 22px; margin: 0 0 6px; font-family: var(--font-display); font-weight: 600; }
+  .quick-form p { font-size: 13.5px; color: var(--bv-gray-600); margin-bottom: 20px; }
+  .quick-form .field { margin-bottom: 14px; }
+  .quick-form label { display: block; font-size: 12.5px; font-weight: 500; color: var(--bv-gray-600); margin-bottom: 5px; }
+  .quick-form input, .quick-form select, .quick-form textarea {
+    width: 100%; padding: 11px 13px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--bv-gray-200);
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .quick-form input:focus, .quick-form select:focus, .quick-form textarea:focus {
+    outline: none; border-color: var(--bv-amber-500);
+    box-shadow: 0 0 0 4px rgba(245,158,11,0.12);
+  }
+  .quick-form button {
+    width: 100%; padding: 14px;
+    background: var(--bv-amber-500); color: var(--bv-navy-900);
+    font-weight: 600; border-radius: var(--radius-full);
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .quick-form button:hover { background: var(--bv-amber-600); transform: translateY(-1px); }
+</style>
+</head>
+<body data-screen-label="09 Contact">
+
+<header class="page-head" data-screen-label="Contact Header">
+  <div class="container">
+    <div class="page-head-inner reveal">
+      <span class="text-eyebrow">Get in touch</span>
+      <h1>Three offices.<br/>One promise: a real engineer answers.</h1>
+      <p class="lede">Showrooms in Sydney, Melbourne and Brisbane. Or call, email, or just open the chat — we usually answer within 30 minutes during business hours.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-cream);padding-top:60px">
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <span class="text-eyebrow">Talk to us</span>
+        <h2 style="font-size:28px">Pick whichever channel suits you.</h2>
+        <div class="channels">
+          <a class="channel reveal delay-1" href="tel:1300258836">
+            <div class="icon">📞</div>
+            <h4>Phone</h4>
+            <p>Mon–Fri 8am–6pm AEST</p>
+            <b>1300 BLUVEN (1300 258 836)</b>
+          </a>
+          <a class="channel reveal delay-2" href="mailto:hello@bluven.com.au">
+            <div class="icon">✉️</div>
+            <h4>Email</h4>
+            <p>Replies within 4 business hours</p>
+            <b>hello@bluven.com.au</b>
+          </a>
+          <a class="channel reveal delay-3" href="#" onclick="window.bvOpenChat && window.bvOpenChat(); return false">
+            <div class="icon">💬</div>
+            <h4>Live chat</h4>
+            <p>AI-assisted, human-escalated</p>
+            <b>Open chat →</b>
+          </a>
+          <a class="channel reveal delay-4" href="quote.html">
+            <div class="icon">⚡</div>
+            <h4>Instant quote</h4>
+            <p>60-second sizer + rebate calc</p>
+            <b>Try it →</b>
+          </a>
+        </div>
+
+        <span class="text-eyebrow">Visit a showroom</span>
+        <h2 style="font-size:28px;margin-bottom:24px">Three offices across the east coast.</h2>
+
+        <div class="office reveal delay-1">
+          <div>
+            <span class="city-tag">SYD · HEAD OFFICE</span>
+            <h4>Sydney</h4>
+            <p>Unit 14, 39 Herbert St,<br/>St Leonards NSW 2065</p>
+            <div class="hours">
+              Mon–Fri 8:30am – 5:30pm<br/>
+              Sat 9am – 1pm
+            </div>
+          </div>
+          <div class="img-placeholder">[ Sydney showroom ]</div>
+        </div>
+        <div class="office reveal delay-2">
+          <div>
+            <span class="city-tag">VIC</span>
+            <h4>Melbourne</h4>
+            <p>Suite 6, 124 Victoria St,<br/>Richmond VIC 3121</p>
+            <div class="hours">
+              Mon–Fri 9am – 5pm<br/>
+              Sat by appointment
+            </div>
+          </div>
+          <div class="img-placeholder">[ Melbourne showroom ]</div>
+        </div>
+        <div class="office reveal delay-3">
+          <div>
+            <span class="city-tag">QLD</span>
+            <h4>Brisbane</h4>
+            <p>Lvl 2, 88 Vulture St,<br/>South Brisbane QLD 4101</p>
+            <div class="hours">
+              Mon–Fri 9am – 5pm<br/>
+              Sat by appointment
+            </div>
+          </div>
+          <div class="img-placeholder">[ Brisbane showroom ]</div>
+        </div>
+
+        <div style="margin-top:48px">
+          <div class="map-card reveal">
+            <svg class="map-svg" viewBox="0 0 600 480" xmlns="http://www.w3.org/2000/svg">
+              <rect width="600" height="480" fill="#0e1830" />
+              <!-- Stylised Australia outline -->
+              <path d="M100 180 Q140 130 220 130 Q310 110 380 130 Q470 130 510 170 Q540 220 530 280 Q500 340 460 360 Q420 380 380 370 Q360 400 320 410 Q260 420 220 400 Q170 390 140 360 Q100 320 90 270 Q90 220 100 180 Z" fill="#1a2549" stroke="rgba(245,158,11,0.25)" stroke-width="1" />
+              <!-- Tasmania -->
+              <ellipse cx="370" cy="430" rx="22" ry="14" fill="#1a2549" stroke="rgba(245,158,11,0.25)" stroke-width="1" />
+              <!-- Brisbane (QLD) -->
+              <g class="map-pin">
+                <circle cx="450" cy="220" r="14" fill="#f59e0b" opacity="0.25"/>
+                <circle cx="450" cy="220" r="6" fill="#f59e0b" />
+                <text x="468" y="225" fill="#fff" font-family="Inter, sans-serif" font-size="12" font-weight="600">Brisbane</text>
+              </g>
+              <!-- Sydney (NSW) -->
+              <g class="map-pin">
+                <circle cx="430" cy="320" r="18" fill="#f59e0b" opacity="0.3" />
+                <circle cx="430" cy="320" r="8" fill="#f59e0b" />
+                <text x="448" y="325" fill="#fff" font-family="Inter, sans-serif" font-size="12" font-weight="700">Sydney · HQ</text>
+              </g>
+              <!-- Melbourne (VIC) -->
+              <g class="map-pin">
+                <circle cx="370" cy="375" r="14" fill="#f59e0b" opacity="0.25" />
+                <circle cx="370" cy="375" r="6" fill="#f59e0b" />
+                <text x="295" y="380" fill="#fff" font-family="Inter, sans-serif" font-size="12" font-weight="600">Melbourne</text>
+              </g>
+              <!-- coverage radius -->
+              <circle cx="430" cy="320" r="60" fill="none" stroke="rgba(245,158,11,0.15)" stroke-dasharray="4 4" />
+              <circle cx="430" cy="320" r="100" fill="none" stroke="rgba(245,158,11,0.08)" stroke-dasharray="4 4" />
+            </svg>
+            <div class="legend">
+              <b>SERVICE COVERAGE</b>
+              Greater Sydney · Greater Melbourne · SE Queensland<br/>
+              <span style="color:var(--bv-gray-500)">Regional NSW/VIC by appointment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside style="position:sticky;top:100px">
+        <form class="quick-form reveal delay-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='✓ Sent — we\\'ll be in touch';">
+          <h3>Quick question?</h3>
+          <p>Send a message and a real engineer will reply within 4 business hours.</p>
+          <div class="field">
+            <label>Name</label>
+            <input type="text" required />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" required />
+          </div>
+          <div class="field">
+            <label>Phone (optional)</label>
+            <input type="tel" />
+          </div>
+          <div class="field">
+            <label>Topic</label>
+            <select>
+              <option>Quote enquiry</option>
+              <option>Existing customer support</option>
+              <option>Commercial / multi-site</option>
+              <option>Partnership / wholesale</option>
+              <option>Press</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Message</label>
+            <textarea rows="4" required></textarea>
+          </div>
+          <button type="submit">Send message →</button>
+        </form>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>window.bvMountChrome('contact');</script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Get a Quote — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+<style>
+  .quote-shell {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 40px;
+    margin-top: 40px;
+  }
+  @media (max-width: 1000px) { .quote-shell { grid-template-columns: 1fr; } }
+  .quote-form {
+    background: var(--bv-white);
+    border-radius: var(--radius-2xl);
+    padding: clamp(28px, 4vw, 48px);
+    border: 1px solid var(--bv-gray-100);
+  }
+  .steps {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+    counter-reset: step;
+  }
+  .step {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bv-gray-200);
+    position: relative;
+    transition: background 0.4s;
+  }
+  .step.active, .step.done { background: var(--bv-amber-500); }
+  .step-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--bv-gray-500);
+    font-family: var(--font-mono);
+    margin-top: 14px;
+    margin-bottom: 28px;
+  }
+  .step-page { display: none; animation: fadeUp 0.4s var(--ease-out); }
+  .step-page.active { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .step-h { font-size: 28px; margin: 0 0 8px; font-family: var(--font-display); font-weight: 600; }
+  .step-sub { color: var(--bv-gray-600); margin-bottom: 28px; font-size: 15px; }
+
+  .field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 22px; }
+  @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+  .field { display: block; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--bv-gray-700); margin-bottom: 6px; }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--bv-gray-200);
+    background: var(--bv-white);
+    font-family: inherit;
+    font-size: 14.5px;
+    transition: all 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--bv-amber-500);
+    box-shadow: 0 0 0 4px rgba(245,158,11,0.12);
+  }
+  .field-full { grid-column: 1/-1; }
+
+  .opt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 700px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
+  .opt {
+    cursor: pointer;
+    background: var(--bv-white);
+    border: 1.5px solid var(--bv-gray-200);
+    border-radius: var(--radius-lg);
+    padding: 18px 14px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--bv-gray-700);
+    transition: all 0.25s;
+    position: relative;
+  }
+  .opt:hover { border-color: var(--bv-navy-700); }
+  .opt.selected { border-color: var(--bv-amber-500); background: var(--bv-cream); color: var(--bv-navy-900); }
+  .opt.selected::after {
+    content: "✓"; position: absolute; top: 8px; right: 10px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--bv-amber-500); color: #fff;
+    display: grid; place-items: center; font-size: 12px;
+  }
+  .opt-icon {
+    width: 32px; height: 32px;
+    margin: 0 auto 8px;
+    background: var(--bv-cream); border-radius: 8px;
+    display: grid; place-items: center;
+    color: var(--bv-amber-600);
+  }
+
+  .slider-wrap { background: var(--bv-cream); padding: 24px; border-radius: var(--radius-lg); margin-bottom: 22px; }
+  .slider-wrap label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--bv-gray-700); margin-bottom: 14px; }
+  .slider-wrap label b { font-family: var(--font-display); font-size: 26px; color: var(--bv-navy-900); font-weight: 700; }
+  .slider-wrap input[type=range] { width: 100%; accent-color: var(--bv-amber-500); height: 4px; }
+  .slider-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--bv-gray-500); margin-top: 10px; font-family: var(--font-mono); }
+
+  .nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--bv-gray-100); }
+  .nav .btn-back { background: transparent; color: var(--bv-gray-600); border: 1px solid var(--bv-gray-200); padding: 12px 22px; border-radius: var(--radius-full); font-weight: 500; }
+  .nav .btn-back:hover:not([disabled]) { border-color: var(--bv-navy-900); color: var(--bv-navy-900); }
+  .nav .btn-back[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+  .summary-card {
+    background: var(--bv-navy-900);
+    color: var(--bv-white);
+    border-radius: var(--radius-2xl);
+    padding: 32px;
+    position: sticky;
+    top: 100px;
+  }
+  .summary-card h4 {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--bv-amber-400);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .est-num { font-family: var(--font-display); font-size: 44px; font-weight: 700; color: var(--bv-white); line-height: 1; margin-bottom: 4px; }
+  .est-sub { font-size: 12.5px; color: rgba(255,255,255,0.6); }
+  .summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 13.5px;
+  }
+  .summary-line:last-of-type { border-bottom: 0; }
+  .summary-line span:first-child { color: rgba(255,255,255,0.6); }
+  .summary-line span:last-child { color: var(--bv-white); font-weight: 600; }
+  .summary-divider { height: 1px; background: rgba(255,255,255,0.15); margin: 16px 0; }
+  .rebate-badge {
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--bv-amber-300);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    margin-top: 18px;
+    line-height: 1.5;
+  }
+  .success {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .success-icon {
+    width: 72px; height: 72px;
+    margin: 0 auto 24px;
+    background: var(--bv-amber-500);
+    color: var(--bv-navy-900);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 36px;
+    animation: pop 0.5s var(--ease-out);
+  }
+  @keyframes pop { 0% { transform: scale(0); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+</style>
+</head>
+<body data-screen-label="08 Quote">
+
+<header class="page-head" data-screen-label="Quote Header">
+  <div class="container">
+    <div class="page-head-inner reveal" style="margin:0 auto;text-align:center">
+      <span class="text-eyebrow">Free quote · 60 seconds</span>
+      <h1>Designed by an engineer.<br/>Priced before you finish your coffee.</h1>
+      <p class="lede" style="margin:18px auto 0">Answer 5 quick questions and we'll generate an instant estimate, with rebates calculated. A real engineer reviews it within 24 hours.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-cream);padding-top:50px;padding-bottom:120px">
+  <div class="container">
+    <div class="quote-shell">
+      <div class="quote-form reveal">
+        <div class="steps">
+          <div class="step active" data-s="1"></div>
+          <div class="step" data-s="2"></div>
+          <div class="step" data-s="3"></div>
+          <div class="step" data-s="4"></div>
+          <div class="step" data-s="5"></div>
+        </div>
+        <div class="step-meta">
+          <span id="stepLabel">Step 01 / 05</span>
+          <span id="stepName">Property type</span>
+        </div>
+
+        <div class="step-page active" data-page="1">
+          <h2 class="step-h">First — what kind of property?</h2>
+          <p class="step-sub">This determines whether you're eligible for residential or commercial rebates.</p>
+          <div class="opt-grid" data-name="propertyType">
+            <div class="opt" data-v="House">
+              <div class="opt-icon">🏠</div>House
+            </div>
+            <div class="opt" data-v="Townhouse / Unit">
+              <div class="opt-icon">🏘️</div>Townhouse / Unit
+            </div>
+            <div class="opt" data-v="Commercial">
+              <div class="opt-icon">🏢</div>Commercial
+            </div>
+          </div>
+          <div class="field field-full">
+            <label>Roof type</label>
+            <select data-name="roofType">
+              <option>Tin / Klip-Lok</option>
+              <option>Tile</option>
+              <option>Metal deck</option>
+              <option>Flat / membrane</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="step-page" data-page="2">
+          <h2 class="step-h">What's your monthly power bill?</h2>
+          <p class="step-sub">Drag the slider — we'll use this to calculate the right system size.</p>
+          <div class="slider-wrap">
+            <label>Monthly bill <b>$<span id="billVal">350</span></b></label>
+            <input type="range" id="bill" min="100" max="2000" step="25" value="350" />
+            <div class="slider-meta">
+              <span>$100</span><span>$1,000</span><span>$2,000+</span>
+            </div>
+          </div>
+          <div class="opt-grid" data-name="usagePattern">
+            <div class="opt" data-v="Mostly daytime">Mostly daytime</div>
+            <div class="opt selected" data-v="Mixed">Mixed</div>
+            <div class="opt" data-v="Mostly evening">Mostly evening</div>
+          </div>
+        </div>
+
+        <div class="step-page" data-page="3">
+          <h2 class="step-h">What do you want to install?</h2>
+          <p class="step-sub">Pick everything you're considering — we'll size each component to work together.</p>
+          <div class="opt-grid" data-name="components" data-multi="1" style="grid-template-columns:repeat(2,1fr)">
+            <div class="opt selected" data-v="Solar"><div class="opt-icon">☀️</div>Solar panels</div>
+            <div class="opt selected" data-v="Battery"><div class="opt-icon">🔋</div>Battery storage</div>
+            <div class="opt" data-v="EV"><div class="opt-icon">⚡</div>EV charger</div>
+            <div class="opt" data-v="Heat pump"><div class="opt-icon">♨️</div>Heat-pump hot water</div>
+          </div>
+          <div class="slider-wrap">
+            <label>Solar system size <b><span id="kwVal">10</span> kW</b></label>
+            <input type="range" id="kw" min="3" max="30" step="0.6" value="10" />
+            <div class="slider-meta">
+              <span>3 kW</span><span>10 kW</span><span>30 kW</span>
+            </div>
+          </div>
+          <div class="slider-wrap">
+            <label>Battery size <b><span id="batVal">10</span> kWh</b></label>
+            <input type="range" id="bat" min="0" max="40" step="2.5" value="10" />
+            <div class="slider-meta">
+              <span>None</span><span>10 kWh</span><span>40 kWh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-page" data-page="4">
+          <h2 class="step-h">Where's the property?</h2>
+          <p class="step-sub">We use this to check eligibility for state rebates and to assess solar irradiance.</p>
+          <div class="field-grid">
+            <div class="field field-full">
+              <label>Street address</label>
+              <input type="text" placeholder="123 Spit Rd, Mosman NSW 2088" data-name="address" />
+            </div>
+            <div class="field">
+              <label>Suburb</label>
+              <input type="text" placeholder="Mosman" data-name="suburb" />
+            </div>
+            <div class="field">
+              <label>State</label>
+              <select data-name="state">
+                <option>NSW</option><option>VIC</option><option>QLD</option>
+                <option>SA</option><option>WA</option><option>TAS</option><option>ACT</option><option>NT</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Postcode</label>
+              <input type="text" placeholder="2088" data-name="postcode" />
+            </div>
+            <div class="field">
+              <label>When are you thinking?</label>
+              <select data-name="timeline">
+                <option>ASAP</option>
+                <option>Within 1 month</option>
+                <option>1 – 3 months</option>
+                <option>Just researching</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-page" data-page="5">
+          <h2 class="step-h">Where can our engineer reach you?</h2>
+          <p class="step-sub">A real engineer will call within 24 business hours. No call centre. No spam. Promise.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label>First name</label>
+              <input type="text" data-name="firstName" required />
+            </div>
+            <div class="field">
+              <label>Last name</label>
+              <input type="text" data-name="lastName" required />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" data-name="email" required />
+            </div>
+            <div class="field">
+              <label>Phone</label>
+              <input type="tel" data-name="phone" required />
+            </div>
+            <div class="field field-full">
+              <label>Best time to call (optional)</label>
+              <select data-name="bestTime">
+                <option>Anytime business hours</option>
+                <option>Mornings (9 – 12)</option>
+                <option>Afternoons (12 – 5)</option>
+                <option>After 5 pm</option>
+                <option>Email only please</option>
+              </select>
+            </div>
+            <div class="field field-full">
+              <label>Anything else? (optional)</label>
+              <textarea rows="3" data-name="notes" placeholder="Specific concerns, existing solar, EV plans…"></textarea>
+            </div>
+            <div class="field field-full" style="font-size:12px;color:var(--bv-gray-500);line-height:1.5">
+              By submitting you agree to be contacted by Bluven Energy. We never sell your data. <a href="privacy.html" style="color:var(--bv-amber-600)">Privacy Policy</a>.
+            </div>
+          </div>
+        </div>
+
+        <div class="step-page" data-page="6">
+          <div class="success">
+            <div class="success-icon">✓</div>
+            <h2 class="step-h">Got it. Thanks, <span id="successName">there</span>.</h2>
+            <p class="step-sub" style="max-width:420px;margin:0 auto 24px">Your indicative estimate is on the right. A senior engineer will review your roof on satellite imagery and call within 24 hours with a refined design.</p>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <a class="btn btn-primary" href="index.html">Back to home <span class="arrow">→</span></a>
+              <a class="btn btn-secondary" href="projects.html">Browse our installs</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav" id="nav">
+          <button class="btn-back" id="back" disabled>← Back</button>
+          <button class="btn btn-primary" id="next">Continue <span class="arrow">→</span></button>
+        </div>
+      </div>
+
+      <aside>
+        <div class="summary-card">
+          <h4>Live estimate</h4>
+          <div class="est-num">$<span id="estPrice">21,400</span></div>
+          <div class="est-sub">Indicative — after all rebates</div>
+          <div class="summary-divider"></div>
+          <div class="summary-line"><span>System size</span><span><span id="sumKw">10</span> kW</span></div>
+          <div class="summary-line"><span>Battery</span><span><span id="sumBat">10</span> kWh</span></div>
+          <div class="summary-line"><span>Annual generation</span><span>~<span id="sumGen">14,200</span> kWh</span></div>
+          <div class="summary-line"><span>Bill saving (yr 1)</span><span style="color:var(--bv-amber-300)">~$<span id="sumSave">3,150</span></span></div>
+          <div class="summary-line"><span>Payback period</span><span><span id="sumPb">6.8</span> yrs</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-line"><span>Sticker price</span><span>$<span id="sumGross">28,900</span></span></div>
+          <div class="summary-line"><span>STCs</span><span style="color:var(--bv-amber-300)">– $<span id="sumStc">3,800</span></span></div>
+          <div class="summary-line"><span>Federal Battery Rebate</span><span style="color:var(--bv-amber-300)">– $<span id="sumFbr">3,720</span></span></div>
+          <div class="rebate-badge">Bluven handles all rebate paperwork. You sign once. We do the rest.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>
+window.bvMountChrome('quote');
+
+const stepNames = ['Property type','Energy use','System mix','Location','Your details','Done'];
+let curStep = 1;
+const totalSteps = 5;
+
+function setStep(n) {
+  curStep = Math.max(1, Math.min(6, n));
+  document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.step-page[data-page="${curStep}"]`).classList.add('active');
+  document.querySelectorAll('.step').forEach((s, i) => {
+    s.classList.toggle('done', i+1 < curStep);
+    s.classList.toggle('active', i+1 === curStep);
+  });
+  document.getElementById('stepLabel').textContent = `Step 0${Math.min(curStep, totalSteps)} / 0${totalSteps}`;
+  document.getElementById('stepName').textContent = stepNames[Math.min(curStep, 6)-1];
+  document.getElementById('back').disabled = curStep === 1;
+  const nextBtn = document.getElementById('next');
+  if (curStep === totalSteps) {
+    nextBtn.innerHTML = 'Submit <span class="arrow">→</span>';
+  } else if (curStep > totalSteps) {
+    document.getElementById('nav').style.display = 'none';
+  } else {
+    nextBtn.innerHTML = 'Continue <span class="arrow">→</span>';
+    document.getElementById('nav').style.display = 'flex';
+  }
+  window.scrollTo({ top: document.querySelector('.quote-form').offsetTop - 80, behavior: 'smooth' });
+}
+
+document.getElementById('next').addEventListener('click', () => {
+  if (curStep === totalSteps) {
+    const fname = document.querySelector('[data-name=firstName]').value || 'there';
+    document.getElementById('successName').textContent = fname;
+    setStep(6);
+  } else {
+    setStep(curStep + 1);
+  }
+});
+document.getElementById('back').addEventListener('click', () => setStep(curStep - 1));
+
+document.querySelectorAll('.opt-grid').forEach(grid => {
+  const multi = grid.dataset.multi === '1';
+  grid.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (multi) opt.classList.toggle('selected');
+      else { grid.querySelectorAll('.opt').forEach(o => o.classList.remove('selected')); opt.classList.add('selected'); }
+      recalc();
+    });
+  });
+});
+
+const billEl = document.getElementById('bill'), kwEl = document.getElementById('kw'), batEl = document.getElementById('bat');
+[billEl, kwEl, batEl].forEach(el => el.addEventListener('input', () => {
+  document.getElementById('billVal').textContent = billEl.value;
+  document.getElementById('kwVal').textContent = (+kwEl.value).toFixed(1);
+  document.getElementById('batVal').textContent = (+batEl.value).toFixed(1);
+  recalc();
+}));
+
+function recalc() {
+  const kw = +kwEl.value;
+  const bat = +batEl.value;
+  const gross = Math.round(kw * 1450 + bat * 950 + 2200);
+  const stc = Math.round(kw * 380);
+  const fbr = Math.round(bat * 372);
+  const net = gross - stc - fbr;
+  const gen = Math.round(kw * 1420);
+  const save = Math.round(gen * 0.18 + bat * 365 * 0.20);
+  const pb = (net / Math.max(save, 1)).toFixed(1);
+  document.getElementById('estPrice').textContent = net.toLocaleString();
+  document.getElementById('sumKw').textContent = kw.toFixed(1);
+  document.getElementById('sumBat').textContent = bat.toFixed(1);
+  document.getElementById('sumGen').textContent = gen.toLocaleString();
+  document.getElementById('sumSave').textContent = save.toLocaleString();
+  document.getElementById('sumPb').textContent = pb;
+  document.getElementById('sumGross').textContent = gross.toLocaleString();
+  document.getElementById('sumStc').textContent = stc.toLocaleString();
+  document.getElementById('sumFbr').textContent = fbr.toLocaleString();
+}
+recalc();
+</script>
+</body>
+</html>
