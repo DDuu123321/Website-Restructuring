@@ -598,41 +598,72 @@
   margin-bottom: 30px;
 }
 
-/* 3 advantages strip */
+/* 3 advantages strip — sits *below* the CTA row, like the legacy hero */
 .hero-advantages {
   list-style: none;
-  margin: 0 0 34px;
+  margin: 32px 0 0;
   padding: 22px 0 0;
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px 40px;
   max-width: 880px;
 }
 .hero-advantages li {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-adv-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 198, 31, 0.18);
+  border: 1.5px solid var(--bv-teal-500, #fbc707);
+  color: var(--bv-teal-500, #fbc707);
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
 }
 .hero-advantages b {
   font-family: var(--font-display);
-  font-size: clamp(16px, 1.35vw, 21px);
-  font-weight: 800;
+  font-size: clamp(14px, 1.05vw, 17px);
+  font-weight: 700;
   color: var(--bv-white);
   letter-spacing: -0.005em;
 }
-.hero-advantages span {
-  font-size: clamp(16px, 1.35vw, 21px);
-  color: rgba(255, 255, 255, 0.66);
-  line-height: 1.5;
-}
 @media (max-width: 720px) {
   .hero-advantages {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding-top: 16px;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 18px;
+    margin-top: 24px;
   }
-  .hero-advantages b { font-size: 16px; }
+  .hero-advantages b { font-size: 15px; }
+}
+
+/* Hero "Get a Quote" outline button — transparent + white border, pairs
+   with the yellow primary CTA from FreeAssessmentHeroButton. */
+.hero-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bv-white);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.hero-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--bv-ink-900);
+  border-color: var(--bv-white);
+  transform: translateY(-1px);
 }
 .hero-cta-row {
   display: flex;
