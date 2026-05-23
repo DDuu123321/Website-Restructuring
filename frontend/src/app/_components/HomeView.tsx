@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useI18n, T } from '@/i18n/I18nProvider'
 import { Reveal, AnimatedCounter } from '@/components/ui/Reveal'
 import { TestimonialForm } from '@/components/ui/TestimonialForm'
+import { FreeAssessmentHeroButton } from '@/components/assessment/FreeAssessmentModal'
 import { api } from '@/api/client'
 import type { Project, Testimonial } from '@/types/cms'
 
@@ -114,16 +115,10 @@ function Hero() {
           </h1>
           <p className="hero-lede">{t('h.lede')}</p>
 
-          {/* 3 advantages — Mory emphasis */}
-          <ul className="hero-advantages">
-            <li><b>CPEng-led design</b></li>
-            <li><b>Nationwide SCA network</b></li>
-            <li><b>10+ years product warranty</b></li>
-          </ul>
-
           <div className="hero-cta-row">
-            <Link className="btn btn-primary" href="/quote">
-              <span>{t('h.cta1')}</span> <span className="arrow">→</span>
+            <FreeAssessmentHeroButton />
+            <Link className="btn hero-btn-outline" href="/quote">
+              <span>Get a Quote</span>
             </Link>
             <button type="button" className="hero-play" onClick={() => setShowVideoModal(true)}>
               <span className="play-icon">
@@ -132,6 +127,34 @@ function Hero() {
               <span>{t('h.cta2')}</span>
             </button>
           </div>
+
+          {/* 3 advantages — Mory emphasis */}
+          <ul className="hero-advantages">
+            <li>
+              <span className="hero-adv-check" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <b>CPEng-led design</b>
+            </li>
+            <li>
+              <span className="hero-adv-check" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <b>Nationwide SAA network</b>
+            </li>
+            <li>
+              <span className="hero-adv-check" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <b>10-Year product warranty</b>
+            </li>
+          </ul>
         </div>
         <div className="hero-diagram">
           <EnergyFlowImage idPrefix="hero" />

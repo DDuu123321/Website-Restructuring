@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useI18n } from '@/i18n/I18nProvider'
+import { FreeAssessmentStickyButton } from '@/components/assessment/FreeAssessmentModal'
 import { Logo } from './Logo'
 import { MegaMenu } from './MegaMenu'
 
@@ -139,17 +140,20 @@ export function Nav() {
       </nav>
 
       {!pathname.startsWith('/quote') && (
-        <Link className={`bv-sticky-quote ${scrolled ? 'show' : ''}`} href="/quote" aria-label="Get a quote">
-          <span className="bv-sq-pulse"></span>
-          <span className="bv-sq-icon">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
-              <circle cx="12" cy="12" r="4"/>
-            </svg>
-          </span>
-          <span className="bv-sq-label">{t('sticky.quote')}</span>
-          <span className="bv-sq-arrow">→</span>
-        </Link>
+        <>
+          <FreeAssessmentStickyButton show={scrolled} />
+          <Link className={`bv-sticky-quote ${scrolled ? 'show' : ''}`} href="/quote" aria-label="Get a quote">
+            <span className="bv-sq-pulse"></span>
+            <span className="bv-sq-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+                <circle cx="12" cy="12" r="4"/>
+              </svg>
+            </span>
+            <span className="bv-sq-label">{t('sticky.quote')}</span>
+            <span className="bv-sq-arrow">→</span>
+          </Link>
+        </>
       )}
     </>
   )

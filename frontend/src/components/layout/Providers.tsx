@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nProvider } from '@/i18n/I18nProvider'
+import { FreeAssessmentProvider } from '@/components/assessment/FreeAssessmentModal'
 
 export function Providers({ children }: { children: ReactNode }) {
   // One QueryClient per tab — useState ensures it's stable across re-renders
@@ -18,7 +19,9 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>{children}</I18nProvider>
+      <I18nProvider>
+        <FreeAssessmentProvider>{children}</FreeAssessmentProvider>
+      </I18nProvider>
     </QueryClientProvider>
   )
 }
