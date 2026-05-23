@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cookie Notice — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+<style>
+  .doc { max-width: 760px; margin: 0 auto; font-size: 16px; line-height: 1.75; color: var(--bv-gray-700); }
+  .doc h2 { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--bv-navy-900); margin: 40px 0 14px; }
+  .cookie-table { width: 100%; border-collapse: collapse; margin: 18px 0 30px; background: var(--bv-white); border-radius: 12px; overflow: hidden; border: 1px solid var(--bv-gray-100); }
+  .cookie-table th, .cookie-table td { text-align: left; padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--bv-gray-100); }
+  .cookie-table th { background: var(--bv-cream); font-weight: 600; color: var(--bv-navy-900); }
+  .cookie-table td b { font-family: var(--font-mono); font-size: 12.5px; color: var(--bv-amber-600); }
+  .pref-card {
+    background: var(--bv-white);
+    border-radius: var(--radius-2xl);
+    padding: 36px;
+    margin-top: 40px;
+    border: 1px solid var(--bv-gray-100);
+  }
+  .pref-card h3 { font-size: 18px; margin-bottom: 6px; }
+  .pref-card p { font-size: 13.5px; color: var(--bv-gray-600); margin-bottom: 24px; }
+  .pref-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--bv-gray-100);
+  }
+  .pref-row:last-child { border-bottom: 0; }
+  .pref-row b { font-size: 14.5px; display: block; margin-bottom: 4px; }
+  .pref-row p { font-size: 12.5px; color: var(--bv-gray-600); margin: 0; }
+  .toggle {
+    position: relative; width: 44px; height: 24px;
+    background: var(--bv-gray-200); border-radius: 999px; cursor: pointer; transition: background 0.2s;
+    flex-shrink: 0; margin-left: 24px;
+  }
+  .toggle.on { background: var(--bv-amber-500); }
+  .toggle::after {
+    content: ""; position: absolute; left: 2px; top: 2px;
+    width: 20px; height: 20px; background: #fff; border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .toggle.on::after { transform: translateX(20px); }
+  .toggle.locked { background: var(--bv-success); cursor: not-allowed; opacity: 0.7; }
+  .toggle.locked::after { transform: translateX(20px); }
+  .save-pref {
+    margin-top: 24px;
+    width: 100%;
+    padding: 14px;
+    background: var(--bv-amber-500);
+    color: var(--bv-navy-900);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+  }
+</style>
+</head>
+<body data-screen-label="13 Cookies">
+
+<header class="page-head">
+  <div class="container">
+    <div class="page-head-inner reveal" style="margin:0 auto;text-align:center">
+      <span class="text-eyebrow">Legal</span>
+      <h1>Cookie Notice</h1>
+      <p class="lede" style="margin:18px auto 0">Plain-English explanation of the cookies we use, plus a control panel to set your preferences.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-cream);padding-top:60px">
+  <div class="container">
+    <div class="doc reveal">
+      <p>A cookie is a small text file stored on your device. We use them to keep the site working, remember your preferences, and (with consent) measure how the site is used.</p>
+
+      <h2>Cookies we use</h2>
+      <table class="cookie-table">
+        <thead><tr><th>Type</th><th>Purpose</th><th>Retention</th></tr></thead>
+        <tbody>
+          <tr><td><b>ESSENTIAL</b></td><td>Session, security, load-balancing, cookie preferences. Cannot be disabled.</td><td>Session – 12 mo</td></tr>
+          <tr><td><b>FUNCTIONAL</b></td><td>Remember saved quote drafts, last-viewed product, dark-mode toggle.</td><td>30 days</td></tr>
+          <tr><td><b>ANALYTICS</b></td><td>Google Analytics 4 (anonymised IP). Counts page views; never sold.</td><td>14 months</td></tr>
+          <tr><td><b>MARKETING</b></td><td>Meta &amp; LinkedIn pixels — only loaded if you opt in. Used for retargeting and ad measurement.</td><td>13 months</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Your preferences</h2>
+      <div class="pref-card">
+        <h3>Manage cookie preferences</h3>
+        <p>Toggle each category to your liking. Changes take effect immediately and are remembered across visits.</p>
+        <div class="pref-row">
+          <div>
+            <b>Essential cookies</b>
+            <p>Required for the site to work — session, security, basic navigation.</p>
+          </div>
+          <div class="toggle locked"></div>
+        </div>
+        <div class="pref-row">
+          <div>
+            <b>Functional cookies</b>
+            <p>Saves your quote drafts, last-viewed products and UI preferences.</p>
+          </div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="pref-row">
+          <div>
+            <b>Analytics cookies</b>
+            <p>Anonymised page-view tracking. Helps us understand which content people find useful.</p>
+          </div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="pref-row">
+          <div>
+            <b>Marketing cookies</b>
+            <p>Lets us show you relevant ads on Meta and LinkedIn. Off by default.</p>
+          </div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <button class="save-pref" onclick="this.textContent='✓ Preferences saved'">Save preferences</button>
+      </div>
+
+      <p style="font-size:13px;color:var(--bv-gray-500);margin-top:36px">
+        See also our <a href="privacy.html" style="color:var(--bv-amber-600)">Privacy Policy</a> and <a href="terms.html" style="color:var(--bv-amber-600)">Terms of Service</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>window.bvMountChrome('legal');</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+/* Bluven Energy — Payload Admin theme overrides */
+:root {
+  --theme-elevation-0: #ffffff;
+  --theme-elevation-50: #f8f9fb;
+  --theme-elevation-100: #f1f3f7;
+  --theme-success-500: #1e8449;
+  --theme-warning-500: #d97706;
+  --theme-error-500: #c0392b;
+}

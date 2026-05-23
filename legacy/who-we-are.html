@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Who We Are — Bluven Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/design-system.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<link rel="stylesheet" href="styles/home.css">
+<link rel="stylesheet" href="styles/inner.css">
+<style>
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: center;
+  }
+  @media (max-width: 900px) { .story-grid { grid-template-columns: 1fr; } }
+
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 900px) { .values-grid { grid-template-columns: 1fr; } }
+  .value {
+    padding: 32px;
+    background: var(--bv-white);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--bv-gray-100);
+    transition: all 0.4s var(--ease-out);
+  }
+  .value:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--bv-amber-300); }
+  .value-num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--bv-amber-500); margin-bottom: 32px; }
+  .value h3 { font-size: 22px; margin: 0 0 12px; }
+  .value p { font-size: 14.5px; line-height: 1.6; color: var(--bv-gray-600); }
+
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--bv-gray-200);
+  }
+  .timeline-item { position: relative; padding-bottom: 40px; }
+  .timeline-item::before {
+    content: ""; position: absolute; left: -28px; top: 6px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bv-white);
+    border: 3px solid var(--bv-amber-500);
+    box-shadow: 0 0 0 4px var(--bv-cream);
+  }
+  .timeline-year {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--bv-amber-500);
+    margin-bottom: 6px;
+  }
+  .timeline-item h4 { font-size: 18px; margin: 0 0 6px; }
+  .timeline-item p { font-size: 14px; color: var(--bv-gray-600); }
+
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 1000px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .team-grid { grid-template-columns: 1fr; } }
+  .team-card {
+    background: var(--bv-white);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--bv-gray-100);
+    overflow: hidden;
+    transition: all 0.4s var(--ease-out);
+  }
+  .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .team-photo { aspect-ratio: 4/5; }
+  .team-info { padding: 20px 22px; }
+  .team-info b { display: block; font-size: 16px; }
+  .team-info span { font-size: 13px; color: var(--bv-amber-500); font-weight: 600; }
+  .team-info p { font-size: 13px; color: var(--bv-gray-600); margin-top: 8px; line-height: 1.5; }
+
+  .impact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .impact-grid { grid-template-columns: repeat(2, 1fr); } }
+  .impact {
+    padding: 28px 24px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-lg);
+    text-align: left;
+  }
+  .impact .num { font-family: var(--font-display); font-size: 42px; font-weight: 700; letter-spacing: -0.02em; color: var(--bv-amber-400); display: block; line-height: 1; margin-bottom: 8px; }
+  .impact .label { font-size: 13px; color: rgba(255,255,255,0.7); }
+</style>
+</head>
+<body data-screen-label="05 Who We Are">
+
+<header class="page-head" data-screen-label="WWA Header">
+  <div class="container">
+    <div class="page-head-inner reveal">
+      <span class="text-eyebrow">Who we are</span>
+      <h1>Built by engineers.<br/>Run by humans.</h1>
+      <p class="lede">Bluven Energy started in a Sydney garage in 2014 with one solar van and a stubborn idea: that great installs come from people who care, not paperwork. Twelve years later, that's still the only rule.</p>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="background:var(--bv-white)" data-screen-label="Story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="reveal">
+        <div class="img-placeholder" style="aspect-ratio:4/5;border-radius:24px">[ Founders portrait ]</div>
+      </div>
+      <div class="reveal delay-2">
+        <span class="text-eyebrow">Our story</span>
+        <h2>One van. One promise.</h2>
+        <p style="font-size:17px;line-height:1.65;color:var(--bv-gray-700);margin:18px 0">Founder Liam Walsh was an electrical engineer who'd spent ten years installing rooftop solar across Sydney's North Shore. He kept hearing the same complaint from customers: "the salesman was great — but I never saw them again."</p>
+        <p style="font-size:16px;line-height:1.65;color:var(--bv-gray-600)">So he started Bluven with a different idea: every job designed by an engineer, installed by an engineer, and supported by the same engineer for the life of the system. No call centres. No outsourced installers. No "head office overseas".</p>
+        <p style="font-size:16px;line-height:1.65;color:var(--bv-gray-600);margin-top:14px">Today we're 38 people across NSW, VIC and QLD — but the model is the same. The person who quotes your job is on-site for the install. And the engineer who signs it off is one phone call away for the next 25 years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bv-cream)" data-screen-label="Values">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="text-eyebrow">What we believe</span>
+      <h2>Three rules. Twelve years. No exceptions.</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value reveal delay-1">
+        <div class="value-num">RULE 01</div>
+        <h3>Engineer the whole system, not the panels.</h3>
+        <p>A solar system isn't 16 panels — it's panels, an inverter, a battery, a switchboard, a meter and your daily energy habits. We design all of it as one connected stack. That's why our predicted yields match real numbers.</p>
+      </div>
+      <div class="value reveal delay-2">
+        <div class="value-num">RULE 02</div>
+        <h3>The person who quotes is the person who installs.</h3>
+        <p>No bait-and-switch. No cheapest-tradie scramble on the morning of install. The engineer who walks your roof writes your design and signs off your commissioning report.</p>
+      </div>
+      <div class="value reveal delay-3">
+        <div class="value-num">RULE 03</div>
+        <h3>Local support, forever.</h3>
+        <p>Every install includes 10+ years of workmanship warranty and direct access to the engineer who built it. Not a call centre. Not a chatbot maze. A real human, in your timezone, who knows your switchboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bv-white)" data-screen-label="Timeline">
+  <div class="container">
+    <div class="story-grid">
+      <div class="reveal">
+        <span class="text-eyebrow">Twelve years</span>
+        <h2>Where we've been.</h2>
+        <p style="font-size:16px;color:var(--bv-gray-600);margin-top:14px;line-height:1.6">From a single van to one of NSW's most-trusted solar engineers. Slowly, deliberately, one rooftop at a time.</p>
+      </div>
+      <div class="reveal delay-2">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2014</div>
+            <h4>Founded in a Mosman garage</h4>
+            <p>Liam Walsh registers Bluven Energy with one Hilux and a partial pallet of Trina panels.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2017</div>
+            <h4>500th install</h4>
+            <p>Bluven becomes a Clean Energy Council Approved Retailer. First commercial project (Manly café).</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2019</div>
+            <h4>VIC expansion</h4>
+            <p>Melbourne office opens. Tesla Powerwall partner certification.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2022</div>
+            <h4>Battery-first design</h4>
+            <p>Following NSW peak-demand changes, Bluven re-architects every quote around storage-first design. SiGenergy partnership.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2024</div>
+            <h4>QLD office, EV-aware charging</h4>
+            <p>Brisbane office. Bluven Live app launches with solar-aware EV charging built in.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2026</div>
+            <h4>4,200+ installs · 38.6 MW</h4>
+            <p>Federal Battery Rebate kicks in. Bluven prepares its largest ever expansion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bv-cream)" data-screen-label="Team">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="text-eyebrow">Meet the team</span>
+      <h2>The people who'll handle your install.</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal delay-1">
+        <div class="team-photo img-placeholder">[ Liam Walsh · founder ]</div>
+        <div class="team-info">
+          <b>Liam Walsh</b>
+          <span>Founder · Lead engineer</span>
+          <p>CEC accredited designer. 18 years in electrical engineering. Still on the tools weekly.</p>
+        </div>
+      </div>
+      <div class="team-card reveal delay-2">
+        <div class="team-photo img-placeholder">[ Priya Nair · principal ]</div>
+        <div class="team-info">
+          <b>Priya Nair</b>
+          <span>Principal engineer</span>
+          <p>Leads commercial design. Power-systems specialist. Joined Bluven in 2018.</p>
+        </div>
+      </div>
+      <div class="team-card reveal delay-3">
+        <div class="team-photo img-placeholder">[ Marcus Chen · ops ]</div>
+        <div class="team-info">
+          <b>Marcus Chen</b>
+          <span>Operations lead</span>
+          <p>Runs the install crews across NSW, VIC, QLD. Master electrician.</p>
+        </div>
+      </div>
+      <div class="team-card reveal delay-4">
+        <div class="team-photo img-placeholder">[ Sara Lee · CX ]</div>
+        <div class="team-info">
+          <b>Sara Lee</b>
+          <span>Customer experience</span>
+          <p>Your first call after install. Handles rebates, paperwork, retailer comms.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bv-navy-900);color:#fff" data-screen-label="Impact">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="text-eyebrow" style="color:var(--bv-amber-400)">Our impact</span>
+      <h2 style="color:#fff">By the numbers.</h2>
+    </div>
+    <div class="impact-grid">
+      <div class="impact reveal delay-1"><span class="num">4,200+</span><span class="label">Systems installed since 2014</span></div>
+      <div class="impact reveal delay-2"><span class="num">38.6 MW</span><span class="label">Combined capacity across the fleet</span></div>
+      <div class="impact reveal delay-3"><span class="num">42,800 t</span><span class="label">CO₂ avoided per year (and counting)</span></div>
+      <div class="impact reveal delay-4"><span class="num">98%</span><span class="label">Of customers say they'd recommend us</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner" data-screen-label="CTA">
+  <div class="container cta-inner">
+    <div class="cta-bg">
+      <span class="cta-orb"></span><span class="cta-orb"></span>
+    </div>
+    <div class="cta-copy reveal">
+      <span class="text-eyebrow" style="color:var(--bv-amber-300)">Ready to talk?</span>
+      <h2>Free, no-obligation, real engineer.</h2>
+      <p>Drop your details and we'll have an engineer (not a salesperson) on the phone within 24 hours.</p>
+    </div>
+    <div class="cta-actions reveal delay-2">
+      <a class="btn btn-primary" href="quote.html">Get a quote <span class="arrow">→</span></a>
+      <a class="btn btn-light" href="contact.html">Visit a showroom</a>
+    </div>
+  </div>
+</section>
+
+<script src="scripts/chrome.js"></script>
+<script>window.bvMountChrome('who');</script>
+</body>
+</html>
