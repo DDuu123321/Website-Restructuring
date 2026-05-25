@@ -994,6 +994,65 @@ function buildAssessmentPayload(
   }
 }
 
+/**
+ * Map a 4-digit Australian postcode to its state.
+ * Returns null for non-4-digit input or postcodes outside any known range.
+ * Source: Australia Post postcode ranges.
+ */
+function stateFromPostcode(pc: string): string | null {
+  if (!/^\d{4}$/.test(pc)) return null
+  const n = parseInt(pc, 10)
+  if (n >= 200  && n <= 299)  return 'ACT'
+  if (n >= 800  && n <= 899)  return 'NT'
+  if (n >= 1000 && n <= 2599) return 'NSW'
+  if (n >= 2600 && n <= 2618) return 'ACT'
+  if (n >= 2619 && n <= 2899) return 'NSW'
+  if (n >= 2900 && n <= 2920) return 'ACT'
+  if (n >= 2921 && n <= 2999) return 'NSW'
+  if (n >= 3000 && n <= 3999) return 'VIC'
+  if (n >= 4000 && n <= 4999) return 'QLD'
+  if (n >= 5000 && n <= 5999) return 'SA'
+  if (n >= 6000 && n <= 6999) return 'WA'
+  if (n >= 7000 && n <= 7999) return 'TAS'
+  if (n >= 8000 && n <= 8999) return 'VIC'
+  if (n >= 9000 && n <= 9999) return 'QLD'
+  return null
+}
+
+type FieldErrors = Partial<Record<keyof ContactForm, string>>
+
+function validateContact(form: ContactForm): FieldErrors {
+  const e: FieldErrors = {}
+
+  if (!form.firstName.trim()) e.firstName = 'Please enter your first name'
+
+  const email = form.email.trim()
+  if (!email) {
+    e.email = 'Email is required'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    e.email = 'Please enter a valid email (e.g. you@example.com)'
+  }
+
+  // Strip spaces, dashes, parens; accept 0XXXXXXXXX or +61XXXXXXXXX
+  const phoneClean = form.phone.replace(/[\s\-()]/g, '')
+  if (!phoneClean) {
+    e.phone = 'Phone is required'
+  } else if (!/^(0\d{9}|\+61\d{9})$/.test(phoneClean)) {
+    e.phone = 'Enter a valid Australian phone (e.g. 0400 123 456)'
+  }
+
+  const postcode = form.postcode.trim()
+  if (!postcode) {
+    e.postcode = 'Postcode is required'
+  } else if (!/^\d{4}$/.test(postcode)) {
+    e.postcode = 'Postcode must be 4 digits'
+  } else if (!stateFromPostcode(postcode)) {
+    e.postcode = 'Not a valid Australian postcode'
+  }
+
+  return e
+}
+
 function ContactStep({
   answers,
   result,
@@ -1006,33 +1065,56 @@ function ContactStep({
   onSuccess: () => void
 }) {
   const [form, setForm] = useState<ContactForm>(initialContact)
+  const [errors, setErrors] = useState<FieldErrors>({})
+  const [touched, setTouched] = useState<Partial<Record<keyof ContactForm, boolean>>>({})
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const update = <K extends keyof ContactForm>(key: K, value: ContactForm[K]) =>
-    setForm((f) => ({ ...f, [key]: value }))
+  const update = <K extends keyof ContactForm>(key: K, value: ContactForm[K]) => {
+    setForm((prev) => {
+      const next = { ...prev, [key]: value }
+      // Auto-fill state from a complete 4-digit postcode
+      if (key === 'postcode' && typeof value === 'string') {
+        const mapped = stateFromPostcode(value)
+        if (mapped) next.state = mapped
+      }
+      // Live re-validate this field once the user has seen an error on it
+      if (touched[key]) {
+        const eAll = validateContact(next)
+        setErrors((cur) => ({ ...cur, [key]: eAll[key] }))
+      }
+      return next
+    })
+  }
 
-  const canSubmit =
-    !!form.firstName.trim() &&
-    !!form.email.trim() &&
-    !!form.phone.trim() &&
-    !!form.postcode.trim() &&
-    !submitting
+  const handleBlur = (key: keyof ContactForm) => {
+    setTouched((t) => ({ ...t, [key]: true }))
+    const eAll = validateContact(form)
+    setErrors((cur) => ({ ...cur, [key]: eAll[key] }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!canSubmit) return
+    const eAll = validateContact(form)
+    if (Object.keys(eAll).length > 0) {
+      setErrors(eAll)
+      setTouched({ firstName: true, email: true, phone: true, postcode: true })
+      return
+    }
     setSubmitting(true)
-    setError(null)
+    setSubmitError(null)
     try {
       await api.submitAssessment(buildAssessmentPayload(form, answers, result))
       onSuccess()
     } catch (err) {
       console.error('[assessment] submit failed:', err)
-      setError("We couldn't submit your details just now. Please check your info and try again — or call us on 1300 258 836.")
+      setSubmitError("We couldn't submit your details just now. Please check your info and try again — or call us on 1300 258 836.")
       setSubmitting(false)
     }
   }
+
+  const inputClass = (key: keyof ContactForm) =>
+    `${styles.contactInput} ${errors[key] ? styles.contactInputError : ''}`
 
   return (
     <div className={styles.section}>
@@ -1054,12 +1136,15 @@ function ContactStep({
             <label className={styles.contactLabel}>First name <span className={styles.req}>*</span></label>
             <input
               type="text"
-              className={styles.contactInput}
+              className={inputClass('firstName')}
               value={form.firstName}
               onChange={(e) => update('firstName', e.target.value)}
+              onBlur={() => handleBlur('firstName')}
               autoComplete="given-name"
-              required
+              placeholder="Your given name"
+              aria-invalid={!!errors.firstName}
             />
+            {errors.firstName && <div className={styles.contactFieldError}>{errors.firstName}</div>}
           </div>
           <div className={styles.contactField}>
             <label className={styles.contactLabel}>Last name</label>
@@ -1069,6 +1154,7 @@ function ContactStep({
               value={form.lastName}
               onChange={(e) => update('lastName', e.target.value)}
               autoComplete="family-name"
+              placeholder="Your family name"
             />
           </div>
 
@@ -1076,23 +1162,29 @@ function ContactStep({
             <label className={styles.contactLabel}>Email <span className={styles.req}>*</span></label>
             <input
               type="email"
-              className={styles.contactInput}
+              className={inputClass('email')}
               value={form.email}
               onChange={(e) => update('email', e.target.value)}
+              onBlur={() => handleBlur('email')}
               autoComplete="email"
-              required
+              placeholder="you@example.com"
+              aria-invalid={!!errors.email}
             />
+            {errors.email && <div className={styles.contactFieldError}>{errors.email}</div>}
           </div>
           <div className={styles.contactField}>
             <label className={styles.contactLabel}>Mobile / Phone <span className={styles.req}>*</span></label>
             <input
               type="tel"
-              className={styles.contactInput}
+              className={inputClass('phone')}
               value={form.phone}
               onChange={(e) => update('phone', e.target.value)}
+              onBlur={() => handleBlur('phone')}
               autoComplete="tel"
-              required
+              placeholder="0400 123 456"
+              aria-invalid={!!errors.phone}
             />
+            {errors.phone && <div className={styles.contactFieldError}>{errors.phone}</div>}
           </div>
 
           <div className={`${styles.contactField} ${styles.contactFull}`}>
@@ -1115,10 +1207,14 @@ function ContactStep({
               value={form.suburb}
               onChange={(e) => update('suburb', e.target.value)}
               autoComplete="address-level2"
+              placeholder="e.g. Parramatta"
             />
           </div>
           <div className={styles.contactField}>
-            <label className={styles.contactLabel}>State</label>
+            <label className={styles.contactLabel}>
+              State
+              <span className={styles.contactLabelHint}>auto-filled from postcode</span>
+            </label>
             <select
               className={styles.contactInput}
               value={form.state}
@@ -1131,13 +1227,17 @@ function ContactStep({
             <label className={styles.contactLabel}>Postcode <span className={styles.req}>*</span></label>
             <input
               type="text"
-              className={styles.contactInput}
+              className={inputClass('postcode')}
               value={form.postcode}
-              onChange={(e) => update('postcode', e.target.value)}
+              onChange={(e) => update('postcode', e.target.value.replace(/\D/g, '').slice(0, 4))}
+              onBlur={() => handleBlur('postcode')}
               autoComplete="postal-code"
               inputMode="numeric"
-              required
+              maxLength={4}
+              placeholder="e.g. 2150"
+              aria-invalid={!!errors.postcode}
             />
+            {errors.postcode && <div className={styles.contactFieldError}>{errors.postcode}</div>}
           </div>
         </div>
 
@@ -1146,14 +1246,14 @@ function ContactStep({
           We never sell your data. See our <Link href="/privacy" className={styles.contactConsentLink}>Privacy Policy</Link>.
         </div>
 
-        {error && <div className={styles.contactError}>{error}</div>}
+        {submitError && <div className={styles.contactError}>{submitError}</div>}
 
         <div className={styles.qActions}>
           <button type="button" className={styles.btnBack} onClick={onBack} disabled={submitting}>
             <ChevronLeft size={18} />
             {copy.back}
           </button>
-          <button type="submit" className={styles.btnNext} disabled={!canSubmit}>
+          <button type="submit" className={styles.btnNext} disabled={submitting}>
             {submitting ? 'Submitting…' : 'Reveal My Report'}
             <ChevronRight size={18} />
           </button>
