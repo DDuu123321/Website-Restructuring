@@ -33,13 +33,17 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 })
+// Per-IP cap on lead-form submissions to prevent spam.
+// IMPORTANT: skip non-POST so badge polling and admin list-views aren't throttled.
 const submitLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 10,
+  max: 30,
   message: { error: 'Too many submissions. Please try again later.' },
+  skip: (req) => req.method !== 'POST',
 })
 app.use('/api', apiLimiter)
 app.use('/api/quotes', submitLimiter)
+app.use('/api/assessments', submitLimiter)
 app.use('/api/testimonials', submitLimiter)
 
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
