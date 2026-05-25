@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { sendQuoteEmails } from '../hooks/sendQuoteEmails'
+import ExportCsvButton from '../admin/ExportCsvButton'
+import ImportCsvButton from '../admin/ImportCsvButton'
 
 const Quotes: CollectionConfig = {
   slug: 'quotes',
@@ -9,6 +11,9 @@ const Quotes: CollectionConfig = {
     description: 'Quote requests submitted via the website form.',
     defaultColumns: ['fullName', 'email', 'phone', 'systemType', 'state', 'status', 'createdAt'],
     listSearchableFields: ['firstName', 'lastName', 'email', 'phone', 'suburb'],
+    components: {
+      BeforeListTable: [ExportCsvButton, ImportCsvButton],
+    },
   },
   // Only admins can read/update quotes — no public access to list
   access: {
