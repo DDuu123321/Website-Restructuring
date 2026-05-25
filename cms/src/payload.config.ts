@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload/config'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { webpackBundler } from '@payloadcms/bundler-webpack'
 import path from 'path'
 
 import Users from './collections/Users'
@@ -22,6 +23,7 @@ export default buildConfig({
 
   admin: {
     user: Users.slug,
+    bundler: webpackBundler(),
     meta: {
       titleSuffix: ' — Bluven CMS',
       favicon: '/favicon.svg',
