@@ -4,7 +4,6 @@ import payload from 'payload'
 import path from 'path'
 import cors from 'cors'
 import helmet from 'helmet'
-import rateLimit from 'express-rate-limit'
 
 const app = express()
 
@@ -25,26 +24,6 @@ const allowedOrigins = [
 ].filter(Boolean)
 
 app.use(cors({ origin: allowedOrigins, credentials: true }))
-
-// ── Rate limiting ─────────────────────────────────────────
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 300,
-  standardHeaders: true,
-  legacyHeaders: false,
-})
-// Per-IP cap on lead-form submissions to prevent spam.
-// IMPORTANT: skip non-POST so badge polling and admin list-views aren't throttled.
-const submitLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 30,
-  message: { error: 'Too many submissions. Please try again later.' },
-  skip: (req) => req.method !== 'POST',
-})
-app.use('/api', apiLimiter)
-app.use('/api/quotes', submitLimiter)
-app.use('/api/assessments', submitLimiter)
-app.use('/api/testimonials', submitLimiter)
 
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
 app.post('/api/chat', express.json(), async (req, res) => {
