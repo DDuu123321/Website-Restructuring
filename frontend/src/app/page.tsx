@@ -8,7 +8,7 @@ export default async function HomePage() {
   // News section was removed from homepage per meeting feedback (still available at /news)
   const [projectsRes, testimonialsRes] = await Promise.all([
     api.projects({ featured: true, limit: 3 }).catch(() => ({ docs: [] })),
-    api.testimonials({ featured: true, limit: 3 }).catch(() => ({ docs: [] })),
+    api.testimonials({ pinned: true, limit: 8 }).catch(() => ({ docs: [] })),
   ])
 
   return (

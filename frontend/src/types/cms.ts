@@ -83,8 +83,7 @@ export interface Testimonial {
   rating: '5' | '4' | '3' | '2' | '1'
   review: string
   systemInstalled?: string
-  status: 'approved' | 'rejected'
-  featured: boolean
+  status: 'new' | 'reviewed' | 'hidden'
   pinned?: boolean
   sortOrder: number
   createdAt?: string
