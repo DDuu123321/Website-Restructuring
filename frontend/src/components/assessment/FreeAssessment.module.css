@@ -747,6 +747,111 @@
   background: #f8fafc;
 }
 
+/* ---------- Contact step (lead capture between Q8 and Result) ---------- */
+.contactIntro {
+  margin-bottom: 22px;
+  max-width: 720px;
+}
+
+.contactForm {
+  background: #fff;
+  border: 1px solid #d9e1ea;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 1px 2px rgba(13, 31, 60, 0.04);
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+}
+
+.contactField {
+  display: flex;
+  flex-direction: column;
+}
+
+.contactFull {
+  grid-column: 1 / -1;
+}
+
+.contactLabel {
+  color: #042744;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.req {
+  color: #d97706;
+  font-weight: 900;
+  margin-left: 2px;
+}
+
+.contactInput {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #042744;
+  outline: none;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  width: 100%;
+}
+
+.contactInput::placeholder {
+  color: #94a3b8;
+}
+
+.contactInput:focus {
+  border-color: #ffc61f;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 198, 31, 0.18);
+}
+
+select.contactInput {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%23042744' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+
+.contactConsent {
+  color: #64748b;
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin-top: 16px;
+}
+
+.contactConsentLink {
+  color: #0a4d89;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.contactError {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #b91c1c;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Sticky Free Assessment pill (mirrors sticky-quote) ---------- */
 .stickyBtn {
   position: fixed;
