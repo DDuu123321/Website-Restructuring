@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { Reveal } from '@/components/ui/Reveal'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -32,16 +31,6 @@ export function ContactView({ settings }: { settings: SiteSettings }) {
     },
   ]
 
-  // Quick form state
-  const [form, setForm] = useState({ name: '', email: '', phone: '', topic: 'Quote enquiry', message: '' })
-  const [submitted, setSubmitted] = useState(false)
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // For now: simulate submission. Real wiring goes via /api/quotes or /api/contact later.
-    setSubmitted(true)
-  }
-
   return (
     <>
       <PageHeader
@@ -53,9 +42,8 @@ export function ContactView({ settings }: { settings: SiteSettings }) {
       <section className="section" style={{ background: 'var(--bv-paper-2)', paddingTop: 60 }}>
         <div className="container">
           <div className="contact-grid">
-            <div>
-              {/* 4 channels */}
-              <span className="text-eyebrow">Talk to us</span>
+            {/* 4 channels */}
+            <span className="text-eyebrow">Talk to us</span>
               <h2 style={{ fontSize: 'clamp(24px, 2.6vw, 32px)', margin: '12px 0 24px' }}>
                 Pick whichever channel suits you.
               </h2>
@@ -151,45 +139,6 @@ export function ContactView({ settings }: { settings: SiteSettings }) {
                   </div>
                 </Reveal>
               </div>
-            </div>
-
-            {/* Sticky quick form */}
-            <aside className="contact-aside">
-              <form className="quick-form" onSubmit={submit}>
-                <h3>Quick question?</h3>
-                <p>Send a message and a real engineer will reply within 4 business hours.</p>
-                <div className="field">
-                  <label>Name</label>
-                  <input type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                </div>
-                <div className="field">
-                  <label>Email</label>
-                  <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </div>
-                <div className="field">
-                  <label>Phone (optional)</label>
-                  <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                </div>
-                <div className="field">
-                  <label>Topic</label>
-                  <select value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })}>
-                    <option>Quote enquiry</option>
-                    <option>Existing customer support</option>
-                    <option>Commercial / multi-site</option>
-                    <option>Partnership / wholesale</option>
-                    <option>Press</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div className="field">
-                  <label>Message</label>
-                  <textarea rows={4} required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-                </div>
-                <button type="submit">
-                  {submitted ? "✓ Sent — we'll be in touch" : 'Send message →'}
-                </button>
-              </form>
-            </aside>
           </div>
         </div>
       </section>

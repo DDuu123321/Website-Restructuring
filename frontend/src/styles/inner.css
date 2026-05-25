@@ -1571,15 +1571,12 @@
 }
 
 /* =========================================================
-   CONTACT — channels / offices / map / quick form
+   CONTACT — channels / offices / map
    ========================================================= */
 .contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
+  max-width: 760px;
+  margin: 0 auto;
 }
-@media (max-width: 1080px) { .contact-grid { grid-template-columns: 1fr; } }
 
 .channels {
   display: grid;
@@ -1712,80 +1709,6 @@
   letter-spacing: 0.12em;
   color: var(--bv-teal-700);
   font-weight: 700;
-}
-
-/* Sticky aside */
-.contact-aside {
-  position: sticky;
-  top: 130px;
-}
-@media (max-width: 1080px) { .contact-aside { position: static; } }
-
-/* Quick form */
-.quick-form {
-  background: var(--bv-white);
-  padding: 28px 28px 30px;
-  border-radius: var(--radius-2xl);
-  border: 1px solid var(--bv-ink-100);
-  box-shadow: var(--shadow-md);
-}
-.quick-form h3 {
-  font-size: 20px;
-  margin: 0 0 6px;
-  color: var(--bv-ink-900);
-  font-weight: 700;
-}
-.quick-form p {
-  font-size: 13px;
-  color: var(--bv-ink-500);
-  margin: 0 0 18px;
-  line-height: 1.5;
-}
-.quick-form .field { margin-bottom: 12px; }
-.quick-form label {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--bv-ink-700);
-  margin-bottom: 5px;
-}
-.quick-form input,
-.quick-form select,
-.quick-form textarea {
-  width: 100%;
-  padding: 11px 13px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--bv-ink-200);
-  font-size: 14px;
-  font-family: inherit;
-  color: var(--bv-ink-900);
-  background: var(--bv-white);
-  transition: all 0.15s;
-}
-.quick-form input:focus,
-.quick-form select:focus,
-.quick-form textarea:focus {
-  outline: none;
-  border-color: var(--bv-teal-500);
-  box-shadow: 0 0 0 3px rgba(231, 182, 88, 0.18);
-}
-.quick-form button {
-  width: 100%;
-  padding: 13px;
-  background: var(--bv-teal-500);
-  color: var(--bv-white);
-  font-weight: 700;
-  border-radius: var(--radius-md);
-  margin-top: 6px;
-  border: none;
-  font-family: inherit;
-  font-size: 14.5px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.quick-form button:hover {
-  background: var(--bv-teal-600);
-  transform: translateY(-1px);
 }
 
 /* =========================================================
