@@ -4,7 +4,7 @@ const News: CollectionConfig = {
   slug: 'news',
   admin: {
     useAsTitle: 'title',
-    group: '📰 Content',
+    group: { en: '📰 Content', zh: '📰 网站内容' },
     description: 'Industry insights, news articles, and company updates.',
     defaultColumns: ['title', 'category', 'status', 'publishedAt'],
     listSearchableFields: ['title', 'summary'],

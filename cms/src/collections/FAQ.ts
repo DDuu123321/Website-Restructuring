@@ -4,7 +4,7 @@ const FAQ: CollectionConfig = {
   slug: 'faq',
   admin: {
     useAsTitle: 'question',
-    group: '📰 Content',
+    group: { en: '📰 Content', zh: '📰 网站内容' },
     description: 'Frequently asked questions. Drag to reorder.',
     defaultColumns: ['question', 'category', 'sortOrder', 'published'],
   },
