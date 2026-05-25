@@ -118,9 +118,10 @@ export const api = {
   },
 
   // Testimonials — pinned first, then by sortOrder, then newest first
-  testimonials(args: { limit?: number; page?: number; featured?: boolean } = {}) {
-    const where: WhereClause = { status: { equals: 'approved' } }
-    if (args.featured === true) where.featured = { equals: true }
+  // Excludes hidden reviews. Pass { pinned: true } to filter to homepage-pinned only.
+  testimonials(args: { limit?: number; page?: number; pinned?: boolean } = {}) {
+    const where: WhereClause = { status: { not_equals: 'hidden' } }
+    if (args.pinned === true) where.pinned = { equals: true }
     return request<PaginatedResponse<Testimonial>>(
       '/testimonials' + buildQuery({
         limit: args.limit ?? 8,

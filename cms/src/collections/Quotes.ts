@@ -18,11 +18,30 @@ const Quotes: CollectionConfig = {
     delete: ({ req }) => !!req.user,
   },
   hooks: {
-    afterChange: [
-      async ({ doc, operation }) => {
-        if (operation === 'create') {
-          await sendQuoteEmails(doc)
+    beforeChange: [
+      async ({ data, req, operation }) => {
+        // Honor adminOnQuote toggle: if false, new submissions skip the 🆕 New
+        // highlight (default to 📞 Contacted instead, so they don't show in the badge).
+        if (operation === 'create' && !req.user) {
+          let adminOn = true
+          try {
+            const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
+            adminOn = settings?.notifications?.adminOnQuote !== false
+          } catch { /* default on */ }
+          return { ...(data || {}), status: adminOn ? 'new' : 'contacted' }
         }
+        return data
+      },
+    ],
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        if (operation !== 'create') return
+        let emailOn = true
+        try {
+          const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
+          emailOn = settings?.notifications?.emailOnQuote !== false
+        } catch { /* default on */ }
+        if (emailOn) await sendQuoteEmails(doc)
       },
     ],
   },

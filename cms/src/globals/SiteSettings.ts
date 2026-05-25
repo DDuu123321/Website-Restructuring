@@ -89,6 +89,42 @@ const SiteSettings: GlobalConfig = {
         { name: 'greeting', type: 'textarea', label: 'Welcome message' },
       ],
     },
+
+    // ── Notifications ──
+    {
+      name: 'notifications',
+      type: 'group',
+      label: '🔔 Notification Settings',
+      admin: {
+        description:
+          'Toggle email + admin notifications independently for each lead type. ' +
+          '"Email" controls the internal notification sent to NOTIFY_EMAIL. ' +
+          '"Admin" controls whether new submissions show up highlighted (🆕 New) in the admin + unread badge.',
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'emailOnQuote',      type: 'checkbox', label: '📧 Email me about new quotes',       defaultValue: true },
+            { name: 'adminOnQuote',      type: 'checkbox', label: '🔔 Show unread quotes in admin',     defaultValue: true },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'emailOnAssessment', type: 'checkbox', label: '📧 Email me about new assessments', defaultValue: true },
+            { name: 'adminOnAssessment', type: 'checkbox', label: '🔔 Show unread assessments in admin', defaultValue: true },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'emailOnReview',     type: 'checkbox', label: '📧 Email me about new reviews',     defaultValue: true },
+            { name: 'adminOnReview',     type: 'checkbox', label: '🔔 Show unread reviews in admin',   defaultValue: true },
+          ],
+        },
+      ],
+    },
   ],
 }
 

@@ -17,11 +17,29 @@ const Assessments: CollectionConfig = {
     delete: ({ req }) => !!req.user,
   },
   hooks: {
-    afterChange: [
-      async ({ doc, operation }) => {
-        if (operation === 'create') {
-          await sendAssessmentEmails(doc)
+    beforeChange: [
+      async ({ data, req, operation }) => {
+        // Honor adminOnAssessment toggle (see Quotes.ts for rationale).
+        if (operation === 'create' && !req.user) {
+          let adminOn = true
+          try {
+            const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
+            adminOn = settings?.notifications?.adminOnAssessment !== false
+          } catch { /* default on */ }
+          return { ...(data || {}), status: adminOn ? 'new' : 'contacted' }
         }
+        return data
+      },
+    ],
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        if (operation !== 'create') return
+        let emailOn = true
+        try {
+          const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
+          emailOn = settings?.notifications?.emailOnAssessment !== false
+        } catch { /* default on */ }
+        if (emailOn) await sendAssessmentEmails(doc)
       },
     ],
   },
