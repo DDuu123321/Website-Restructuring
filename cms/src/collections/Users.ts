@@ -5,7 +5,7 @@ const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: 'email',
-    group: '⚙️ System',
+    group: { en: '⚙️ System', zh: '⚙️ 系统' },
     description: 'Admin accounts with access to the management panel.',
   },
   access: {

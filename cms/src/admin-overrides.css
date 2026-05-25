@@ -1,9 +1,230 @@
-/* Bluven Energy — Payload Admin theme overrides */
+/* ============================================================
+   Bluven Energy — Payload Admin theme
+   Layers brand identity (navy + yellow + Montserrat) over Payload's
+   default light theme. Overrides Payload's CSS custom properties
+   rather than fighting its components.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  --theme-elevation-0: #ffffff;
-  --theme-elevation-50: #f8f9fb;
-  --theme-elevation-100: #f1f3f7;
-  --theme-success-500: #1e8449;
-  --theme-warning-500: #d97706;
-  --theme-error-500: #c0392b;
+  /* ── Brand palette ───────────────────────────────────── */
+  --bv-navy-900:   #042744;
+  --bv-navy-800:   #0a3a62;
+  --bv-navy-700:   #0a4d89;
+  --bv-yellow-500: #ffc61f;
+  --bv-yellow-600: #e6b212;
+
+  /* ── Payload elevation scale (panel backgrounds) ─────── */
+  --theme-elevation-0:   #ffffff;
+  --theme-elevation-50:  #f7f9fc;
+  --theme-elevation-100: #eef2f7;
+  --theme-elevation-150: #e3eaf2;
+  --theme-elevation-200: #d6dfe9;
+
+  /* ── Status accents ──────────────────────────────────── */
+  --theme-success-500:   #16a34a;
+  --theme-warning-500:   #d97706;
+  --theme-error-500:     #dc2626;
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-body:    'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* ── Global font ───────────────────────────────────────── */
+html, body, input, textarea, select, button {
+  font-family: var(--font-body) !important;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Sidebar nav ───────────────────────────────────────── */
+.nav {
+  background: var(--bv-navy-900) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.nav__wrap a,
+.nav-group__label,
+.nav-group__toggle {
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-weight: 600;
+}
+
+.nav-group__label {
+  font-size: 11px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  opacity: 0.55;
+}
+
+.nav__wrap a:hover,
+.nav__wrap a.active {
+  color: var(--bv-yellow-500) !important;
+}
+
+/* Logout button at bottom of nav */
+.nav .logout {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── Top app bar ───────────────────────────────────────── */
+.app-header,
+.template-default__header {
+  background: #fff !important;
+  border-bottom: 1px solid var(--theme-elevation-150);
+}
+
+/* ── Buttons — primary becomes yellow ──────────────────── */
+.btn--style-primary,
+button.btn--style-primary {
+  background: var(--bv-yellow-500) !important;
+  color: var(--bv-navy-900) !important;
+  border-color: var(--bv-yellow-500) !important;
+  font-weight: 800 !important;
+}
+
+.btn--style-primary:hover {
+  background: var(--bv-yellow-600) !important;
+  border-color: var(--bv-yellow-600) !important;
+  transform: translateY(-1px);
+}
+
+.btn--style-secondary {
+  border-color: var(--bv-navy-700) !important;
+  color: var(--bv-navy-700) !important;
+}
+
+/* ── Dashboard cards ───────────────────────────────────── */
+.dashboard__card,
+.dashboard a.card {
+  background: #fff !important;
+  border: 1px solid var(--theme-elevation-150) !important;
+  border-radius: 12px !important;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard__card:hover,
+.dashboard a.card:hover {
+  border-color: var(--bv-yellow-500) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(13, 31, 60, 0.08);
+}
+
+/* Collection-group section headings on the dashboard */
+.dashboard__group-label,
+.dashboard h3 {
+  color: var(--bv-navy-900);
+  font-weight: 800 !important;
+}
+
+/* ── Forms (inputs/selects/textareas) ─────────────────── */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+  border-radius: 8px !important;
+  border-color: var(--theme-elevation-200) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--bv-yellow-500) !important;
+  box-shadow: 0 0 0 3px rgba(255, 198, 31, 0.2) !important;
+  outline: none !important;
+}
+
+/* ── Tables (collection list views) ────────────────────── */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead,
+.table th {
+  background: var(--theme-elevation-50) !important;
+  color: var(--bv-navy-900) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.04em;
+}
+
+.table tbody tr {
+  transition: background 0.12s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 198, 31, 0.05) !important;
+}
+
+/* ── "Status" pill rendering in lists ──────────────────── */
+.cell-status {
+  font-weight: 700;
+}
+
+/* ── Doc-edit header ───────────────────────────────────── */
+.doc-header h1,
+.collection-edit__header h1 {
+  font-weight: 900 !important;
+  color: var(--bv-navy-900) !important;
+}
+
+/* ── Login screen ──────────────────────────────────────── */
+.login,
+.create-first-user {
+  background: linear-gradient(135deg, var(--bv-navy-900) 0%, var(--bv-navy-700) 100%) !important;
+}
+
+.login form,
+.create-first-user form {
+  background: #fff !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 60px rgba(4, 39, 68, 0.35), 0 4px 14px rgba(4, 39, 68, 0.18) !important;
+  padding: 36px 36px !important;
+}
+
+.login h1,
+.create-first-user h1 {
+  color: var(--bv-navy-900) !important;
+  font-weight: 900 !important;
+}
+
+/* ── Misc polish ───────────────────────────────────────── */
+/* Pill-shape doc-status indicators (Payload renders them as plain spans;
+   give them subtle bg so they're visible) */
+[class*="pill__"],
+.pill {
+  border-radius: 999px !important;
+  padding: 2px 10px !important;
+  font-weight: 700 !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0.02em;
+}
+
+/* Scrollbars (WebKit) inside the dark nav */
+.nav__scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.nav__scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+.nav__scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Reduce noise on the gigantic green Testimonials/Quotes title block */
+.collection-edit__header h1 {
+  background: transparent !important;
+  color: var(--bv-navy-900) !important;
+  font-size: clamp(28px, 3.5vw, 40px) !important;
 }

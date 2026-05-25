@@ -4,7 +4,7 @@ const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
     useAsTitle: 'title',
-    group: '📰 Content',
+    group: { en: '📰 Content', zh: '📰 网站内容' },
     description: 'Real installation case studies shown on the Projects page.',
     defaultColumns: ['title', 'location', 'systemType', 'featured', 'status'],
   },

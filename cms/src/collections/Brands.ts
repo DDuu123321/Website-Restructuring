@@ -4,7 +4,7 @@ const Brands: CollectionConfig = {
   slug: 'brands',
   admin: {
     useAsTitle: 'name',
-    group: '📰 Content',
+    group: { en: '📰 Content', zh: '📰 网站内容' },
     description: 'Partner and approved brands shown on the Brands page.',
     defaultColumns: ['name', 'category', 'featured', 'sortOrder'],
   },

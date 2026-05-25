@@ -4,7 +4,7 @@ const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: '⚙️ Site Settings',
   admin: {
-    group: '⚙️ System',
+    group: { en: '⚙️ System', zh: '⚙️ 系统' },
     description: 'Global settings — phone, email, address, social links.',
   },
   access: {
@@ -94,7 +94,7 @@ const SiteSettings: GlobalConfig = {
     {
       name: 'notifications',
       type: 'group',
-      label: '🔔 Notification Settings',
+      label: { en: '🔔 Notification Settings', zh: '🔔 通知设置' },
       admin: {
         description:
           'Toggle email + admin notifications independently for each lead type. ' +
@@ -105,22 +105,22 @@ const SiteSettings: GlobalConfig = {
         {
           type: 'row',
           fields: [
-            { name: 'emailOnQuote',      type: 'checkbox', label: '📧 Email me about new quotes',       defaultValue: true },
-            { name: 'adminOnQuote',      type: 'checkbox', label: '🔔 Show unread quotes in admin',     defaultValue: true },
+            { name: 'emailOnQuote',      type: 'checkbox', label: { en: '📧 Email me about new quotes',         zh: '📧 新报价时邮件通知我' },     defaultValue: true },
+            { name: 'adminOnQuote',      type: 'checkbox', label: { en: '🔔 Show unread quotes in admin',       zh: '🔔 后台显示未读报价' },       defaultValue: true },
           ],
         },
         {
           type: 'row',
           fields: [
-            { name: 'emailOnAssessment', type: 'checkbox', label: '📧 Email me about new assessments', defaultValue: true },
-            { name: 'adminOnAssessment', type: 'checkbox', label: '🔔 Show unread assessments in admin', defaultValue: true },
+            { name: 'emailOnAssessment', type: 'checkbox', label: { en: '📧 Email me about new assessments',   zh: '📧 新评估时邮件通知我' },     defaultValue: true },
+            { name: 'adminOnAssessment', type: 'checkbox', label: { en: '🔔 Show unread assessments in admin', zh: '🔔 后台显示未读评估' },       defaultValue: true },
           ],
         },
         {
           type: 'row',
           fields: [
-            { name: 'emailOnReview',     type: 'checkbox', label: '📧 Email me about new reviews',     defaultValue: true },
-            { name: 'adminOnReview',     type: 'checkbox', label: '🔔 Show unread reviews in admin',   defaultValue: true },
+            { name: 'emailOnReview',     type: 'checkbox', label: { en: '📧 Email me about new reviews',       zh: '📧 新评论时邮件通知我' },     defaultValue: true },
+            { name: 'adminOnReview',     type: 'checkbox', label: { en: '🔔 Show unread reviews in admin',     zh: '🔔 后台显示未读评论' },       defaultValue: true },
           ],
         },
       ],

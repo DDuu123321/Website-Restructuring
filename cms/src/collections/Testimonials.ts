@@ -7,7 +7,7 @@ const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   admin: {
     useAsTitle: 'customerName',
-    group: '📥 Leads',
+    group: { en: '📥 Leads', zh: '📥 销售线索' },
     description: 'Customer reviews. Public submissions are auto-published; admins can pin, hide, or delete.',
     defaultColumns: ['customerName', 'suburb', 'rating', 'pinned', 'status', 'createdAt'],
     listSearchableFields: ['customerName', 'suburb', 'review'],
@@ -58,12 +58,12 @@ const Testimonials: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      label: 'Status',
+      label: { en: 'Status', zh: '状态' },
       defaultValue: 'new',
       options: [
-        { label: '🆕 New (unread)',      value: 'new' },
-        { label: '✅ Reviewed (visible)', value: 'reviewed' },
-        { label: '🚫 Hidden',             value: 'hidden' },
+        { label: { en: '🆕 New (unread)',       zh: '🆕 未读（公开可见）' }, value: 'new' },
+        { label: { en: '✅ Reviewed (visible)',  zh: '✅ 已查看（公开可见）' }, value: 'reviewed' },
+        { label: { en: '🚫 Hidden',              zh: '🚫 隐藏' },              value: 'hidden' },
       ],
       admin: {
         position: 'sidebar',

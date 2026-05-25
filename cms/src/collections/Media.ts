@@ -4,7 +4,7 @@ import path from 'path'
 const Media: CollectionConfig = {
   slug: 'media',
   admin: {
-    group: '⚙️ System',
+    group: { en: '⚙️ System', zh: '⚙️ 系统' },
     description: 'All uploaded images and files.',
   },
   access: {
