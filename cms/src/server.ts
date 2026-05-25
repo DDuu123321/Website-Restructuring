@@ -4,6 +4,7 @@ import payload from 'payload'
 import path from 'path'
 import cors from 'cors'
 import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
 
 const app = express()
 
@@ -24,6 +25,24 @@ const allowedOrigins = [
 ].filter(Boolean)
 
 app.use(cors({ origin: allowedOrigins, credentials: true }))
+
+// ── Anti-spam: 10 POST submissions per minute per IP ──────
+// GETs (admin list views, UnreadBadges polling, frontend ISR) are
+// not counted thanks to the `skip` filter.
+// Shared bucket across all three lead endpoints — an attacker
+// spreading their requests across quotes/assessments/testimonials
+// still gets only 10 POSTs/min total.
+const submitLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { error: 'Too many submissions. Please try again in a moment.' },
+  skip: (req) => req.method !== 'POST',
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+app.use('/api/quotes',       submitLimiter)
+app.use('/api/assessments',  submitLimiter)
+app.use('/api/testimonials', submitLimiter)
 
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
 app.post('/api/chat', express.json(), async (req, res) => {
