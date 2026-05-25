@@ -141,6 +141,52 @@ export interface QuoteRequest {
   }
 }
 
+export interface AssessmentRequest {
+  id?: string
+  // Contact
+  firstName: string
+  lastName?: string
+  email: string
+  phone: string
+  address?: string
+  suburb?: string
+  state?: string
+  postcode: string
+  // Quiz raw answers (camelCase to match the CMS group)
+  answers: {
+    homeSize: string
+    occupants: string
+    activityTime: string
+    majorLoads: string[]
+    solarStatus: string
+    batteryStatus: string
+    mainGoal: string[]
+    billLevel: string
+  }
+  // Computed result snapshot
+  result: {
+    householdType: string
+    recommendationType: string
+    fitLevel: string
+    summary: string
+    nextStep: string
+    billReasons: { reason: string }[]
+    profile: {
+      usage: string
+      daytime: string
+      night: string
+      load: string
+      backup: string
+    }
+    scores: Record<string, number>
+  }
+  source?: {
+    referrer?: string
+    utm_source?: string
+    utm_campaign?: string
+  }
+}
+
 export interface SiteSettings {
   phone?: string
   phoneHref?: string
