@@ -86,9 +86,15 @@ export default buildConfig({
     process.env.SERVER_URL || '',
   ].filter(Boolean),
 
+  // Payload's built-in rate limiter applies to ALL /api requests (GET too).
+  // 200/15min was eating admin sessions: badge polling (6/min × 3 collections)
+  // + admin list browsing burns through the quota in a few minutes.
+  // Bumped to 10k/15min ≈ 11 req/sec sustained — way above normal admin use,
+  // still a DDoS floor. Form-submission spam is handled by submitLimiter
+  // in server.ts (10 POST/min on the three lead endpoints).
   rateLimit: {
-    window: 15 * 60 * 1000, // 15 minutes
-    max: 200,
+    window: 15 * 60 * 1000,
+    max: 10000,
   },
 
   graphQL: {
