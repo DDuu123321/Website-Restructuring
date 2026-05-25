@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { sendReviewEmail } from '../hooks/sendReviewEmail'
+import ExportCsvButton from '../admin/ExportCsvButton'
+import ImportCsvButton from '../admin/ImportCsvButton'
 
 const Testimonials: CollectionConfig = {
   slug: 'testimonials',
@@ -9,6 +11,9 @@ const Testimonials: CollectionConfig = {
     description: 'Customer reviews. Public submissions are auto-published; admins can pin, hide, or delete.',
     defaultColumns: ['customerName', 'suburb', 'rating', 'pinned', 'status', 'createdAt'],
     listSearchableFields: ['customerName', 'suburb', 'review'],
+    components: {
+      BeforeListTable: [ExportCsvButton, ImportCsvButton],
+    },
   },
   access: {
     create: () => true,                            // anyone can submit a review

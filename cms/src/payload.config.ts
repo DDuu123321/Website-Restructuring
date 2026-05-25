@@ -4,6 +4,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { webpackBundler } from '@payloadcms/bundler-webpack'
 import path from 'path'
 import UnreadBadges from './admin/UnreadBadges'
+import DashboardLeadStats from './admin/DashboardLeadStats'
 
 import Users from './collections/Users'
 import Media from './collections/Media'
@@ -33,6 +34,7 @@ export default buildConfig({
     css: path.resolve(__dirname, 'admin-overrides.css'),
     components: {
       beforeNavLinks: [UnreadBadges],
+      beforeDashboard: [DashboardLeadStats],
     },
   },
 

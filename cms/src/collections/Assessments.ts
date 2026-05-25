@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { sendAssessmentEmails } from '../hooks/sendAssessmentEmails'
+import ExportCsvButton from '../admin/ExportCsvButton'
+import ImportCsvButton from '../admin/ImportCsvButton'
 
 const Assessments: CollectionConfig = {
   slug: 'assessments',
@@ -9,6 +11,9 @@ const Assessments: CollectionConfig = {
     description: 'Free home-energy assessment submissions captured from the website quiz.',
     defaultColumns: ['fullName', 'email', 'phone', 'recommendationType', 'state', 'status', 'createdAt'],
     listSearchableFields: ['firstName', 'lastName', 'email', 'phone', 'suburb', 'postcode'],
+    components: {
+      BeforeListTable: [ExportCsvButton, ImportCsvButton],
+    },
   },
   access: {
     create: () => true,          // public can submit the quiz
