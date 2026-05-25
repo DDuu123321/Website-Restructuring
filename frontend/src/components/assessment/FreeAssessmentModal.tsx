@@ -23,6 +23,8 @@ import {
 } from 'react'
 import Link from 'next/link'
 import styles from './FreeAssessment.module.css'
+import { api } from '@/api/client'
+import type { AssessmentRequest } from '@/types/cms'
 
 /* ============================================================
    1. ICONS — inline SVG (no external icon library dependency)
@@ -664,6 +666,7 @@ function AssessmentGame({ onClose }: { onClose: () => void }) {
   const [started, setStarted] = useState(false)
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Answers>(initialAnswers)
+  const [revealed, setRevealed] = useState(false)
 
   const result = useMemo(() => calculateProfile(answers), [answers])
   const currentQuestion = questions[step]
@@ -676,6 +679,7 @@ function AssessmentGame({ onClose }: { onClose: () => void }) {
     setStarted(false)
     setStep(0)
     setAnswers(initialAnswers)
+    setRevealed(false)
   }
 
   const handleSingleSelect = (qid: AnswerKey, value: string) => {
@@ -713,7 +717,9 @@ function AssessmentGame({ onClose }: { onClose: () => void }) {
   }
 
   const directionIcons = getDirectionIcons(result.recommendationType)
-  const showResult = started && step >= questions.length
+  const reachedEnd = started && step >= questions.length
+  const showContact = reachedEnd && !revealed
+  const showResult = reachedEnd && revealed
 
   return (
     <div className={styles.backdrop} role="dialog" aria-modal="true" onClick={onClose}>
@@ -733,7 +739,16 @@ function AssessmentGame({ onClose }: { onClose: () => void }) {
         <div className={styles.body}>
           {!started ? (
             <IntroScreen onStart={() => setStarted(true)} />
-          ) : !showResult ? (
+          ) : showContact ? (
+            <ContactStep
+              answers={answers}
+              result={result}
+              onBack={() => setStep(questions.length - 1)}
+              onSuccess={() => setRevealed(true)}
+            />
+          ) : showResult ? (
+            <ResultScreen result={result} directionIcons={directionIcons} onClose={onClose} onReset={reset} />
+          ) : (
             <QuestionScreen
               question={currentQuestion}
               step={step}
@@ -747,8 +762,6 @@ function AssessmentGame({ onClose }: { onClose: () => void }) {
               onBack={goBack}
               onNext={goNext}
             />
-          ) : (
-            <ResultScreen result={result} directionIcons={directionIcons} onClose={onClose} onReset={reset} />
           )}
         </div>
       </div>
@@ -912,6 +925,241 @@ function OptionCard({
         {selected && <CheckCircle2 size={14} />}
       </div>
     </button>
+  )
+}
+
+/* ---------- Contact step (lead-capture gate between Q8 and Result) ---------- */
+
+const AU_STATES = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT'] as const
+
+interface ContactForm {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  address: string
+  suburb: string
+  state: string
+  postcode: string
+}
+
+const initialContact: ContactForm = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  address: '',
+  suburb: '',
+  state: 'NSW',
+  postcode: '',
+}
+
+function buildAssessmentPayload(
+  contact: ContactForm,
+  answers: Answers,
+  result: ReturnType<typeof calculateProfile>,
+): AssessmentRequest {
+  return {
+    firstName: contact.firstName.trim(),
+    lastName:  contact.lastName.trim() || undefined,
+    email:     contact.email.trim(),
+    phone:     contact.phone.trim(),
+    address:   contact.address.trim() || undefined,
+    suburb:    contact.suburb.trim() || undefined,
+    state:     contact.state || undefined,
+    postcode:  contact.postcode.trim(),
+    answers: {
+      homeSize:       answers.home_size,
+      occupants:      answers.occupants,
+      activityTime:   answers.activity_time,
+      majorLoads:     answers.major_loads,
+      solarStatus:    answers.solar_status,
+      batteryStatus:  answers.battery_status,
+      mainGoal:       answers.main_goal,
+      billLevel:      answers.bill_level,
+    },
+    result: {
+      householdType:      result.householdType,
+      recommendationType: result.recommendationType,
+      fitLevel:           result.fitLevel,
+      summary:            result.summary,
+      nextStep:           result.nextStep,
+      billReasons:        result.reasons.map((reason) => ({ reason })),
+      profile:            result.profile,
+      scores:             result.scores as unknown as Record<string, number>,
+    },
+    source: {
+      referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined,
+    },
+  }
+}
+
+function ContactStep({
+  answers,
+  result,
+  onBack,
+  onSuccess,
+}: {
+  answers: Answers
+  result: ReturnType<typeof calculateProfile>
+  onBack: () => void
+  onSuccess: () => void
+}) {
+  const [form, setForm] = useState<ContactForm>(initialContact)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const update = <K extends keyof ContactForm>(key: K, value: ContactForm[K]) =>
+    setForm((f) => ({ ...f, [key]: value }))
+
+  const canSubmit =
+    !!form.firstName.trim() &&
+    !!form.email.trim() &&
+    !!form.phone.trim() &&
+    !!form.postcode.trim() &&
+    !submitting
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!canSubmit) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      await api.submitAssessment(buildAssessmentPayload(form, answers, result))
+      onSuccess()
+    } catch (err) {
+      console.error('[assessment] submit failed:', err)
+      setError("We couldn't submit your details just now. Please check your info and try again — or call us on 1300 258 836.")
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.contactIntro}>
+        <div className={styles.resultBadge}>
+          <Sparkles size={14} />
+          Almost there — unlock your report
+        </div>
+        <h3 className={styles.resultTitle}>Where should we send your personalised energy report?</h3>
+        <p className={styles.resultSummary}>
+          Drop your details below and we&apos;ll instantly reveal your tailored result on screen — plus email you a copy.
+          A senior Bluven engineer will follow up within 24 business hours. No spam, no obligation.
+        </p>
+      </div>
+
+      <form className={styles.contactForm} onSubmit={handleSubmit} noValidate>
+        <div className={styles.contactGrid}>
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>First name <span className={styles.req}>*</span></label>
+            <input
+              type="text"
+              className={styles.contactInput}
+              value={form.firstName}
+              onChange={(e) => update('firstName', e.target.value)}
+              autoComplete="given-name"
+              required
+            />
+          </div>
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>Last name</label>
+            <input
+              type="text"
+              className={styles.contactInput}
+              value={form.lastName}
+              onChange={(e) => update('lastName', e.target.value)}
+              autoComplete="family-name"
+            />
+          </div>
+
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>Email <span className={styles.req}>*</span></label>
+            <input
+              type="email"
+              className={styles.contactInput}
+              value={form.email}
+              onChange={(e) => update('email', e.target.value)}
+              autoComplete="email"
+              required
+            />
+          </div>
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>Mobile / Phone <span className={styles.req}>*</span></label>
+            <input
+              type="tel"
+              className={styles.contactInput}
+              value={form.phone}
+              onChange={(e) => update('phone', e.target.value)}
+              autoComplete="tel"
+              required
+            />
+          </div>
+
+          <div className={`${styles.contactField} ${styles.contactFull}`}>
+            <label className={styles.contactLabel}>Street address</label>
+            <input
+              type="text"
+              className={styles.contactInput}
+              value={form.address}
+              onChange={(e) => update('address', e.target.value)}
+              autoComplete="street-address"
+              placeholder="e.g. 12 Smith Street"
+            />
+          </div>
+
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>Suburb</label>
+            <input
+              type="text"
+              className={styles.contactInput}
+              value={form.suburb}
+              onChange={(e) => update('suburb', e.target.value)}
+              autoComplete="address-level2"
+            />
+          </div>
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>State</label>
+            <select
+              className={styles.contactInput}
+              value={form.state}
+              onChange={(e) => update('state', e.target.value)}
+            >
+              {AU_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div className={styles.contactField}>
+            <label className={styles.contactLabel}>Postcode <span className={styles.req}>*</span></label>
+            <input
+              type="text"
+              className={styles.contactInput}
+              value={form.postcode}
+              onChange={(e) => update('postcode', e.target.value)}
+              autoComplete="postal-code"
+              inputMode="numeric"
+              required
+            />
+          </div>
+        </div>
+
+        <div className={styles.contactConsent}>
+          By submitting you agree we may contact you about your assessment and solar/battery options.
+          We never sell your data. See our <Link href="/privacy" className={styles.contactConsentLink}>Privacy Policy</Link>.
+        </div>
+
+        {error && <div className={styles.contactError}>{error}</div>}
+
+        <div className={styles.qActions}>
+          <button type="button" className={styles.btnBack} onClick={onBack} disabled={submitting}>
+            <ChevronLeft size={18} />
+            {copy.back}
+          </button>
+          <button type="submit" className={styles.btnNext} disabled={!canSubmit}>
+            {submitting ? 'Submitting…' : 'Reveal My Report'}
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }
 
