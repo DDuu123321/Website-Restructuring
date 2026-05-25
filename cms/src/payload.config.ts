@@ -9,6 +9,7 @@ import News from './collections/News'
 import Projects from './collections/Projects'
 import FAQ from './collections/FAQ'
 import Quotes from './collections/Quotes'
+import Assessments from './collections/Assessments'
 import Testimonials from './collections/Testimonials'
 import Brands from './collections/Brands'
 import TeamMembers from './collections/TeamMembers'
@@ -32,6 +33,7 @@ export default buildConfig({
   collections: [
     // ── Leads ──
     Quotes,
+    Assessments,
     Testimonials,
 
     // ── Content ──
