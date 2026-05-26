@@ -7,7 +7,7 @@ const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   admin: {
     useAsTitle: 'customerName',
-    group: { en: '📥 Leads', zh: '📥 销售线索' },
+    group: { en: '📰 Content', zh: '📰 网站内容' },
     description: 'Customer reviews. Public submissions are auto-published; admins can pin, hide, or delete.',
     defaultColumns: ['customerName', 'suburb', 'rating', 'pinned', 'status', 'createdAt'],
     listSearchableFields: ['customerName', 'suburb', 'review'],
@@ -16,10 +16,9 @@ const Testimonials: CollectionConfig = {
     },
   },
   access: {
-    create: () => true,                            // anyone can submit a review
+    create: () => true,
     read: ({ req }) => {
       if (req.user) return true
-      // Public sees everything except hidden
       return { status: { not_equals: 'hidden' } }
     },
     update: ({ req }) => !!req.user,
@@ -28,9 +27,6 @@ const Testimonials: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ data, req, operation }) => {
-        // On public create, default the status based on the adminOnReview toggle.
-        // - adminOnReview=true  → status='new'      (highlighted in admin + badge counts)
-        // - adminOnReview=false → status='reviewed' (silent, still publicly visible)
         if (operation === 'create' && !req.user) {
           let adminOn = true
           try {
@@ -73,7 +69,7 @@ const Testimonials: CollectionConfig = {
     {
       name: 'pinned',
       type: 'checkbox',
-      label: '📌 Pin to homepage',
+      label: { en: '📌 Pin to homepage', zh: '📌 置顶到首页' },
       defaultValue: false,
       admin: {
         position: 'sidebar',
@@ -83,7 +79,7 @@ const Testimonials: CollectionConfig = {
     {
       name: 'sortOrder',
       type: 'number',
-      label: 'Sort Order',
+      label: { en: 'Sort Order', zh: '排序' },
       defaultValue: 100,
       admin: {
         position: 'sidebar',
@@ -93,39 +89,39 @@ const Testimonials: CollectionConfig = {
     {
       name: 'customerName',
       type: 'text',
-      label: 'Customer Name',
+      label: { en: 'Customer Name', zh: '客户姓名' },
       required: true,
     },
     {
       name: 'suburb',
       type: 'text',
-      label: 'Suburb / State',
+      label: { en: 'Suburb / State', zh: '区域 / 州' },
       required: true,
       admin: { description: 'e.g. "Mosman, NSW"' },
     },
     {
       name: 'rating',
       type: 'select',
-      label: 'Rating',
+      label: { en: 'Rating', zh: '评分' },
       defaultValue: '5',
       options: ['5','4','3','2','1'].map(n => ({ label: `${'★'.repeat(+n)} (${n})`, value: n })),
     },
     {
       name: 'review',
       type: 'textarea',
-      label: 'Review',
+      label: { en: 'Review', zh: '评论内容' },
       required: true,
     },
     {
       name: 'systemInstalled',
       type: 'text',
-      label: 'System Installed (optional)',
+      label: { en: 'System Installed (optional)', zh: '已安装的系统（可选）' },
       admin: { description: 'e.g. "13 kW solar + 15 kWh battery"' },
     },
     {
       name: 'projectRef',
       type: 'relationship',
-      label: 'Linked Project (optional)',
+      label: { en: 'Linked Project (optional)', zh: '关联项目（可选）' },
       relationTo: 'projects',
     },
   ],
