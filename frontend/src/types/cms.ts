@@ -23,7 +23,6 @@ export interface News {
   id: string
   title: string
   slug: string
-  status: 'draft' | 'published' | 'archived'
   category: 'industry' | 'policy' | 'knowledge' | 'company' | 'case-study'
   featured: boolean
   coverImage?: Media
@@ -41,7 +40,6 @@ export interface Project {
   id: string
   title: string
   slug: string
-  status: 'draft' | 'published'
   featured: boolean
   sortOrder: number
   coverImage: Media

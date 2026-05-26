@@ -72,9 +72,9 @@ function buildQuery(params: Record<string, any>): string {
 
 // ── Public API ──
 export const api = {
-  // News
+  // News — draft state removed 2026-05-26 (everything publicly visible on save)
   news(args: { limit?: number; page?: number; category?: string; featured?: boolean } = {}) {
-    const where: WhereClause = { status: { equals: 'published' } }
+    const where: WhereClause = {}
     if (args.category) where.category = { equals: args.category }
     if (args.featured === true) where.featured = { equals: true }
     return request<PaginatedResponse<News>>(
@@ -93,9 +93,9 @@ export const api = {
     ).then(r => r.docs[0] ?? null)
   },
 
-  // Projects
+  // Projects — draft state removed 2026-05-26 (everything publicly visible on save)
   projects(args: { limit?: number; systemType?: string; featured?: boolean } = {}) {
-    const where: WhereClause = { status: { equals: 'published' } }
+    const where: WhereClause = {}
     if (args.systemType) where.systemType = { equals: args.systemType }
     if (args.featured === true) where.featured = { equals: true }
     return request<PaginatedResponse<Project>>(
