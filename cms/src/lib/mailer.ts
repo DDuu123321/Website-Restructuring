@@ -1,9 +1,14 @@
 /**
  * Email transport — Zoho SMTP via Nodemailer.
  *
- * Replaces the earlier Resend-based mailer. All three lead hooks
- * (sendQuoteEmails / sendAssessmentEmails / sendReviewEmail) go through
- * `sendMail()` so the SMTP config lives in one place.
+ * Loaded by every lead-collection's afterChange hook
+ * (sendQuoteEmails / sendAssessmentEmails / sendReviewEmail) and by
+ * the customer-confirmation send in the quote/assessment hooks.
+ *
+ * IMPORTANT: nodemailer is loaded via `eval('require')` so the Payload
+ * admin's webpack bundler can't statically follow the import chain
+ * into nodemailer (whose Node-only deps — fs/net/tls/stream/... —
+ * otherwise crash the admin SPA at module-load time).
  *
  * Env vars required:
  *   SMTP_HOST  e.g. smtp.zoho.com (worldwide) or smtp.zoho.com.au (AU region)
@@ -16,9 +21,19 @@
  *              (Zoho rejects mismatches as anti-spoofing).
  */
 
-import nodemailer, { type Transporter } from 'nodemailer'
+import type { Transporter } from 'nodemailer'   // ← type-only, erased at runtime
 
 let _transporter: Transporter | null = null
+
+/**
+ * Late-bind nodemailer at runtime. Using `eval('require')` rather than
+ * a static `import` or static `require` keeps webpack's dependency
+ * graph blind to it — admin SPA bundle stays clean of Node deps.
+ */
+function loadNodemailer(): any {
+  // eslint-disable-next-line no-eval
+  return eval("require")('nodemailer')
+}
 
 function getTransporter(): Transporter {
   if (_transporter) return _transporter
@@ -28,6 +43,7 @@ function getTransporter(): Transporter {
   const user = process.env.SMTP_USER || ''
   const pass = process.env.SMTP_PASS || ''
 
+  const nodemailer = loadNodemailer()
   _transporter = nodemailer.createTransport({
     host,
     port,
@@ -35,7 +51,7 @@ function getTransporter(): Transporter {
     auth: user && pass ? { user, pass } : undefined,
   })
 
-  return _transporter
+  return _transporter!
 }
 
 export interface SendMailOptions {
@@ -46,14 +62,9 @@ export interface SendMailOptions {
 }
 
 export async function sendMail(opts: SendMailOptions): Promise<void> {
-  // Zoho requires the From address to match the authenticated SMTP_USER
-  // (otherwise it returns "Authentication required to send mail from this
-  // address"). Default to SMTP_USER for safety; override only if you've
-  // configured an alias under the same Zoho account.
   const from = process.env.EMAIL_FROM || process.env.SMTP_USER || 'noreply@bluven.com.au'
 
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    // No SMTP creds → don't crash, just log. Lead is still saved in CMS.
     console.warn('[mailer] SMTP_USER / SMTP_PASS not set — skipping email send.')
     return
   }
