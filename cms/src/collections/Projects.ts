@@ -6,38 +6,24 @@ const Projects: CollectionConfig = {
     useAsTitle: 'title',
     group: { en: '📰 Content', zh: '📰 网站内容' },
     description: 'Real installation case studies shown on the Projects page.',
-    defaultColumns: ['title', 'location', 'systemType', 'featured', 'status'],
+    defaultColumns: ['title', 'location', 'systemType', 'featured', 'sortOrder'],
   },
+  // Public-read everything — draft state removed at user request.
   access: {
-    read: ({ req }) => {
-      if (req.user) return true
-      return { status: { equals: 'published' } }
-    },
+    read: () => true,
   },
   fields: [
     {
-      name: 'status',
-      type: 'select',
-      label: 'Status',
-      defaultValue: 'draft',
-      required: true,
-      options: [
-        { label: '📝 Draft', value: 'draft' },
-        { label: '✅ Published', value: 'published' },
-      ],
-      admin: { position: 'sidebar' },
-    },
-    {
       name: 'featured',
       type: 'checkbox',
-      label: 'Feature on homepage',
+      label: { en: 'Feature on homepage', zh: '在首页精选' },
       defaultValue: false,
       admin: { position: 'sidebar' },
     },
     {
       name: 'sortOrder',
       type: 'number',
-      label: 'Sort Order',
+      label: { en: 'Sort Order', zh: '排序' },
       defaultValue: 100,
       admin: {
         position: 'sidebar',
@@ -49,14 +35,14 @@ const Projects: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: 'Project Title',
+      label: { en: 'Project Title', zh: '项目标题' },
       required: true,
       admin: { description: 'e.g. "4-bed home in Mosman — 13 kW + 15 kWh battery"' },
     },
     {
       name: 'slug',
       type: 'text',
-      label: 'URL Slug',
+      label: { en: 'URL Slug', zh: 'URL 路径' },
       unique: true,
       hooks: {
         beforeValidate: [
@@ -72,17 +58,17 @@ const Projects: CollectionConfig = {
     {
       name: 'coverImage',
       type: 'upload',
-      label: 'Main Photo',
+      label: { en: 'Main Photo', zh: '主图' },
       relationTo: 'media',
       required: true,
     },
     {
       name: 'gallery',
       type: 'array',
-      label: 'Photo Gallery',
+      label: { en: 'Photo Gallery', zh: '相册' },
       fields: [
-        { name: 'image', type: 'upload', relationTo: 'media', required: true },
-        { name: 'caption', type: 'text' },
+        { name: 'image',   type: 'upload', relationTo: 'media', required: true },
+        { name: 'caption', type: 'text', label: { en: 'Caption', zh: '图片说明' } },
       ],
     },
 
@@ -90,57 +76,57 @@ const Projects: CollectionConfig = {
     {
       name: 'location',
       type: 'text',
-      label: 'Location (Suburb, State)',
+      label: { en: 'Location (Suburb, State)', zh: '位置（区域，州）' },
       required: true,
       admin: { description: 'e.g. "Mosman, NSW"' },
     },
     {
       name: 'systemType',
       type: 'select',
-      label: 'System Type',
+      label: { en: 'System Type', zh: '系统类型' },
       required: true,
       options: [
-        { label: 'Solar Only', value: 'solar' },
-        { label: 'Solar + Battery', value: 'solar-battery' },
-        { label: 'Solar + EV Charger', value: 'solar-ev' },
-        { label: 'Full System (Solar + Battery + EV)', value: 'full' },
-        { label: 'Commercial', value: 'commercial' },
-        { label: 'Battery Retrofit', value: 'battery-retrofit' },
+        { label: { en: 'Solar Only',                          zh: '纯光伏' },                 value: 'solar' },
+        { label: { en: 'Solar + Battery',                     zh: '光伏 + 电池' },             value: 'solar-battery' },
+        { label: { en: 'Solar + EV Charger',                  zh: '光伏 + 电动车充电桩' },     value: 'solar-ev' },
+        { label: { en: 'Full System (Solar + Battery + EV)',  zh: '全套（光伏+电池+充电桩）' }, value: 'full' },
+        { label: { en: 'Commercial',                          zh: '商用' },                   value: 'commercial' },
+        { label: { en: 'Battery Retrofit',                    zh: '电池加装' },               value: 'battery-retrofit' },
       ],
     },
     {
       name: 'specs',
       type: 'group',
-      label: 'System Specs',
+      label: { en: 'System Specs', zh: '系统参数' },
       fields: [
-        { name: 'solarKw', type: 'number', label: 'Solar size (kW)' },
-        { name: 'batteryKwh', type: 'number', label: 'Battery size (kWh)' },
-        { name: 'panels', type: 'number', label: 'Number of panels' },
-        { name: 'inverter', type: 'text', label: 'Inverter brand/model' },
-        { name: 'battery', type: 'text', label: 'Battery brand/model' },
-        { name: 'completionYear', type: 'number', label: 'Year completed' },
+        { name: 'solarKw',        type: 'number', label: { en: 'Solar size (kW)',      zh: '光伏容量 (kW)' } },
+        { name: 'batteryKwh',     type: 'number', label: { en: 'Battery size (kWh)',   zh: '电池容量 (kWh)' } },
+        { name: 'panels',         type: 'number', label: { en: 'Number of panels',     zh: '组件数量' } },
+        { name: 'inverter',       type: 'text',   label: { en: 'Inverter brand/model', zh: '逆变器型号' } },
+        { name: 'battery',        type: 'text',   label: { en: 'Battery brand/model',  zh: '电池型号' } },
+        { name: 'completionYear', type: 'number', label: { en: 'Year completed',       zh: '完工年份' } },
       ],
     },
     {
       name: 'summary',
       type: 'textarea',
-      label: 'Short Summary',
+      label: { en: 'Short Summary', zh: '简短摘要' },
       required: true,
       admin: { description: '1-2 sentences shown on the project card.' },
     },
     {
       name: 'description',
       type: 'richText',
-      label: 'Full Description',
+      label: { en: 'Full Description', zh: '完整描述' },
     },
     {
       name: 'testimonial',
       type: 'group',
-      label: 'Customer Quote (optional)',
+      label: { en: 'Customer Quote (optional)', zh: '客户评价（可选）' },
       fields: [
-        { name: 'quote', type: 'textarea', label: 'Quote text' },
-        { name: 'customerName', type: 'text', label: 'Customer name' },
-        { name: 'customerSuburb', type: 'text', label: 'Suburb' },
+        { name: 'quote',          type: 'textarea', label: { en: 'Quote text',     zh: '评价内容' } },
+        { name: 'customerName',   type: 'text',     label: { en: 'Customer name',  zh: '客户姓名' } },
+        { name: 'customerSuburb', type: 'text',     label: { en: 'Suburb',         zh: '区域' } },
       ],
     },
   ],

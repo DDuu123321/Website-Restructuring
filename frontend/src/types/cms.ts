@@ -92,11 +92,15 @@ export interface Testimonial {
 export interface Brand {
   id: string
   name: string
-  logo: Media
-  category: string[]
-  tagline?: string
+  model?: string
+  logo?: Media
+  logoUrl?: string
+  category: 'panels' | 'inverter' | 'battery' | 'ev' | 'monitoring'
+  tier?: 'tier-1' | 'premium'
+  description: string
+  spec1?: string
+  spec2?: string
   websiteUrl?: string
-  description?: string
   featured: boolean
   sortOrder: number
 }
