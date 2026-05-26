@@ -36,6 +36,44 @@ export default buildConfig({
       beforeNavLinks: [UnreadBadges],
       beforeDashboard: [DashboardLeadStats],
     },
+    // Strip Node-only deps from the admin browser bundle. The mailer
+    // (lib/mailer.ts → nodemailer) is reachable from collection configs
+    // because each collection imports its hook, which imports mailer.
+    // Server-side (ts-node) compiles normally; only this webpack pass
+    // for /admin sees the aliases + fallbacks.
+    webpack: (config) => {
+      const r = (config.resolve ?? {}) as any
+      return {
+        ...config,
+        resolve: {
+          ...r,
+          alias: {
+            ...(r.alias ?? {}),
+            nodemailer: false,
+          },
+          // Webpack 5 no longer auto-polyfills Node core modules; set
+          // each to `false` so the admin bundle treats them as empty.
+          fallback: {
+            ...(r.fallback ?? {}),
+            fs: false,
+            stream: false,
+            net: false,
+            tls: false,
+            dns: false,
+            url: false,
+            util: false,
+            os: false,
+            zlib: false,
+            child_process: false,
+            crypto: false,
+            http: false,
+            https: false,
+            buffer: false,
+            path: false,
+          },
+        },
+      }
+    },
   },
 
   collections: [
