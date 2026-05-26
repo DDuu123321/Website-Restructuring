@@ -4,7 +4,7 @@ const News: CollectionConfig = {
   slug: 'news',
   admin: {
     useAsTitle: 'title',
-    group: { en: '📰 Content', zh: '📰 网站内容' },
+    group: '📰 Content',
     description: 'Industry insights, news articles, and company updates.',
     defaultColumns: ['title', 'category', 'featured', 'publishedAt'],
     listSearchableFields: ['title', 'summary'],
@@ -19,7 +19,7 @@ const News: CollectionConfig = {
     {
       name: 'publishedAt',
       type: 'date',
-      label: { en: 'Publish Date', zh: '发布日期' },
+      label: 'Publish Date',
       admin: {
         position: 'sidebar',
         date: { pickerAppearance: 'dayAndTime' },
@@ -28,21 +28,21 @@ const News: CollectionConfig = {
     {
       name: 'category',
       type: 'select',
-      label: { en: 'Category', zh: '分类' },
+      label: 'Category',
       required: true,
       options: [
-        { label: { en: 'Industry News',   zh: '行业新闻' },   value: 'industry' },
-        { label: { en: 'Policy & Rebates', zh: '政策与补贴' }, value: 'policy' },
-        { label: { en: 'Solar Knowledge', zh: '光伏知识' },   value: 'knowledge' },
-        { label: { en: 'Company Updates', zh: '公司动态' },   value: 'company' },
-        { label: { en: 'Case Studies',    zh: '案例研究' },   value: 'case-study' },
+        { label: 'Industry News',     value: 'industry' },
+        { label: 'Policy & Rebates',  value: 'policy' },
+        { label: 'Solar Knowledge',   value: 'knowledge' },
+        { label: 'Company Updates',   value: 'company' },
+        { label: 'Case Studies',      value: 'case-study' },
       ],
       admin: { position: 'sidebar' },
     },
     {
       name: 'featured',
       type: 'checkbox',
-      label: { en: 'Feature on homepage', zh: '在首页精选' },
+      label: 'Feature on homepage',
       defaultValue: false,
       admin: { position: 'sidebar' },
     },
@@ -51,13 +51,13 @@ const News: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: { en: 'Title', zh: '标题' },
+      label: 'Title',
       required: true,
     },
     {
       name: 'slug',
       type: 'text',
-      label: { en: 'URL Slug', zh: 'URL 路径' },
+      label: 'URL Slug',
       required: true,
       unique: true,
       admin: {
@@ -81,14 +81,14 @@ const News: CollectionConfig = {
     {
       name: 'coverImage',
       type: 'upload',
-      label: { en: 'Cover Image', zh: '封面图' },
+      label: 'Cover Image',
       relationTo: 'media',
       required: false,
     },
     {
       name: 'summary',
       type: 'textarea',
-      label: { en: 'Summary', zh: '摘要' },
+      label: 'Summary',
       required: true,
       admin: {
         description: 'Short description shown in article cards (1-2 sentences).',
@@ -97,19 +97,19 @@ const News: CollectionConfig = {
     {
       name: 'content',
       type: 'richText',
-      label: { en: 'Article Body', zh: '正文内容' },
+      label: 'Article Body',
       required: true,
     },
     {
       name: 'author',
       type: 'text',
-      label: { en: 'Author Name', zh: '作者姓名' },
+      label: 'Author Name',
       defaultValue: 'Bluven Energy Team',
     },
     {
       name: 'readTime',
       type: 'number',
-      label: { en: 'Read Time (minutes)', zh: '阅读时长（分钟）' },
+      label: 'Read Time (minutes)',
       admin: {
         description: 'Leave blank to auto-calculate.',
       },
@@ -119,13 +119,13 @@ const News: CollectionConfig = {
     {
       name: 'seo',
       type: 'group',
-      label: { en: 'SEO', zh: 'SEO 优化' },
+      label: 'SEO',
       admin: {
         description: 'Overrides for search engine listings. Leave blank to use title & summary.',
       },
       fields: [
-        { name: 'metaTitle',       type: 'text',     label: { en: 'Meta Title',       zh: 'Meta 标题' } },
-        { name: 'metaDescription', type: 'textarea', label: { en: 'Meta Description', zh: 'Meta 描述' } },
+        { name: 'metaTitle',       type: 'text',     label: 'Meta Title' },
+        { name: 'metaDescription', type: 'textarea', label: 'Meta Description' },
       ],
     },
   ],

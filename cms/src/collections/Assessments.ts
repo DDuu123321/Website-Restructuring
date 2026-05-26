@@ -7,7 +7,7 @@ const Assessments: CollectionConfig = {
   slug: 'assessments',
   admin: {
     useAsTitle: 'fullName',
-    group: { en: '📥 Leads', zh: '📥 销售线索' },
+    group: '📥 Leads',
     description: 'Free home-energy assessment submissions captured from the website quiz.',
     defaultColumns: ['fullName', 'email', 'phone', 'recommendationType', 'state', 'status', 'createdAt'],
     listSearchableFields: ['firstName', 'lastName', 'email', 'phone', 'suburb', 'postcode'],
@@ -52,21 +52,21 @@ const Assessments: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      label: { en: 'Lead Status', zh: '线索状态' },
+      label: 'Lead Status',
       defaultValue: 'new',
       options: [
-        { label: { en: '🆕 New',                  zh: '🆕 新建' },      value: 'new' },
-        { label: { en: '📞 Contacted',             zh: '📞 已联系' },    value: 'contacted' },
-        { label: { en: '✅ Qualified',             zh: '✅ 已确认意向' }, value: 'qualified' },
-        { label: { en: '🎯 Converted to quote',    zh: '🎯 已转报价' },  value: 'converted' },
-        { label: { en: '❌ Not interested',        zh: '❌ 未跟进' },    value: 'lost' },
+        { label: '🆕 New',                  value: 'new' },
+        { label: '📞 Contacted',             value: 'contacted' },
+        { label: '✅ Qualified',             value: 'qualified' },
+        { label: '🎯 Converted to quote',    value: 'converted' },
+        { label: '❌ Not interested',        value: 'lost' },
       ],
       admin: { position: 'sidebar' },
     },
     {
       name: 'internalNotes',
       type: 'textarea',
-      label: { en: 'Internal Notes', zh: '内部备注' },
+      label: 'Internal Notes',
       admin: {
         position: 'sidebar',
         description: 'Not visible to the customer.',
@@ -74,21 +74,12 @@ const Assessments: CollectionConfig = {
     },
 
     // ── Contact ──
-    {
-      name: 'firstName',
-      type: 'text',
-      label: { en: 'First Name', zh: '名字' },
-      required: true,
-    },
-    {
-      name: 'lastName',
-      type: 'text',
-      label: { en: 'Last Name', zh: '姓氏' },
-    },
+    { name: 'firstName', type: 'text',  label: 'First Name', required: true },
+    { name: 'lastName',  type: 'text',  label: 'Last Name' },
     {
       name: 'fullName',
       type: 'text',
-      label: { en: 'Full Name', zh: '全名' },
+      label: 'Full Name',
       admin: { hidden: true },
       hooks: {
         beforeChange: [
@@ -96,55 +87,32 @@ const Assessments: CollectionConfig = {
         ],
       },
     },
-    {
-      name: 'email',
-      type: 'email',
-      label: { en: 'Email', zh: '邮箱' },
-      required: true,
-    },
-    {
-      name: 'phone',
-      type: 'text',
-      label: { en: 'Phone', zh: '电话' },
-      required: true,
-    },
-    {
-      name: 'address',
-      type: 'text',
-      label: { en: 'Street Address', zh: '街道地址' },
-    },
-    {
-      name: 'suburb',
-      type: 'text',
-      label: { en: 'Suburb', zh: '区域' },
-    },
+    { name: 'email',    type: 'email', label: 'Email',          required: true },
+    { name: 'phone',    type: 'text',  label: 'Phone',          required: true },
+    { name: 'address',  type: 'text',  label: 'Street Address' },
+    { name: 'suburb',   type: 'text',  label: 'Suburb' },
     {
       name: 'state',
       type: 'select',
-      label: { en: 'State', zh: '州' },
+      label: 'State',
       options: ['NSW','VIC','QLD','SA','WA','TAS','ACT','NT'].map(s => ({ label: s, value: s })),
     },
-    {
-      name: 'postcode',
-      type: 'text',
-      label: { en: 'Postcode', zh: '邮编' },
-      required: true,
-    },
+    { name: 'postcode', type: 'text',  label: 'Postcode', required: true },
 
     // ── Quiz answers (raw) ──
     {
       name: 'answers',
       type: 'group',
-      label: { en: 'Quiz Answers', zh: '问卷答案' },
+      label: 'Quiz Answers',
       admin: { description: 'Raw answers from the 8-question assessment.' },
       fields: [
-        { name: 'homeSize',     type: 'text', label: { en: 'Home size',           zh: '家庭规模' } },
-        { name: 'occupants',    type: 'text', label: { en: 'Occupants',           zh: '居住人数' } },
-        { name: 'activityTime', type: 'text', label: { en: 'Active time of day',  zh: '活跃时段' } },
+        { name: 'homeSize',     type: 'text', label: 'Home size' },
+        { name: 'occupants',    type: 'text', label: 'Occupants' },
+        { name: 'activityTime', type: 'text', label: 'Active time of day' },
         {
           name: 'majorLoads',
           type: 'select',
-          label: { en: 'Major loads', zh: '主要用电设备' },
+          label: 'Major loads',
           hasMany: true,
           options: [
             'Ducted air conditioning',
@@ -155,12 +123,12 @@ const Assessments: CollectionConfig = {
             'No major loads',
           ].map(v => ({ label: v, value: v })),
         },
-        { name: 'solarStatus',   type: 'text', label: { en: 'Solar status',   zh: '光伏现状' } },
-        { name: 'batteryStatus', type: 'text', label: { en: 'Battery status', zh: '电池现状' } },
+        { name: 'solarStatus',   type: 'text', label: 'Solar status' },
+        { name: 'batteryStatus', type: 'text', label: 'Battery status' },
         {
           name: 'mainGoal',
           type: 'select',
-          label: { en: 'Main goals', zh: '主要目标' },
+          label: 'Main goals',
           hasMany: true,
           options: [
             'Lower my electricity bills',
@@ -172,7 +140,7 @@ const Assessments: CollectionConfig = {
             'Not sure yet',
           ].map(v => ({ label: v, value: v })),
         },
-        { name: 'billLevel',     type: 'text', label: { en: 'Bill level', zh: '电费水平' } },
+        { name: 'billLevel',     type: 'text', label: 'Bill level' },
       ],
     },
 
@@ -180,24 +148,24 @@ const Assessments: CollectionConfig = {
     {
       name: 'result',
       type: 'group',
-      label: { en: 'Computed Result', zh: '推荐结果' },
+      label: 'Computed Result',
       admin: { description: 'Recommendation generated by the quiz engine.' },
       fields: [
-        { name: 'householdType',      type: 'text',     label: { en: 'Household type',  zh: '家庭类型' } },
-        { name: 'recommendationType', type: 'text',     label: { en: 'Recommendation',  zh: '推荐方案' } },
-        { name: 'fitLevel',           type: 'text',     label: { en: 'Fit level',       zh: '匹配度' } },
-        { name: 'summary',            type: 'textarea', label: { en: 'Summary',         zh: '总结' } },
-        { name: 'nextStep',           type: 'textarea', label: { en: 'Next step text',  zh: '下一步建议' } },
+        { name: 'householdType',      type: 'text',     label: 'Household type' },
+        { name: 'recommendationType', type: 'text',     label: 'Recommendation' },
+        { name: 'fitLevel',           type: 'text',     label: 'Fit level' },
+        { name: 'summary',            type: 'textarea', label: 'Summary' },
+        { name: 'nextStep',           type: 'textarea', label: 'Next step text' },
         {
           name: 'billReasons',
           type: 'array',
-          label: { en: 'Bill reasons', zh: '电费高的原因' },
+          label: 'Bill reasons',
           fields: [{ name: 'reason', type: 'textarea' }],
         },
         {
           name: 'profile',
           type: 'group',
-          label: { en: 'Profile levels', zh: '画像评级' },
+          label: 'Profile levels',
           fields: [
             { name: 'usage',   type: 'text' },
             { name: 'daytime', type: 'text' },
@@ -209,7 +177,7 @@ const Assessments: CollectionConfig = {
         {
           name: 'scores',
           type: 'json',
-          label: { en: 'Raw scores (debug)', zh: '原始评分（调试）' },
+          label: 'Raw scores (debug)',
         },
       ],
     },
@@ -218,12 +186,12 @@ const Assessments: CollectionConfig = {
     {
       name: 'source',
       type: 'group',
-      label: { en: 'Source', zh: '线索来源' },
+      label: 'Source',
       admin: { description: 'Where the lead came from.' },
       fields: [
-        { name: 'referrer',     type: 'text', label: { en: 'Referrer URL',  zh: '来源 URL' } },
-        { name: 'utm_source',   type: 'text', label: { en: 'UTM Source',    zh: 'UTM 来源' } },
-        { name: 'utm_campaign', type: 'text', label: { en: 'UTM Campaign',  zh: 'UTM 活动' } },
+        { name: 'referrer',     type: 'text', label: 'Referrer URL' },
+        { name: 'utm_source',   type: 'text', label: 'UTM Source' },
+        { name: 'utm_campaign', type: 'text', label: 'UTM Campaign' },
       ],
     },
   ],

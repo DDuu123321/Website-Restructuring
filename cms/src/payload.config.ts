@@ -108,16 +108,6 @@ export default buildConfig({
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
 
-  // Admin UI language (different concern from `localization` below, which
-  // controls per-locale CONTENT). Payload bundles zh-CN translations for
-  // the shell — users switch in their profile (top-right avatar).
-  // Our custom labels in collections use { en, zh } records to translate
-  // alongside the built-in shell strings.
-  i18n: {
-    fallbackLng: 'en',
-    supportedLngs: ['en', 'zh'],
-  },
-
   localization: {
     locales: ['en', 'zh'],
     defaultLocale: 'en',
