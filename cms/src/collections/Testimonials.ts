@@ -7,7 +7,7 @@ const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   admin: {
     useAsTitle: 'customerName',
-    group: { en: '📰 Content', zh: '📰 网站内容' },
+    group: '📰 Content',
     description: 'Customer reviews. Public submissions are auto-published; admins can pin, hide, or delete.',
     defaultColumns: ['customerName', 'suburb', 'rating', 'pinned', 'status', 'createdAt'],
     listSearchableFields: ['customerName', 'suburb', 'review'],
@@ -54,12 +54,12 @@ const Testimonials: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      label: { en: 'Status', zh: '状态' },
+      label: 'Status',
       defaultValue: 'new',
       options: [
-        { label: { en: '🆕 New (unread)',       zh: '🆕 未读（公开可见）' }, value: 'new' },
-        { label: { en: '✅ Reviewed (visible)',  zh: '✅ 已查看（公开可见）' }, value: 'reviewed' },
-        { label: { en: '🚫 Hidden',              zh: '🚫 隐藏' },              value: 'hidden' },
+        { label: '🆕 New (unread)',       value: 'new' },
+        { label: '✅ Reviewed (visible)',  value: 'reviewed' },
+        { label: '🚫 Hidden',              value: 'hidden' },
       ],
       admin: {
         position: 'sidebar',
@@ -69,7 +69,7 @@ const Testimonials: CollectionConfig = {
     {
       name: 'pinned',
       type: 'checkbox',
-      label: { en: '📌 Pin to homepage', zh: '📌 置顶到首页' },
+      label: '📌 Pin to homepage',
       defaultValue: false,
       admin: {
         position: 'sidebar',
@@ -79,7 +79,7 @@ const Testimonials: CollectionConfig = {
     {
       name: 'sortOrder',
       type: 'number',
-      label: { en: 'Sort Order', zh: '排序' },
+      label: 'Sort Order',
       defaultValue: 100,
       admin: {
         position: 'sidebar',
@@ -89,39 +89,39 @@ const Testimonials: CollectionConfig = {
     {
       name: 'customerName',
       type: 'text',
-      label: { en: 'Customer Name', zh: '客户姓名' },
+      label: 'Customer Name',
       required: true,
     },
     {
       name: 'suburb',
       type: 'text',
-      label: { en: 'Suburb / State', zh: '区域 / 州' },
+      label: 'Suburb / State',
       required: true,
       admin: { description: 'e.g. "Mosman, NSW"' },
     },
     {
       name: 'rating',
       type: 'select',
-      label: { en: 'Rating', zh: '评分' },
+      label: 'Rating',
       defaultValue: '5',
       options: ['5','4','3','2','1'].map(n => ({ label: `${'★'.repeat(+n)} (${n})`, value: n })),
     },
     {
       name: 'review',
       type: 'textarea',
-      label: { en: 'Review', zh: '评论内容' },
+      label: 'Review',
       required: true,
     },
     {
       name: 'systemInstalled',
       type: 'text',
-      label: { en: 'System Installed (optional)', zh: '已安装的系统（可选）' },
+      label: 'System Installed (optional)',
       admin: { description: 'e.g. "13 kW solar + 15 kWh battery"' },
     },
     {
       name: 'projectRef',
       type: 'relationship',
-      label: { en: 'Linked Project (optional)', zh: '关联项目（可选）' },
+      label: 'Linked Project (optional)',
       relationTo: 'projects',
     },
   ],
