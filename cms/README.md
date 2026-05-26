@@ -12,7 +12,7 @@ content (news, projects, FAQ, brands, team) and captures all leads
 | CMS | Payload 2.32 (REST + GraphQL + Admin UI) |
 | Database | PostgreSQL 16 (via `@payloadcms/db-postgres`) |
 | Admin bundler | Webpack (`@payloadcms/bundler-webpack`) |
-| Email | Resend (transactional) |
+| Email | Zoho SMTP via Nodemailer |
 | AI chat proxy | Google Gemini |
 | Runtime | Node 20 · TypeScript · ts-node + nodemon in dev |
 
@@ -55,9 +55,12 @@ Then edit `.env` and set the **required** values:
 | `PORT` | ✓ | `3001` |
 | `PAYLOAD_SECRET` | ✓ | Generate: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 | `DATABASE_URL` | ✓ | `postgres://postgres:postgres@localhost:5432/bluven` for the Docker container above |
-| `RESEND_API_KEY` | optional in dev | Lead-capture emails won't send without it, but the server still runs (hook is lazy-init and logs the error). Get a free key at resend.com. |
-| `EMAIL_FROM` | optional | Sender address (must be on a Resend-verified domain) |
-| `NOTIFY_EMAIL` | optional | Where business notifications go (defaults to `info@bluven.com.au`) |
+| `SMTP_HOST` | ✓ for email | `smtp.zoho.com` (worldwide) or `smtp.zoho.com.au` (AU) |
+| `SMTP_PORT` | ✓ for email | `465` (SSL, recommended) or `587` (STARTTLS) |
+| `SMTP_USER` | ✓ for email | Full Zoho address, e.g. `system@bluven.com.au` |
+| `SMTP_PASS` | ✓ for email | Zoho **App Password** — not the login password. Generate at Mail → Settings → Security → App Passwords. |
+| `EMAIL_FROM` | optional | Sender address shown on outgoing mail. Defaults to `SMTP_USER`. Must match an alias on the same Zoho account or Zoho rejects with 550. |
+| `NOTIFY_EMAIL` | optional | Inbox that receives business notifications. Defaults to `SMTP_USER`. |
 | `GEMINI_API_KEY` | optional | Only needed for the AI chat proxy |
 | `NEXT_PUBLIC_SITE_URL` | optional | Used in sitemap / OG tags |
 
@@ -167,11 +170,13 @@ Make sure `NODE_ENV=production` and you ran `npm run build` before
 `npm start` — the production admin assets are served from the
 pre-built bundle, not webpack-dev-middleware.
 
-### Resend errors in console but quotes/assessments still save
+### SMTP errors in console but quotes/assessments still save
 
-That's by design — the email hooks are lazy-init and wrap each `send`
-in try/catch. A lead submission never fails over an email API hiccup.
-Check `RESEND_API_KEY` and verify your sender domain in Resend.
+That's by design — the email helpers wrap each `send` in try/catch.
+A lead submission never fails over an SMTP hiccup. Common causes:
+- `SMTP_PASS` is the account login password (use **App Password** instead)
+- Wrong `SMTP_HOST` region (`.com` vs `.com.au` — check your Zoho admin)
+- Sender (`EMAIL_FROM`) doesn't match `SMTP_USER` or a verified alias
 
 ---
 

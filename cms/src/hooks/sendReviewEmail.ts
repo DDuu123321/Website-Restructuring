@@ -1,21 +1,13 @@
-import { Resend } from 'resend'
+import { sendMail, notifyEmail } from '../lib/mailer'
 
-let _resend: Resend | null = null
-function getResend() {
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY || 'placeholder')
-  return _resend
-}
-
-const FROM = () => process.env.EMAIL_FROM || 'noreply@bluven.com.au'
-const NOTIFY = () => process.env.NOTIFY_EMAIL || 'info@bluven.com.au'
+const NOTIFY = () => notifyEmail()
 
 export async function sendReviewEmail(doc: any) {
   const stars = '★'.repeat(parseInt(doc.rating, 10) || 5)
   const name = doc.customerName || 'Anonymous'
 
   try {
-    await getResend().emails.send({
-      from: FROM(),
+    await sendMail({
       to: NOTIFY(),
       subject: `💬 New review — ${doc.rating || 5}⭐ from ${name} (${doc.suburb || '?'})`,
       html: `

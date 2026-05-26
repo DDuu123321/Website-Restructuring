@@ -1,14 +1,6 @@
-import { Resend } from 'resend'
+import { sendMail, notifyEmail } from '../lib/mailer'
 
-// Lazy initialisation — avoids error when RESEND_API_KEY is not set at import time
-let _resend: Resend | null = null
-function getResend() {
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY || 'placeholder')
-  return _resend
-}
-
-const FROM = () => process.env.EMAIL_FROM || 'noreply@bluven.com.au'
-const NOTIFY = () => process.env.NOTIFY_EMAIL || 'info@bluven.com.au'
+const NOTIFY = () => notifyEmail()
 
 function fmtComponents(c: string[] | undefined) {
   if (!Array.isArray(c) || c.length === 0) return 'Not specified'
@@ -21,10 +13,9 @@ export async function sendQuoteEmails(doc: any) {
 
   // ── 1. Notify the business ──────────────────────────────
   try {
-    await getResend().emails.send({
-      from: FROM(),
+    await sendMail({
       to: NOTIFY(),
-      reply_to: doc.email,
+      replyTo: doc.email,
       subject: `🔆 New Quote Request — ${name} (${doc.state || '?'})`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
@@ -76,8 +67,7 @@ export async function sendQuoteEmails(doc: any) {
   // ── 2. Confirm to the customer ──────────────────────────
   if (!doc.email) return
   try {
-    await getResend().emails.send({
-      from: FROM(),
+    await sendMail({
       to: doc.email,
       subject: `Thanks ${doc.firstName || 'there'} — your Bluven Energy quote request`,
       html: `
