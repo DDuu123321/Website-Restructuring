@@ -11,7 +11,6 @@ import '@/styles/design-system.css'
 import '@/styles/chrome.css'
 import '@/styles/home.css'
 import '@/styles/inner.css'
-import '@/styles/scroll-fx.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

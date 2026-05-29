@@ -42,11 +42,13 @@ const Testimonials: CollectionConfig = {
       async ({ doc, operation, req }) => {
         if (operation !== 'create') return
         let emailOn = true
+        let notifyTo: string | undefined
         try {
           const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
           emailOn = settings?.notifications?.emailOnReview !== false
+          notifyTo = settings?.quoteEmail || undefined
         } catch { /* default on */ }
-        if (emailOn) await sendReviewEmail(doc)
+        if (emailOn) await sendReviewEmail(doc, notifyTo)
       },
     ],
   },

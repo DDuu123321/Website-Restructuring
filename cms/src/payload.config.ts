@@ -84,11 +84,13 @@ export default buildConfig({
     'http://localhost:5173',
     'http://127.0.0.1:5500',
     process.env.SERVER_URL || '',
+    process.env.FRONTEND_URL || '',
   ].filter(Boolean),
 
   csrf: [
     'http://localhost:3001',
     process.env.SERVER_URL || '',
+    process.env.FRONTEND_URL || '',
   ].filter(Boolean),
 
   // Payload's built-in rate limiter applies to ALL /api requests (GET too).

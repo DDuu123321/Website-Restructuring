@@ -5,11 +5,7 @@ import { dictionary, Locale, DictKey } from './dictionary'
 
 interface I18nContextValue {
   lang: Locale
-  /** No-op — kept for API compatibility with components that still call setLang */
-  setLang: (l: Locale) => void
   t: (key: DictKey, fallback?: string) => string
-  /** Always false — kept for API compatibility */
-  isZh: boolean
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null)
@@ -22,9 +18,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const value = useMemo<I18nContextValue>(
     () => ({
       lang: 'en',
-      setLang: () => {},
       t: (key, fallback) => dictionary.en[key] ?? fallback ?? key,
-      isZh: false,
     }),
     [],
   )

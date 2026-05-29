@@ -6,7 +6,7 @@
  */
 
 import type {
-  News, Project, FAQItem, Brand, TeamMember, Testimonial, SiteSettings, QuoteRequest, AssessmentRequest,
+  News, Project, FAQItem, Brand, Testimonial, SiteSettings, QuoteRequest, AssessmentRequest,
   PaginatedResponse, Media,
 } from '@/types/cms'
 
@@ -143,13 +143,6 @@ export const api = {
   brands() {
     return request<PaginatedResponse<Brand>>(
       '/brands' + buildQuery({ limit: 50, sort: 'sortOrder', depth: 1 })
-    )
-  },
-
-  // Team
-  team() {
-    return request<PaginatedResponse<TeamMember>>(
-      '/team' + buildQuery({ limit: 20, sort: 'sortOrder', depth: 1 })
     )
   },
 

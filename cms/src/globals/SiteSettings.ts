@@ -24,7 +24,7 @@ const SiteSettings: GlobalConfig = {
       type: 'row',
       fields: [
         { name: 'email', type: 'email', label: 'Contact Email', defaultValue: 'info@bluven.com.au' },
-        { name: 'quoteEmail', type: 'email', label: 'Quote Notification Email', defaultValue: 'info@bluven.com.au' },
+        { name: 'quoteEmail', type: 'email', label: 'Lead Notification Email', admin: { description: 'Optional — internal new-lead emails (quotes, assessments, reviews) are sent here. Leave blank to use the NOTIFY_EMAIL env var.' } },
       ],
     },
     {
@@ -98,7 +98,7 @@ const SiteSettings: GlobalConfig = {
       admin: {
         description:
           'Toggle email + admin notifications independently for each lead type. ' +
-          '"Email" controls the internal notification sent to NOTIFY_EMAIL. ' +
+          '"Email" controls the internal notification sent to the Lead Notification Email above (or the NOTIFY_EMAIL env var if blank). ' +
           '"Admin" controls whether new submissions show up highlighted (🆕 New) in the admin + unread badge.',
       },
       fields: [

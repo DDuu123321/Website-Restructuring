@@ -130,9 +130,9 @@ POST /api/chat              AI chat proxy (Gemini)
 ```
 
 Both `POST /api/quotes` and `POST /api/assessments` trigger an
-`afterChange` hook that sends two Resend emails: business notification
-(to `NOTIFY_EMAIL`) and customer confirmation/report (to the submitted
-email). Hooks live in `src/hooks/`.
+`afterChange` hook that sends two emails via Zoho SMTP (Nodemailer):
+business notification (to `NOTIFY_EMAIL`) and customer confirmation/report
+(to the submitted email). Hooks live in `src/hooks/`.
 
 ---
 
@@ -196,7 +196,8 @@ Steps:
    - `DATABASE_URL` — the managed Postgres URL (with `?sslmode=require` if needed)
    - `PAYLOAD_SECRET` — fresh 64-char random (do NOT reuse the dev secret)
    - `SERVER_URL` — the public URL of the CMS (e.g. `https://cms.bluven.com.au`)
-   - `RESEND_API_KEY` / `EMAIL_FROM` / `NOTIFY_EMAIL` — real values
+   - `FRONTEND_URL` — the public frontend origin for CORS/CSRF (e.g. `https://bluven.com.au`)
+   - `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `EMAIL_FROM` / `NOTIFY_EMAIL` — Zoho SMTP (use an App Password)
    - `NODE_ENV=production`
 4. Start command: `npm run build && npm start` (build runs `tsc`,
    start runs `node dist/server.js`).

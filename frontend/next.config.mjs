@@ -7,8 +7,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'http',  hostname: 'localhost',         port: '3001', pathname: '/uploads/**' },
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
-      // Add your production CMS domain here:
-      // { protocol: 'https', hostname: 'cms.bluven.com.au', pathname: '/uploads/**' },
+      { protocol: 'https', hostname: 'cms.bluven.com.au', pathname: '/uploads/**' },
     ],
   },
 

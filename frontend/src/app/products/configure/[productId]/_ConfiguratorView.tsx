@@ -347,7 +347,7 @@ export function ConfiguratorView({ productId }: Props) {
       <footer className="cfg-bottom">
         <div className="container cfg-bottom-inner">
           <div className="cfg-bottom-l">
-            {(['solar', 'battery', 'ev'] as StepId[]).map(s => {
+            {(['solar', 'battery', 'ev'] as (keyof Selections)[]).map(s => {
               const opt = optionsForStep(s).find(o => o.id === sel[s])
               if (!opt) return null
               return (

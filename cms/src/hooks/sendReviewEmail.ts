@@ -1,8 +1,7 @@
 import { sendMail, notifyEmail } from '../lib/mailer'
 
-const NOTIFY = () => notifyEmail()
-
-export async function sendReviewEmail(doc: any) {
+export async function sendReviewEmail(doc: any, notifyTo?: string) {
+  const NOTIFY = () => notifyEmail(notifyTo)
   const stars = '★'.repeat(parseInt(doc.rating, 10) || 5)
   const name = doc.customerName || 'Anonymous'
 

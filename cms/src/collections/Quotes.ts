@@ -39,11 +39,13 @@ const Quotes: CollectionConfig = {
       async ({ doc, operation, req }) => {
         if (operation !== 'create') return
         let emailOn = true
+        let notifyTo: string | undefined
         try {
           const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
           emailOn = settings?.notifications?.emailOnQuote !== false
+          notifyTo = settings?.quoteEmail || undefined
         } catch { /* default on */ }
-        if (emailOn) await sendQuoteEmails(doc)
+        if (emailOn) await sendQuoteEmails(doc, notifyTo)
       },
     ],
   },

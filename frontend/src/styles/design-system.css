@@ -121,6 +121,8 @@
 /* Reset & base */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
   font-family: var(--font-sans);
   color: var(--bv-ink-900);
@@ -150,31 +152,6 @@ body::before {
   100% { transform: translate(-1vw, 1.5vh) scale(0.97); }
 }
 
-/* Subtle dot grid you can apply with `.bg-dots` */
-.bg-dots {
-  background-image: radial-gradient(rgba(12, 34, 54, 0.07) 1px, transparent 1.5px);
-  background-size: 22px 22px;
-}
-.bg-dots-light {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px);
-  background-size: 22px 22px;
-}
-
-/* Soft floating blob — drop into a section as <span className="bv-blob teal" /> */
-.bv-blob {
-  position: absolute;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 0;
-  animation: bvBlobFloat 16s ease-in-out infinite alternate;
-}
-.bv-blob.teal   { background: radial-gradient(circle, var(--bv-teal-400), transparent 70%); }
-.bv-blob.green  { background: radial-gradient(circle, var(--bv-green-500), transparent 70%); }
-.bv-blob.amber  { background: radial-gradient(circle, var(--bv-amber-400), transparent 70%); }
 @keyframes bvBlobFloat {
   0%   { transform: translate(0, 0) scale(1); }
   100% { transform: translate(-30px, 28px) scale(1.08); }
@@ -238,14 +215,6 @@ p  { margin: 0; }
   transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(184, 132, 29, 0.40);
 }
-.btn-secondary {
-  background: var(--bv-ink-900);
-  color: var(--bv-white);
-}
-.btn-secondary:hover {
-  background: var(--bv-ink-800);
-  transform: translateY(-1px);
-}
 .btn-ghost {
   background: transparent;
   color: var(--bv-ink-900);
@@ -256,14 +225,6 @@ p  { margin: 0; }
   color: var(--bv-white);
   border-color: var(--bv-ink-900);
 }
-.btn-light {
-  background: rgba(255,255,255,0.92);
-  color: var(--bv-ink-900);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.6);
-}
-.btn-light:hover { background: var(--bv-white); }
-
 .btn .arrow {
   display: inline-block;
   transition: transform 0.2s var(--ease-out);
@@ -277,7 +238,6 @@ p  { margin: 0; }
   margin: 0 auto;
   padding: 0 28px;
 }
-.container-wide { max-width: 1360px; }
 @media (max-width: 640px) {
   .container { padding: 0 18px; }
 }
@@ -297,11 +257,6 @@ p  { margin: 0; }
   opacity: 1;
   transform: translateY(0);
 }
-.reveal.delay-1 { transition-delay: 0.06s; }
-.reveal.delay-2 { transition-delay: 0.12s; }
-.reveal.delay-3 { transition-delay: 0.18s; }
-.reveal.delay-4 { transition-delay: 0.24s; }
-.reveal.delay-5 { transition-delay: 0.30s; }
 
 /* Image placeholder — light */
 .img-placeholder {
@@ -319,12 +274,6 @@ p  { margin: 0; }
   position: relative;
   overflow: hidden;
 }
-.img-placeholder.light {
-  background:
-    linear-gradient(135deg, transparent 49%, rgba(0,0,0,0.03) 49%, rgba(0,0,0,0.03) 51%, transparent 51%) 0 0 / 14px 14px,
-    linear-gradient(180deg, #eef2f6, #dde3eb);
-  color: var(--bv-ink-500);
-}
 .img-placeholder::after {
   content: "";
   position: absolute; inset: 0;
@@ -332,43 +281,10 @@ p  { margin: 0; }
   pointer-events: none;
 }
 
-/* Marquee */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
 /* Pulse glow — teal */
 @keyframes pulseGlow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(231, 182, 88, 0.45); }
   50% { box-shadow: 0 0 0 14px rgba(231, 182, 88, 0); }
-}
-
-/* Subtle grid */
-.bg-grid {
-  background-image:
-    linear-gradient(rgba(12,34,54,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(12,34,54,0.05) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-.bg-grid-dark {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
-/* Card */
-.card {
-  background: var(--bv-white);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--bv-ink-100);
-  transition: all 0.25s var(--ease-out);
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--bv-teal-300);
 }
 
 /* Tag */
@@ -386,8 +302,6 @@ p  { margin: 0; }
 }
 .tag-amber { background: var(--bv-amber-100); color: var(--bv-amber-700); }
 .tag-navy  { background: rgba(12,34,54,0.06); color: var(--bv-ink-800); }
-.tag-success { background: var(--bv-green-100); color: var(--bv-green-700); }
-.tag-teal  { background: var(--bv-teal-100); color: var(--bv-teal-700); }
 
 /* Form controls — shared */
 .bv-input,

@@ -7,8 +7,7 @@ bluven/
 ├── frontend/                Next.js 14 (App Router) · TypeScript · React 18
 ├── cms/                     Payload CMS 2 backend · Express · PostgreSQL
 ├── uploads/                 Payload-managed media (gitignored in prod, S3-mounted)
-├── legacy/                  Original static HTML — for reference only
-└── frontend-vite-archive/   Previous Vite SPA — for reference only
+└── legacy/                  Original static HTML — for reference only
 ```
 
 ## Architecture
@@ -32,7 +31,7 @@ bluven/
                                  │
                 ┌────────────────┴────────────────┐
                 │  PostgreSQL  (data)             │
-                │  Resend  (email)                │
+                │  Zoho SMTP  (email)             │
                 │  Gemini  (AI chat)              │
                 └─────────────────────────────────┘
 ```
@@ -44,7 +43,7 @@ You need **PostgreSQL** running locally (or a managed service like Neon / Supaba
 ```bash
 # 1. CMS backend (Terminal 1)
 cd cms
-cp .env.example .env       # fill DATABASE_URL, PAYLOAD_SECRET, RESEND_API_KEY
+cp .env.example .env       # fill DATABASE_URL, PAYLOAD_SECRET, SMTP_* (Zoho)
 npm install
 npm run dev                # → http://localhost:3001/admin
 
@@ -113,7 +112,7 @@ Set in CMS env:
 | `/faq` | ISR | CMS · with FAQPage JSON-LD |
 | `/contact` | ISR | Site Settings from CMS |
 | `/quote` | Client | 5-step wizard, submits to CMS |
-| `/privacy` `/terms` `/cookies` | Static | Bilingual legal pages |
+| `/privacy` `/terms` `/cookies` | Static | Legal pages |
 
 ## What the client manages from `/admin`
 
@@ -121,7 +120,7 @@ Set in CMS env:
 |---------|----------------|
 | News | Industry articles, with Lexical rich-text editor |
 | Projects | Installation case studies + photo galleries |
-| FAQ | Questions + answers, EN + ZH, drag to reorder |
+| FAQ | Questions + answers, drag to reorder |
 | Brands | Brand logos and categorization |
 | Team | Who We Are page members |
 | Quotes | View incoming leads (read-only inbox) |
@@ -130,10 +129,10 @@ Set in CMS env:
 
 ## Tech stack
 
-- **Frontend**: Next.js 14, App Router, TypeScript, React 18, TanStack Query, Framer Motion
+- **Frontend**: Next.js 14, App Router, TypeScript, React 18, TanStack Query
 - **CMS**: Payload 2.32, Express, PostgreSQL (`@payloadcms/db-postgres` 0.8.10)
 - **Editor**: Lexical richtext
-- **Email**: Resend
+- **Email**: Zoho SMTP via Nodemailer
 - **AI**: Gemini 2.0 Flash via backend proxy (API key never exposed)
-- **i18n**: Custom React Context (EN / ZH)
+- **i18n**: Custom React Context (English-only; bilingual scaffolding retained but hidden)
 - **Styling**: CSS variables design system (preserved from legacy site)

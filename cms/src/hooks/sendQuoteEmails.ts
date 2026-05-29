@@ -1,13 +1,12 @@
 import { sendMail, notifyEmail } from '../lib/mailer'
 
-const NOTIFY = () => notifyEmail()
-
 function fmtComponents(c: string[] | undefined) {
   if (!Array.isArray(c) || c.length === 0) return 'Not specified'
   return c.join(', ')
 }
 
-export async function sendQuoteEmails(doc: any) {
+export async function sendQuoteEmails(doc: any, notifyTo?: string) {
+  const NOTIFY = () => notifyEmail(notifyTo)
   const name = `${doc.firstName || ''} ${doc.lastName || ''}`.trim()
   const location = [doc.suburb, doc.state, doc.postcode].filter(Boolean).join(' ')
 
@@ -94,7 +93,7 @@ export async function sendQuoteEmails(doc: any) {
 
             <p style="font-size:14px;color:#6b7280;line-height:1.6">
               If you need to reach us in the meantime:<br/>
-              📞 <a href="tel:${process.env.NOTIFY_EMAIL || '1300258836'}" style="color:#d97706">1300 BLUVEN</a><br/>
+              📞 <a href="tel:+611300258836" style="color:#d97706">1300 BLUVEN</a><br/>
               ✉️ <a href="mailto:${NOTIFY()}" style="color:#d97706">${NOTIFY()}</a>
             </p>
             <p style="font-size:13px;color:#9ca3af">Bluven Energy Pty Ltd · CEC Approved Retailer</p>

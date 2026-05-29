@@ -78,6 +78,6 @@ export async function sendMail(opts: SendMailOptions): Promise<void> {
   })
 }
 
-export function notifyEmail(): string {
-  return process.env.NOTIFY_EMAIL || process.env.SMTP_USER || 'info@bluven.com.au'
+export function notifyEmail(override?: string): string {
+  return override || process.env.NOTIFY_EMAIL || process.env.SMTP_USER || 'info@bluven.com.au'
 }

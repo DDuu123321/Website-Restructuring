@@ -1,7 +1,5 @@
 import { sendMail, notifyEmail } from '../lib/mailer'
 
-const NOTIFY = () => notifyEmail()
-
 function fmtList(v: string[] | undefined) {
   if (!Array.isArray(v) || v.length === 0) return '—'
   return v.join(', ')
@@ -11,7 +9,8 @@ function row(label: string, value: string | number | undefined | null) {
   return `<tr><td style="padding:6px 0;color:#6b7280;width:170px;font-size:14px">${label}</td><td style="font-size:14px;color:#0f172a">${value || '—'}</td></tr>`
 }
 
-export async function sendAssessmentEmails(doc: any) {
+export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
+  const NOTIFY = () => notifyEmail(notifyTo)
   const name = `${doc.firstName || ''} ${doc.lastName || ''}`.trim()
   const location = [doc.suburb, doc.state, doc.postcode].filter(Boolean).join(' ')
   const a = doc.answers || {}

@@ -4,7 +4,7 @@ const TeamMembers: CollectionConfig = {
   slug: 'team',
   admin: {
     useAsTitle: 'name',
-    group: { en: '📰 Content', zh: '📰 网站内容' },
+    group: '📰 Content',
     description: 'Team members shown on the Who We Are page.',
     defaultColumns: ['name', 'title', 'sortOrder'],
   },

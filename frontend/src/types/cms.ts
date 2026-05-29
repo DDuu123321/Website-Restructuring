@@ -66,9 +66,7 @@ export interface Project {
 export interface FAQItem {
   id: string
   question: string
-  question_zh?: string
   answer: any
-  answer_zh?: any
   category: 'general' | 'pricing' | 'installation' | 'products' | 'support' | 'grid'
   sortOrder: number
   published: boolean
@@ -120,7 +118,6 @@ export interface QuoteRequest {
   lastName?: string
   email: string
   phone: string
-  bestTime?: string
   propertyType?: string
   roofType?: string
   address?: string
