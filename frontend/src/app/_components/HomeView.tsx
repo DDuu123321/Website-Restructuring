@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { useI18n, T } from '@/i18n/I18nProvider'
 import { Reveal, AnimatedCounter } from '@/components/ui/Reveal'
@@ -401,7 +402,14 @@ function EnergyFlowImage({ idPrefix }: { idPrefix: string }) {
 
   return (
     <div className="energy-scene">
-      <img src="/hero-house.png" alt="" className="energy-scene-img" />
+      <Image
+        src="/hero-house.png"
+        alt=""
+        fill
+        priority
+        sizes="(max-width: 1000px) 100vw, 1000px"
+        className="energy-scene-img"
+      />
       <svg
         className="energy-scene-fx"
         viewBox="0 0 1536 1024"
@@ -527,10 +535,10 @@ function EnergyFlowImage({ idPrefix }: { idPrefix: string }) {
 function ProcessSection() {
   const { t } = useI18n()
   const steps = [
-    { n: '01', t: t('p.s1.t'), d: t('p.s1.d'), img: '/process-1.png' },
-    { n: '02', t: t('p.s2.t'), d: t('p.s2.d'), img: '/process-2.png' },
-    { n: '03', t: t('p.s3.t'), d: t('p.s3.d'), img: '/process-3.png' },
-    { n: '04', t: t('p.s4.t'), d: t('p.s4.d'), img: '/process-4.png' },
+    { n: '01', t: t('p.s1.t'), d: t('p.s1.d'), img: '/process-1.webp' },
+    { n: '02', t: t('p.s2.t'), d: t('p.s2.d'), img: '/process-2.webp' },
+    { n: '03', t: t('p.s3.t'), d: t('p.s3.d'), img: '/process-3.webp' },
+    { n: '04', t: t('p.s4.t'), d: t('p.s4.d'), img: '/process-4.webp' },
   ]
   const [activeIdx, setActiveIdx] = useState(0)
   const sectionRef = useRef<HTMLDivElement | null>(null)
@@ -743,7 +751,7 @@ function RebatesPanel() {
   return (
     <div className="feature-panel container">
       <div className="feature-panel-media" data-poster="rebates">
-        <img src="/Rebates.png" alt="Happy Australian couple reviewing energy savings dashboard outside their solar-powered home" />
+        <Image src="/Rebates.png" alt="Happy Australian couple reviewing energy savings dashboard outside their solar-powered home" width={480} height={600} sizes="(max-width: 900px) 100vw, 480px" />
       </div>
       <div className="feature-panel-content">
         <div className="section-eye">MAXIMIZE ROI</div>
@@ -787,7 +795,7 @@ function WhyChoosePanel() {
   return (
     <div className="feature-panel container">
       <div className="feature-panel-media" data-poster="why-bluven">
-        <img src="/Why%20Bluven.png" alt="Bluven engineer on a residential rooftop reviewing solar installation on a tablet" />
+        <Image src="/why-bluven.png" alt="Bluven engineer on a residential rooftop reviewing solar installation on a tablet" width={480} height={600} sizes="(max-width: 900px) 100vw, 480px" />
       </div>
       <div className="feature-panel-content">
         <div className="section-eye">CHOOSE BLUVEN</div>
@@ -828,7 +836,7 @@ function BatteryBenefitsPanel() {
   return (
     <div className="feature-panel container">
       <div className="feature-panel-media" data-poster="battery">
-        <img src="/Battery%20Value.png" alt="Modern Australian home with wall-mounted battery and EV charging in the carport" />
+        <Image src="/battery-value.png" alt="Modern Australian home with wall-mounted battery and EV charging in the carport" width={480} height={600} sizes="(max-width: 900px) 100vw, 480px" />
       </div>
       <div className="feature-panel-content">
         <div className="section-eye">WHY UPGRADE TO BATTERY STORAGE NOW?</div>

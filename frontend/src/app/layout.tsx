@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { Montserrat, JetBrains_Mono } from 'next/font/google'
 import { Providers } from '@/components/layout/Providers'
 import { MarqueeBar } from '@/components/layout/MarqueeBar'
 import { Nav } from '@/components/layout/Nav'
@@ -11,6 +12,21 @@ import '@/styles/design-system.css'
 import '@/styles/chrome.css'
 import '@/styles/home.css'
 import '@/styles/inner.css'
+
+// Self-hosted at build time (no render-blocking Google Fonts request).
+// Cormorant Garamond was dropped — it was loaded but never referenced in any CSS.
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-montserrat',
+  display: 'swap',
+})
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-jetbrains',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -59,12 +75,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-AU" data-lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en-AU" data-lang="en" className={`${montserrat.variable} ${jetbrainsMono.variable}`}>
       <body>
         <JsonLd data={organizationLd()} />
         <Providers>

@@ -79,11 +79,13 @@
   --bv-success: #16a34a;
   --bv-danger:  #dc2626;
 
-  /* ---- Typography — Montserrat sans-serif throughout (matches old site) ---- */
-  --font-sans:    'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-display: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-serif:   'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  /* ---- Typography — Montserrat sans-serif throughout (matches old site) ----
+     Families are self-hosted via next/font (see app/layout.tsx), exposed as
+     --font-montserrat / --font-jetbrains. Fallbacks kept for the swap window. */
+  --font-sans:    var(--font-montserrat), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: var(--font-montserrat), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-serif:   var(--font-montserrat), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    var(--font-jetbrains), 'SF Mono', Menlo, monospace;
 
   /* Radii — softer & more uniform */
   --radius-sm: 6px;

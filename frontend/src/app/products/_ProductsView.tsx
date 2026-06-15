@@ -18,7 +18,7 @@ export function ProductsView() {
         { l: 'Product warranty',     v: '25 years' },
         { l: 'Performance warranty', v: '30 years' },
       ],
-      img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1400&q=85',
+      img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1400&q=85&auto=format',
       reverse: false,
     },
     {
@@ -32,7 +32,7 @@ export function ProductsView() {
         { l: 'Battery warranty',  v: '10+ years' },
         { l: 'VPP ready',         v: 'Yes' },
       ],
-      img: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=1400&q=85',
+      img: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=1400&q=85&auto=format',
       reverse: true,
       callout: {
         title: 'Cut your electricity bills with 3 hours of free midday charging',
@@ -61,7 +61,7 @@ export function ProductsView() {
         { l: 'Smart modes', v: 'Eco / Eco+ / Fast' },
         { l: 'App control', v: 'iOS & Android' },
       ],
-      img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1400&q=85',
+      img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1400&q=85&auto=format',
       reverse: false,
     },
     {
@@ -75,7 +75,7 @@ export function ProductsView() {
         { l: 'Tax depreciation',v: 'Modelled' },
         { l: 'Typical payback', v: '4 – 7 yr' },
       ],
-      img: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1400&q=85',
+      img: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1400&q=85&auto=format',
       reverse: true,
       dark: true,
     },
