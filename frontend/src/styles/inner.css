@@ -70,6 +70,9 @@
   margin-bottom: 24px;
   border: 1px solid var(--bv-ink-100);
 }
+/* On small phones two spec columns squeeze values like "6.6 kW / 5 kWh" into
+   ~140px cells; drop to one column. */
+@media (max-width: 480px) { .cat-spec { grid-template-columns: 1fr; } }
 .product-cat.alt .cat-spec { background: var(--bv-white); }
 .cat-spec > div { display: flex; flex-direction: column; gap: 3px; }
 .cat-spec span { font-size: 11px; color: var(--bv-ink-500); text-transform: uppercase; letter-spacing: 0.10em; font-weight: 600; }
@@ -171,7 +174,9 @@
 }
 .proj-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Intrinsic: 3-up where it fits, wraps to 2/1 in narrow cards on phones
+     instead of squashing three numbers into ~90px columns. */
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
   gap: 8px;
   padding: 12px 22px 22px;
   border-top: 1px solid var(--bv-ink-100);
@@ -1420,7 +1425,11 @@
   border-radius: var(--radius-2xl);
   overflow: hidden;
   background: var(--bv-ink-900);
-  height: 460px;
+  /* Was a fixed 460px — on short landscape phones that ate the whole viewport.
+     Scale with width, capped, with a sensible floor. */
+  aspect-ratio: 3 / 2;
+  max-height: 460px;
+  min-height: 280px;
   position: relative;
 }
 .map-svg { width: 100%; height: 100%; display: block; }

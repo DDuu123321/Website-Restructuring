@@ -954,19 +954,14 @@ select.contactInput {
 }
 
 @media (max-width: 600px) {
-  .stickyBtn {
-    bottom: 16px;
-    padding: 11px 18px 11px 14px;
-    font-size: 13px;
-    transform: translate(calc(-100% - 92px), 30px);
-  }
-
-  .stickyBtn.show {
-    transform: translate(calc(-100% - 92px), 0);
-  }
-
+  /* The sticky assessment pill sits left of the centred quote pill — there
+     isn't room for two floating text pills + the chat FAB on a phone, so it
+     landed off-screen-left. Hide it here; the hero keeps an inline
+     "Get Free Assessment" CTA, so the path isn't lost. */
+  .stickyBtn,
+  .stickyBtn.show,
   .stickyBtn:hover {
-    transform: translate(calc(-100% - 92px), -2px) scale(1.02);
+    display: none;
   }
 }
 
