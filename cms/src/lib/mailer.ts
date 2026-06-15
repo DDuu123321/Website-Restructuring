@@ -81,3 +81,20 @@ export async function sendMail(opts: SendMailOptions): Promise<void> {
 export function notifyEmail(override?: string): string {
   return override || process.env.NOTIFY_EMAIL || process.env.SMTP_USER || 'info@bluven.com.au'
 }
+
+/**
+ * Escape user-supplied values before interpolating them into HTML emails.
+ * Lead fields (notes, names, review text, quiz output…) are attacker-controlled;
+ * without this, a submitted `<img onerror>` / `<script>` runs in the recipient's
+ * mail client. Apply to every dynamic leaf value in an email template — NOT to
+ * our own surrounding markup. Returns '' for null/undefined.
+ */
+export function escapeHtml(value: unknown): string {
+  if (value === null || value === undefined) return ''
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}

@@ -8,6 +8,12 @@ import rateLimit from 'express-rate-limit'
 
 const app = express()
 
+// Trust the first proxy hop (Vercel / load balancer / nginx) so express-rate-limit
+// keys on the real client IP from X-Forwarded-For. Without this, every request
+// looks like it comes from the proxy and the IP in XFF can be freely spoofed to
+// dodge the per-IP submission limit below.
+app.set('trust proxy', 1)
+
 // ── Security headers (relaxed for CMS admin) ──────────────
 app.use(
   helmet({
@@ -17,9 +23,9 @@ app.use(
 )
 
 // ── CORS — allow Next.js frontend ─────────────────────────
+const isDev = process.env.NODE_ENV !== 'production'
 const allowedOrigins = [
-  'http://localhost:3000',           // Next.js dev
-  'http://localhost:3001',           // Same-origin (CMS itself)
+  ...(isDev ? ['http://localhost:3000', 'http://localhost:3001'] : []),
   process.env.FRONTEND_URL || '',    // Production frontend URL
   process.env.SERVER_URL || '',
 ].filter(Boolean)
@@ -45,10 +51,27 @@ app.use('/api/assessments',  submitLimiter)
 app.use('/api/testimonials', submitLimiter)
 
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
-app.post('/api/chat', express.json(), async (req, res) => {
+// Rate-limited and size-capped: each call costs real money on the Gemini
+// quota, so an unthrottled proxy is an open billing-drain endpoint.
+const chatLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 15,
+  message: { error: 'Too many messages. Please slow down.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+const MAX_CHAT_MESSAGES = 20
+const MAX_CHAT_CHARS = 2000
+app.post('/api/chat', chatLimiter, express.json({ limit: '16kb' }), async (req, res) => {
   const { messages } = req.body
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'messages required' })
+  }
+  if (messages.length > MAX_CHAT_MESSAGES) {
+    return res.status(400).json({ error: 'Conversation too long' })
+  }
+  if (!messages.every((m: any) => m && typeof m.content === 'string' && m.content.length <= MAX_CHAT_CHARS)) {
+    return res.status(400).json({ error: 'Invalid message format' })
   }
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {

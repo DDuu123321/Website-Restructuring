@@ -9,7 +9,10 @@ const Users: CollectionConfig = {
     description: 'Admin accounts with access to the management panel.',
   },
   access: {
-    read: () => true,
+    // Was `() => true`, which let anyone GET /api/users and harvest every
+    // admin's email/name/role (phishing + credential-stuffing fuel).
+    // create/update/delete are left to Payload's default (auth required).
+    read: ({ req }) => !!req.user,
   },
   fields: [
     {

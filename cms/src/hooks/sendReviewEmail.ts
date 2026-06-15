@@ -1,4 +1,4 @@
-import { sendMail, notifyEmail } from '../lib/mailer'
+import { sendMail, notifyEmail, escapeHtml as esc } from '../lib/mailer'
 
 export async function sendReviewEmail(doc: any, notifyTo?: string) {
   const NOTIFY = () => notifyEmail(notifyTo)
@@ -19,12 +19,12 @@ export async function sendReviewEmail(doc: any, notifyTo?: string) {
 
             <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:18px">
               <div style="font-size:24px;color:#d97706;letter-spacing:2px;margin-bottom:8px">${stars}</div>
-              <div style="font-size:18px;font-weight:800;color:#042744">${name}</div>
-              <div style="font-size:13px;color:#6b7280;margin-bottom:14px">${doc.suburb || ''}</div>
+              <div style="font-size:18px;font-weight:800;color:#042744">${esc(name)}</div>
+              <div style="font-size:13px;color:#6b7280;margin-bottom:14px">${esc(doc.suburb)}</div>
               <blockquote style="margin:0;padding:14px 16px;background:#f9fafb;border-left:3px solid #ffc61f;font-size:14.5px;color:#374151;line-height:1.6;font-style:italic">
-                ${(doc.review || '').replace(/</g, '&lt;').replace(/\n/g, '<br>')}
+                ${esc(doc.review).replace(/\n/g, '<br>')}
               </blockquote>
-              ${doc.systemInstalled ? `<div style="margin-top:14px;font-size:13px;color:#6b7280"><b style="color:#042744">System:</b> ${doc.systemInstalled}</div>` : ''}
+              ${doc.systemInstalled ? `<div style="margin-top:14px;font-size:13px;color:#6b7280"><b style="color:#042744">System:</b> ${esc(doc.systemInstalled)}</div>` : ''}
             </div>
 
             <p style="font-size:14px;color:#374151;line-height:1.6">

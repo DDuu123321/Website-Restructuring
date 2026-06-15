@@ -1,4 +1,4 @@
-import { sendMail, notifyEmail } from '../lib/mailer'
+import { sendMail, notifyEmail, escapeHtml as esc } from '../lib/mailer'
 
 function fmtList(v: string[] | undefined) {
   if (!Array.isArray(v) || v.length === 0) return '—'
@@ -6,7 +6,7 @@ function fmtList(v: string[] | undefined) {
 }
 
 function row(label: string, value: string | number | undefined | null) {
-  return `<tr><td style="padding:6px 0;color:#6b7280;width:170px;font-size:14px">${label}</td><td style="font-size:14px;color:#0f172a">${value || '—'}</td></tr>`
+  return `<tr><td style="padding:6px 0;color:#6b7280;width:170px;font-size:14px">${label}</td><td style="font-size:14px;color:#0f172a">${esc(value) || '—'}</td></tr>`
 }
 
 export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
@@ -36,17 +36,17 @@ export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
             <h3 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#6b7280">Contact</h3>
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
               ${row('Name', name)}
-              <tr><td style="padding:6px 0;color:#6b7280;width:170px;font-size:14px">Email</td><td style="font-size:14px"><a href="mailto:${doc.email}" style="color:#d97706">${doc.email}</a></td></tr>
-              <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Phone</td><td style="font-size:14px"><a href="tel:${doc.phone}" style="color:#d97706">${doc.phone}</a></td></tr>
+              <tr><td style="padding:6px 0;color:#6b7280;width:170px;font-size:14px">Email</td><td style="font-size:14px"><a href="mailto:${esc(doc.email)}" style="color:#d97706">${esc(doc.email)}</a></td></tr>
+              <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Phone</td><td style="font-size:14px"><a href="tel:${esc(doc.phone)}" style="color:#d97706">${esc(doc.phone)}</a></td></tr>
               ${row('Address', [doc.address, location].filter(Boolean).join(', '))}
             </table>
 
             <h3 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#6b7280">Recommendation</h3>
             <div style="background:#fff9e8;border:1px solid #ffc61f;border-radius:8px;padding:16px;margin-bottom:24px">
               <div style="font-size:13px;color:#0a4d89;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">Engine output</div>
-              <div style="font-size:20px;font-weight:900;color:#042744;margin-bottom:4px">${r.recommendationType || '—'}</div>
-              <div style="font-size:14px;color:#475569"><b>${r.householdType || '—'}</b> · ${r.fitLevel || '—'}</div>
-              ${r.summary ? `<p style="margin:10px 0 0;font-size:14px;color:#374151;line-height:1.55">${r.summary}</p>` : ''}
+              <div style="font-size:20px;font-weight:900;color:#042744;margin-bottom:4px">${esc(r.recommendationType) || '—'}</div>
+              <div style="font-size:14px;color:#475569"><b>${esc(r.householdType) || '—'}</b> · ${esc(r.fitLevel) || '—'}</div>
+              ${r.summary ? `<p style="margin:10px 0 0;font-size:14px;color:#374151;line-height:1.55">${esc(r.summary)}</p>` : ''}
             </div>
 
             <h3 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#6b7280">Quiz answers</h3>
@@ -64,7 +64,7 @@ export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
             ${reasons.length ? `
               <h3 style="margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#6b7280">Why their bill may be higher</h3>
               <ul style="margin:0 0 24px;padding-left:20px;color:#374151;font-size:14px;line-height:1.6">
-                ${reasons.map(x => `<li style="margin-bottom:4px">${x}</li>`).join('')}
+                ${reasons.map(x => `<li style="margin-bottom:4px">${esc(x)}</li>`).join('')}
               </ul>
             ` : ''}
 
@@ -90,28 +90,28 @@ export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
         <div style="font-family:sans-serif;max-width:640px;margin:0 auto">
           <div style="background:#042744;color:#fff;padding:28px 32px;border-radius:8px 8px 0 0">
             <div style="display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(255,198,31,.14);border:1px solid rgba(255,198,31,.32);color:#ffc61f;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px">Your Energy Report</div>
-            <h2 style="margin:0;font-size:24px;line-height:1.2">Hi ${doc.firstName || 'there'} — here's your home energy result.</h2>
+            <h2 style="margin:0;font-size:24px;line-height:1.2">Hi ${esc(doc.firstName) || 'there'} — here's your home energy result.</h2>
             <p style="margin:8px 0 0;opacity:.8;font-size:14px;line-height:1.55">Thanks for completing the Bluven Free Assessment. Below is your tailored summary, plus the next step our engineers recommend.</p>
           </div>
           <div style="background:#f9fafb;padding:24px 32px;border:1px solid #e5e7eb;border-top:0;border-radius:0 0 8px 8px">
 
             <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:18px">
               <div style="font-size:12px;color:#0a4d89;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Your home energy type</div>
-              <div style="font-size:22px;font-weight:900;color:#042744;line-height:1.2;margin-bottom:8px">${r.householdType || 'Energy Household'}</div>
-              <div style="display:inline-block;padding:4px 10px;border-radius:999px;background:#fff9e8;color:#042744;font-weight:700;font-size:12px;letter-spacing:.06em">${r.fitLevel || 'Fit assessed'}</div>
-              ${r.summary ? `<p style="margin:14px 0 0;font-size:14.5px;color:#374151;line-height:1.65">${r.summary}</p>` : ''}
+              <div style="font-size:22px;font-weight:900;color:#042744;line-height:1.2;margin-bottom:8px">${esc(r.householdType) || 'Energy Household'}</div>
+              <div style="display:inline-block;padding:4px 10px;border-radius:999px;background:#fff9e8;color:#042744;font-weight:700;font-size:12px;letter-spacing:.06em">${esc(r.fitLevel) || 'Fit assessed'}</div>
+              ${r.summary ? `<p style="margin:14px 0 0;font-size:14.5px;color:#374151;line-height:1.65">${esc(r.summary)}</p>` : ''}
             </div>
 
             <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:18px">
               <div style="font-size:12px;color:#0a4d89;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Recommended direction</div>
-              <div style="font-size:20px;font-weight:900;color:#042744">${r.recommendationType || '—'}</div>
+              <div style="font-size:20px;font-weight:900;color:#042744">${esc(r.recommendationType) || '—'}</div>
             </div>
 
             ${reasons.length ? `
               <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:18px">
                 <div style="font-size:12px;color:#0a4d89;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px">What may be increasing your bill</div>
                 <ul style="margin:0;padding-left:20px;color:#374151;font-size:14px;line-height:1.7">
-                  ${reasons.map(x => `<li style="margin-bottom:6px">${x}</li>`).join('')}
+                  ${reasons.map(x => `<li style="margin-bottom:6px">${esc(x)}</li>`).join('')}
                 </ul>
               </div>
             ` : ''}
@@ -119,7 +119,7 @@ export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
             ${r.nextStep ? `
               <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:18px">
                 <div style="font-size:12px;color:#0a4d89;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">Your next step</div>
-                <p style="margin:0;font-size:14.5px;color:#374151;line-height:1.65">${r.nextStep}</p>
+                <p style="margin:0;font-size:14.5px;color:#374151;line-height:1.65">${esc(r.nextStep)}</p>
               </div>
             ` : ''}
 
