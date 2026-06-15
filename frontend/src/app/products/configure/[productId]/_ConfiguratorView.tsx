@@ -40,11 +40,10 @@ export function ConfiguratorView({ productId }: Props) {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  if (!product) return null
-
   const currentStep = STEPS[stepIdx]
 
   const optionsForStep = (s: StepId): ConfigOption[] => {
+    if (!product) return []
     if (s === 'solar')   return product.solarOptions
     if (s === 'battery') return product.batteryOptions
     if (s === 'ev')      return product.evOptions
@@ -64,16 +63,21 @@ export function ConfiguratorView({ productId }: Props) {
   }
 
   const activeOption: ConfigOption | null = useMemo(() => {
-    if (currentStep === 'summary') return null
+    if (!product || currentStep === 'summary') return null
     const id = sel[currentStep]
     if (!id) return optionsForStep(currentStep)[0]
     return optionsForStep(currentStep).find(o => o.id === id) ?? null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, sel, product])
 
   const heroImg = useMemo(() => {
+    if (!product) return ''
     if (currentStep === 'summary') return product.hero
     return activeOption?.hero || product.hero
   }, [activeOption, currentStep, product])
+
+  // Hooks above run unconditionally (rules-of-hooks); bail out only after them.
+  if (!product) return null
 
   const select = (id: string) => {
     setSel(prev => ({ ...prev, [currentStep]: id }))

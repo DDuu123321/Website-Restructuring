@@ -25,7 +25,7 @@ export default async function NewsListPage({
         { name: 'Home', path: '/' },
         { name: 'Insights & News', path: '/news' },
       ])} />
-      <NewsListView articles={data.docs as any} initialCategory={searchParams.category || ''} />
+      <NewsListView articles={data.docs} initialCategory={searchParams.category || ''} />
     </>
   )
 }

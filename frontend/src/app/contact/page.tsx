@@ -13,14 +13,14 @@ export const metadata: Metadata = buildMetadata({
 })
 
 export default async function ContactPage() {
-  const settings = await api.siteSettings().catch(() => ({} as any))
+  const settings = await api.siteSettings().catch(() => ({}))
   return (
     <>
       <JsonLd data={breadcrumbLd([
         { name: 'Home', path: '/' },
         { name: 'Contact', path: '/contact' },
       ])} />
-      <ContactView settings={settings as any} />
+      <ContactView settings={settings} />
     </>
   )
 }

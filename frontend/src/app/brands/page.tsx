@@ -20,7 +20,7 @@ export default async function BrandsPage() {
         { name: 'Home', path: '/' },
         { name: 'Brand Partners', path: '/brands' },
       ])} />
-      <BrandsView brands={data.docs as any} />
+      <BrandsView brands={data.docs} />
     </>
   )
 }

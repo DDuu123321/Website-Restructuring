@@ -31,7 +31,7 @@ export default async function FAQPage() {
           { name: 'FAQ', path: '/faq' },
         ]),
       ]} />
-      <FAQView items={data.docs as any} />
+      <FAQView items={data.docs} />
     </>
   )
 }

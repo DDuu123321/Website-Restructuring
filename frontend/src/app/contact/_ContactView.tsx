@@ -5,7 +5,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import { PageHeader } from '@/components/ui/PageHeader'
 import type { SiteSettings } from '@/types/cms'
 
-export function ContactView({ settings }: { settings: SiteSettings }) {
+export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
   const phone = settings?.phone || '1300 BLUVEN (1300 258 836)'
   const phoneHref = settings?.phoneHref || '+611300258836'
   const email = settings?.email || 'hello@bluven.com.au'

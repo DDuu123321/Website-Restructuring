@@ -20,7 +20,7 @@ export default async function ProjectsPage() {
         { name: 'Home', path: '/' },
         { name: 'Projects', path: '/projects' },
       ])} />
-      <ProjectsListView projects={data.docs as any} />
+      <ProjectsListView projects={data.docs} />
     </>
   )
 }

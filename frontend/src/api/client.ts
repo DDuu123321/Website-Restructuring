@@ -44,7 +44,7 @@ async function request<T>(
   const res = await fetch(getApiBase() + path, init)
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
-    const msg = (body as any)?.errors?.[0]?.message || `API error ${res.status}`
+    const msg = (body as { errors?: { message?: string }[] })?.errors?.[0]?.message || `API error ${res.status}`
     throw new ApiError(msg, res.status, body)
   }
   return res.json() as Promise<T>
