@@ -669,6 +669,7 @@
   max-width: calc(100vw - 32px);
   height: 540px;
   max-height: calc(100vh - 110px);
+  max-height: calc(100dvh - 110px);
   background: var(--bv-white);
   border-radius: 20px;
   box-shadow: 0 30px 80px rgba(10,18,40,0.25);
@@ -841,6 +842,7 @@
   .bv-chat-panel {
     width: calc(100vw - 16px);
     height: calc(100vh - 100px);
+    height: calc(100dvh - 100px);
   }
   .bv-chat { right: 12px; bottom: 12px; }
 }

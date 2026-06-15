@@ -122,6 +122,11 @@
 /* Reset & base */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Global horizontal-overflow guard. `clip` (not `hidden`) does NOT create a
+   scroll container, so position:sticky/fixed keep working — it just trims any
+   element (decorative blobs, desktop translate offsets) that pokes past the
+   viewport edge, so no page ever scrolls sideways on mobile. */
+html, body { overflow-x: clip; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {

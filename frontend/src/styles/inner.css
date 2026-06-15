@@ -1555,6 +1555,7 @@
 .cfg-shell {
   background: var(--bv-paper);
   min-height: 100vh;
+  min-height: 100dvh;
   padding-top: 110px;
   padding-bottom: 140px;
 }
