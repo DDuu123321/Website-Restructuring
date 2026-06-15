@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useI18n } from '@/i18n/I18nProvider'
 import { api } from '@/api/client'
+import { HoneypotField } from '@/components/ui/HoneypotField'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -23,6 +24,7 @@ export function TestimonialForm({ viewMoreHref }: Props = {}) {
     rating: '5',
     review: '',
     systemInstalled: '',
+    hp: '',
   })
 
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -41,9 +43,10 @@ export function TestimonialForm({ viewMoreHref }: Props = {}) {
         rating: form.rating as any,
         review: form.review.trim(),
         systemInstalled: form.systemInstalled.trim() || undefined,
+        hp: form.hp || undefined,
       } as any)
       setStatus('success')
-      setForm({ customerName: '', suburb: '', rating: '5', review: '', systemInstalled: '' })
+      setForm({ customerName: '', suburb: '', rating: '5', review: '', systemInstalled: '', hp: '' })
     } catch (err: any) {
       setErrorMsg(err?.message || null)
       setStatus('error')
@@ -87,6 +90,7 @@ export function TestimonialForm({ viewMoreHref }: Props = {}) {
             </div>
           ) : (
             <form className="bv-review-form" onSubmit={onSubmit}>
+              <HoneypotField value={form.hp} onChange={v => setForm(f => ({ ...f, hp: v }))} />
               <div className="bv-review-row">
                 <div>
                   <label className="bv-label" htmlFor="rv-name">{t('review.name')} *</label>

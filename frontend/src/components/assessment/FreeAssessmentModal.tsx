@@ -25,6 +25,7 @@ import Link from 'next/link'
 import styles from './FreeAssessment.module.css'
 import { api } from '@/api/client'
 import type { AssessmentRequest } from '@/types/cms'
+import { HoneypotField } from '@/components/ui/HoneypotField'
 
 /* ============================================================
    1. ICONS — inline SVG (no external icon library dependency)
@@ -941,6 +942,7 @@ interface ContactForm {
   suburb: string
   state: string
   postcode: string
+  hp: string
 }
 
 const initialContact: ContactForm = {
@@ -952,6 +954,7 @@ const initialContact: ContactForm = {
   suburb: '',
   state: 'NSW',
   postcode: '',
+  hp: '',
 }
 
 function buildAssessmentPayload(
@@ -968,6 +971,7 @@ function buildAssessmentPayload(
     suburb:    contact.suburb.trim() || undefined,
     state:     contact.state || undefined,
     postcode:  contact.postcode.trim(),
+    hp:        contact.hp || undefined,
     answers: {
       homeSize:       answers.home_size,
       occupants:      answers.occupants,
@@ -1131,6 +1135,7 @@ function ContactStep({
       </div>
 
       <form className={styles.contactForm} onSubmit={handleSubmit} noValidate>
+        <HoneypotField value={form.hp} onChange={(v) => update('hp', v)} />
         <div className={styles.contactGrid}>
           <div className={styles.contactField}>
             <label className={styles.contactLabel}>First name <span className={styles.req}>*</span></label>

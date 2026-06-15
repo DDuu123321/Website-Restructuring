@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { Reveal } from '@/components/ui/Reveal'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { HoneypotField } from '@/components/ui/HoneypotField'
 import type { QuoteRequest } from '@/types/cms'
 
 const STATES = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT']
@@ -121,6 +122,7 @@ export function QuoteView() {
           <div className="quote-shell">
             <Reveal>
               <form className="quote-form simple" onSubmit={onSubmit}>
+              <HoneypotField value={form.hp || ''} onChange={v => update({ hp: v })} />
               <div className="field-grid">
                 <div className="field">
                   <label>Name <span className="req">*</span></label>

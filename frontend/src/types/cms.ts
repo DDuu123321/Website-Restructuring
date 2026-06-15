@@ -131,6 +131,8 @@ export interface QuoteRequest {
   monthlyBill?: number
   usagePattern?: string
   notes?: string
+  /** Honeypot — always empty for real users; bots that fill it are rejected. */
+  hp?: string
   source?: {
     referrer?: string
     utm_source?: string
@@ -150,6 +152,8 @@ export interface AssessmentRequest {
   suburb?: string
   state?: string
   postcode: string
+  /** Honeypot — always empty for real users; bots that fill it are rejected. */
+  hp?: string
   // Quiz raw answers (camelCase to match the CMS group)
   answers: {
     homeSize: string

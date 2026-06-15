@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { sendAssessmentEmails } from '../hooks/sendAssessmentEmails'
+import { auEmail, auPhone, auPostcode } from '../lib/validators'
+import { honeypotField, assertNotBot } from '../lib/honeypot'
 import ExportCsvButton from '../admin/ExportCsvButton'
 import ImportCsvButton from '../admin/ImportCsvButton'
 
@@ -25,6 +27,7 @@ const Assessments: CollectionConfig = {
     beforeChange: [
       async ({ data, req, operation }) => {
         if (operation === 'create' && !req.user) {
+          assertNotBot(data, req.user)
           let adminOn = true
           try {
             const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
@@ -89,8 +92,8 @@ const Assessments: CollectionConfig = {
         ],
       },
     },
-    { name: 'email',    type: 'email', label: 'Email',          required: true },
-    { name: 'phone',    type: 'text',  label: 'Phone',          required: true },
+    { name: 'email',    type: 'email', label: 'Email',          required: true, validate: auEmail(true) },
+    { name: 'phone',    type: 'text',  label: 'Phone',          required: true, validate: auPhone(true) },
     { name: 'address',  type: 'text',  label: 'Street Address' },
     { name: 'suburb',   type: 'text',  label: 'Suburb' },
     {
@@ -99,7 +102,7 @@ const Assessments: CollectionConfig = {
       label: 'State',
       options: ['NSW','VIC','QLD','SA','WA','TAS','ACT','NT'].map(s => ({ label: s, value: s })),
     },
-    { name: 'postcode', type: 'text',  label: 'Postcode', required: true },
+    { name: 'postcode', type: 'text',  label: 'Postcode', required: true, validate: auPostcode(true) },
 
     // ── Quiz answers (raw) ──
     {
@@ -156,13 +159,13 @@ const Assessments: CollectionConfig = {
         { name: 'householdType',      type: 'text',     label: 'Household type' },
         { name: 'recommendationType', type: 'text',     label: 'Recommendation' },
         { name: 'fitLevel',           type: 'text',     label: 'Fit level' },
-        { name: 'summary',            type: 'textarea', label: 'Summary' },
-        { name: 'nextStep',           type: 'textarea', label: 'Next step text' },
+        { name: 'summary',            type: 'textarea', label: 'Summary',        maxLength: 5000 },
+        { name: 'nextStep',           type: 'textarea', label: 'Next step text', maxLength: 5000 },
         {
           name: 'billReasons',
           type: 'array',
           label: 'Bill reasons',
-          fields: [{ name: 'reason', type: 'textarea' }],
+          fields: [{ name: 'reason', type: 'textarea', maxLength: 2000 }],
         },
         {
           name: 'profile',
@@ -196,6 +199,7 @@ const Assessments: CollectionConfig = {
         { name: 'utm_campaign', type: 'text', label: 'UTM Campaign' },
       ],
     },
+    honeypotField,
   ],
   timestamps: true,
 }

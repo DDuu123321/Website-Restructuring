@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types'
 import { sendReviewEmail } from '../hooks/sendReviewEmail'
+import { honeypotField, assertNotBot } from '../lib/honeypot'
 import ExportCsvButton from '../admin/ExportCsvButton'
 import ImportCsvButton from '../admin/ImportCsvButton'
 
@@ -28,6 +29,7 @@ const Testimonials: CollectionConfig = {
     beforeChange: [
       async ({ data, req, operation }) => {
         if (operation === 'create' && !req.user) {
+          assertNotBot(data, req.user)
           let adminOn = true
           try {
             const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
@@ -93,12 +95,14 @@ const Testimonials: CollectionConfig = {
       type: 'text',
       label: 'Customer Name',
       required: true,
+      maxLength: 120,
     },
     {
       name: 'suburb',
       type: 'text',
       label: 'Suburb / State',
       required: true,
+      maxLength: 120,
       admin: { description: 'e.g. "Mosman, NSW"' },
     },
     {
@@ -113,11 +117,13 @@ const Testimonials: CollectionConfig = {
       type: 'textarea',
       label: 'Review',
       required: true,
+      maxLength: 5000,
     },
     {
       name: 'systemInstalled',
       type: 'text',
       label: 'System Installed (optional)',
+      maxLength: 200,
       admin: { description: 'e.g. "13 kW solar + 15 kWh battery"' },
     },
     {
@@ -126,6 +132,7 @@ const Testimonials: CollectionConfig = {
       label: 'Linked Project (optional)',
       relationTo: 'projects',
     },
+    honeypotField,
   ],
   timestamps: true,
 }

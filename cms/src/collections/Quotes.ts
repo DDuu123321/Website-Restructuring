@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { sendQuoteEmails } from '../hooks/sendQuoteEmails'
+import { auEmail, auPhone, auPostcode } from '../lib/validators'
+import { honeypotField, assertNotBot } from '../lib/honeypot'
 import ExportCsvButton from '../admin/ExportCsvButton'
 import ImportCsvButton from '../admin/ImportCsvButton'
 
@@ -25,6 +27,7 @@ const Quotes: CollectionConfig = {
     beforeChange: [
       async ({ data, req, operation }) => {
         if (operation === 'create' && !req.user) {
+          assertNotBot(data, req.user)
           let adminOn = true
           try {
             const settings: any = await req.payload.findGlobal({ slug: 'site-settings' })
@@ -89,8 +92,8 @@ const Quotes: CollectionConfig = {
         ],
       },
     },
-    { name: 'email',    type: 'email', label: 'Email',    required: true },
-    { name: 'phone',    type: 'text',  label: 'Phone',    required: true },
+    { name: 'email',    type: 'email', label: 'Email',    required: true, validate: auEmail(true) },
+    { name: 'phone',    type: 'text',  label: 'Phone',    required: true, validate: auPhone(true) },
     {
       name: 'bestTime',
       type: 'select',
@@ -124,7 +127,7 @@ const Quotes: CollectionConfig = {
       label: 'State',
       options: ['NSW','VIC','QLD','SA','WA','TAS','ACT','NT'].map(s => ({ label: s, value: s })),
     },
-    { name: 'postcode', type: 'text', label: 'Postcode' },
+    { name: 'postcode', type: 'text', label: 'Postcode', validate: auPostcode(false) },
     {
       name: 'timeline',
       type: 'select',
@@ -163,7 +166,7 @@ const Quotes: CollectionConfig = {
         { label: 'Mostly evening',  value: 'evening' },
       ],
     },
-    { name: 'notes', type: 'textarea', label: 'Additional Notes' },
+    { name: 'notes', type: 'textarea', label: 'Additional Notes', maxLength: 5000 },
 
     // ── Source tracking ──
     {
@@ -178,6 +181,7 @@ const Quotes: CollectionConfig = {
         { name: 'packagePreset', type: 'text', label: 'Package Preset (if entered from package button)' },
       ],
     },
+    honeypotField,
   ],
   timestamps: true,
 }
