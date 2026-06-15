@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { Reveal } from '@/components/ui/Reveal'
@@ -13,8 +12,7 @@ import type { QuoteRequest } from '@/types/cms'
 const STATES = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT']
 
 export function QuoteView() {
-  const params = useSearchParams()
-  const presetPack = params.get('pack') || ''
+  const [presetPack, setPresetPack] = useState('')
 
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState<Partial<QuoteRequest> & { hearAbout?: string; journeyStage?: string }>({
@@ -23,15 +21,31 @@ export function QuoteView() {
     roofType: 'Tin / Klip-Lok',
     usagePattern: 'mixed',
     components: ['Solar', 'Battery'],
-    systemKw: Number(params.get('kw') || 10),
+    systemKw: 10,
     batteryKwh: 10,
     // User-facing fields
-    monthlyBill: Number(params.get('bill') || 350),
+    monthlyBill: 350,
     state: 'NSW',
     timeline: 'asap',
     journeyStage: 'considering',
     hearAbout: 'google',
   })
+
+  // Read URL params after mount instead of useSearchParams(). The hook forces the
+  // whole page into client-side rendering (no SSR'd form → the footer renders high,
+  // then jumps down on hydration: 0.4 CLS). Reading window.location.search in an
+  // effect keeps the form server-rendered with defaults, then applies any presets.
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    setPresetPack(sp.get('pack') || '')
+    const kw = sp.get('kw')
+    const bill = sp.get('bill')
+    setForm(f => ({
+      ...f,
+      ...(kw ? { systemKw: Number(kw) } : {}),
+      ...(bill ? { monthlyBill: Number(bill) } : {}),
+    }))
+  }, [])
 
   useEffect(() => {
     if (presetPack === 'starter')    setForm(f => ({ ...f, components: ['Solar'], systemKw: 6.6, batteryKwh: 0 }))
@@ -125,40 +139,40 @@ export function QuoteView() {
               <HoneypotField value={form.hp || ''} onChange={v => update({ hp: v })} />
               <div className="field-grid">
                 <div className="field">
-                  <label>Name <span className="req">*</span></label>
-                  <input type="text" required placeholder="Your name" value={form.firstName || ''} onChange={e => update({ firstName: e.target.value })} />
+                  <label htmlFor="q-name">Name <span className="req">*</span></label>
+                  <input id="q-name" type="text" required placeholder="Your name" value={form.firstName || ''} onChange={e => update({ firstName: e.target.value })} />
                 </div>
                 <div className="field">
-                  <label>Email <span className="req">*</span></label>
-                  <input type="email" required placeholder="Your email" value={form.email || ''} onChange={e => update({ email: e.target.value })} />
+                  <label htmlFor="q-email">Email <span className="req">*</span></label>
+                  <input id="q-email" type="email" required placeholder="Your email" value={form.email || ''} onChange={e => update({ email: e.target.value })} />
                 </div>
                 <div className="field">
-                  <label>Mobile / Phone <span className="req">*</span></label>
-                  <input type="tel" required placeholder="Phone number" value={form.phone || ''} onChange={e => update({ phone: e.target.value })} />
+                  <label htmlFor="q-phone">Mobile / Phone <span className="req">*</span></label>
+                  <input id="q-phone" type="tel" required placeholder="Phone number" value={form.phone || ''} onChange={e => update({ phone: e.target.value })} />
                 </div>
                 <div className="field">
-                  <label>Address</label>
-                  <input type="text" placeholder="Your address" value={form.address || ''} onChange={e => update({ address: e.target.value })} />
+                  <label htmlFor="q-address">Address</label>
+                  <input id="q-address" type="text" placeholder="Your address" value={form.address || ''} onChange={e => update({ address: e.target.value })} />
                 </div>
                 <div className="field">
-                  <label>Postcode <span className="req">*</span></label>
-                  <input type="text" required placeholder="Your postcode" value={form.postcode || ''} onChange={e => update({ postcode: e.target.value })} />
+                  <label htmlFor="q-postcode">Postcode <span className="req">*</span></label>
+                  <input id="q-postcode" type="text" required placeholder="Your postcode" value={form.postcode || ''} onChange={e => update({ postcode: e.target.value })} />
                 </div>
                 <div className="field">
-                  <label>State <span className="req">*</span></label>
-                  <select value={form.state} onChange={e => update({ state: e.target.value })} required>
+                  <label htmlFor="q-state">State <span className="req">*</span></label>
+                  <select id="q-state" value={form.state} onChange={e => update({ state: e.target.value })} required>
                     {STATES.map(s => <option key={s}>{s}</option>)}
                   </select>
                 </div>
 
                 <div className="field field-full">
-                  <label>Do you have any specific questions or special requirements?</label>
-                  <textarea rows={3} placeholder="Tell us more about your solar or battery needs…" value={form.notes || ''} onChange={e => update({ notes: e.target.value })} />
+                  <label htmlFor="q-notes">Do you have any specific questions or special requirements?</label>
+                  <textarea id="q-notes" rows={3} placeholder="Tell us more about your solar or battery needs…" value={form.notes || ''} onChange={e => update({ notes: e.target.value })} />
                 </div>
 
                 <div className="field">
-                  <label>How far along are you in your solar journey?</label>
-                  <select value={form.journeyStage} onChange={e => update({ journeyStage: e.target.value })}>
+                  <label htmlFor="q-journey">How far along are you in your solar journey?</label>
+                  <select id="q-journey" value={form.journeyStage} onChange={e => update({ journeyStage: e.target.value })}>
                     <option value="just-researching">Just researching</option>
                     <option value="considering">Seriously considering</option>
                     <option value="comparing">Comparing quotes</option>
@@ -166,8 +180,8 @@ export function QuoteView() {
                   </select>
                 </div>
                 <div className="field">
-                  <label>How did you hear about us? <span className="req">*</span></label>
-                  <select value={form.hearAbout} onChange={e => update({ hearAbout: e.target.value })} required>
+                  <label htmlFor="q-hear">How did you hear about us? <span className="req">*</span></label>
+                  <select id="q-hear" value={form.hearAbout} onChange={e => update({ hearAbout: e.target.value })} required>
                     <option value="google">Google search</option>
                     <option value="social">Social media</option>
                     <option value="friend">Friend / family</option>
@@ -177,8 +191,8 @@ export function QuoteView() {
                 </div>
 
                 <div className="field">
-                  <label>When would you like us to contact you?</label>
-                  <select value={form.timeline} onChange={e => update({ timeline: e.target.value })}>
+                  <label htmlFor="q-timeline">When would you like us to contact you?</label>
+                  <select id="q-timeline" value={form.timeline} onChange={e => update({ timeline: e.target.value })}>
                     <option value="asap">ASAP (business hours)</option>
                     <option value="morning">Mornings (9 am – 12 pm)</option>
                     <option value="afternoon">Afternoons (12 pm – 5 pm)</option>
@@ -188,12 +202,12 @@ export function QuoteView() {
                   </select>
                 </div>
                 <div className="field">
-                  <label>How much is your power bill?</label>
+                  <label htmlFor="q-bill">How much is your power bill?</label>
                   <div className="slider-inline">
-                    <input type="range" min={100} max={2000} step={25} value={form.monthlyBill} onChange={e => update({ monthlyBill: +e.target.value })} />
+                    <input id="q-bill" type="range" min={100} max={2000} step={25} value={form.monthlyBill} onChange={e => update({ monthlyBill: +e.target.value })} />
                     <div className="slider-inline-meta">
                       <span>$100</span>
-                      <b>${form.monthlyBill} <span className="slider-period">/ month</span></b>
+                      <b><output htmlFor="q-bill">${form.monthlyBill}</output> <span className="slider-period">/ month</span></b>
                       <span>$2,000+</span>
                     </div>
                     <div className="slider-period-hint">
