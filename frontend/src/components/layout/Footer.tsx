@@ -35,6 +35,7 @@ export function Footer() {
               <Link href="/products#essential">{t('footer.essential')}</Link>
               <Link href="/products#premium">{t('footer.premium')}</Link>
               <Link href="/products#commercial">{t('footer.commercial')}</Link>
+              <Link href="/rebates">{'Rebates & incentives'}</Link>
             </div>
             <div>
               <h5>{t('footer.company')}</h5>

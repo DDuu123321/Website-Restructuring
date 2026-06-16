@@ -57,6 +57,8 @@ export function Nav() {
           <ul className="bv-nav-links">
             <li><Link className={pathname === '/' ? 'is-active' : ''} href="/">{t('nav.home')}</Link></li>
 
+            <li><Link className={pathname.startsWith('/rebates') ? 'is-active' : ''} href="/rebates">Rebates</Link></li>
+
             <li className={`bv-mm-item ${activePane==='products' ? 'mm-open' : ''}`}>
               <button
                 className={`bv-mm-trigger ${isActive(['/products','/quote']) ? 'is-active' : ''}`}
@@ -121,6 +123,7 @@ export function Nav() {
         <div className={`bv-mobile-menu ${mobileOpen ? 'open' : ''}`}>
           <Link className={pathname === '/' ? 'is-active' : ''} href="/">{t('nav.home')}</Link>
           <Link className={linkClass(['/products'])} href="/products">{t('nav.products')}</Link>
+          <Link className={linkClass(['/rebates'])} href="/rebates">Rebates</Link>
           <Link className={linkClass(['/projects'])} href="/projects">{t('nav.projects')}</Link>
           <Link className={linkClass(['/brands'])} href="/brands">{t('nav.brands')}</Link>
           <Link className={linkClass(['/who-we-are'])} href="/who-we-are">{t('nav.who')}</Link>

@@ -4,8 +4,8 @@ import Link from 'next/link'
 
 export function MarqueeBar() {
   const items = [
-    '🔥 Federal battery rebate 2026 — up to $4,650 off per household',
-    '⚡ New-Year promotion · Tesla Powerwall 3 — $1,200 instant discount',
+    '🔥 Federal battery rebate 2026 — big upfront savings, paperwork handled',
+    '⚡ New-Year promotion · Tesla Powerwall 3 — limited-time offer',
     '☀ 13 kW solar + 10 kWh battery · 6-yr payback',
     '🔋 AlphaESS G3 line — 9.3 / 13.3 / 13.9 kWh in stock',
     '🚗 Free Tesla EV Wall Connector upgrade · solar-aware charging',

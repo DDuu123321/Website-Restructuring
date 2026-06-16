@@ -225,6 +225,32 @@ export interface SiteSettings {
   }
 }
 
+export interface RebateScheme {
+  name: string
+  tag: 'Federal' | 'NSW' | 'VIC' | 'QLD' | 'SA' | 'WA' | 'ACT' | 'TAS' | 'NT' | 'Finance'
+  appliesTo: 'solar' | 'battery' | 'both' | 'finance'
+  status: 'open' | 'changing' | 'closing' | 'ongoing' | 'closed'
+  summary?: string
+  eligibility?: { point?: string; id?: string }[]
+  timing?: string
+  id?: string
+}
+
+export interface RebatesPage {
+  hero?: { eyebrow?: string; heading?: string; lede?: string }
+  intro?: { heading?: string; body?: string }
+  schemes?: RebateScheme[]
+  process?: {
+    heading?: string
+    lede?: string
+    steps?: { title?: string; desc?: string; id?: string }[]
+  }
+  urgency?: { heading?: string; body?: string }
+  cta?: { heading?: string; body?: string; buttonLabel?: string }
+  lastUpdated?: string
+  seo?: { metaTitle?: string; metaDescription?: string }
+}
+
 export interface PaginatedResponse<T> {
   docs: T[]
   totalDocs: number

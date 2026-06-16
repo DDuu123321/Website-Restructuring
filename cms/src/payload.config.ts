@@ -17,6 +17,7 @@ import Testimonials from './collections/Testimonials'
 import Brands from './collections/Brands'
 import TeamMembers from './collections/TeamMembers'
 import SiteSettings from './globals/SiteSettings'
+import RebatesPage from './globals/RebatesPage'
 
 export default buildConfig({
   serverURL: process.env.SERVER_URL || 'http://localhost:3001',
@@ -61,6 +62,7 @@ export default buildConfig({
 
   globals: [
     SiteSettings,
+    RebatesPage,
   ],
 
   db: postgresAdapter({

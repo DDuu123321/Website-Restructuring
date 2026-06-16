@@ -30,7 +30,7 @@ const FALLBACK_FAQS: FallbackFaq[] = [
   // Rebates & pricing
   { id: 'r1', c: 'pricing',
     q: 'How does the Federal Battery Rebate work in 2026?',
-    a: "The Cheaper Home Batteries Program offers a discount of up to ~$372/kWh on eligible battery systems installed from July 2025. For a 10 kWh battery that's ~$3,720 off — and we handle all the paperwork. It stacks with state rebates in NSW and VIC." },
+    a: "The Cheaper Home Batteries Program gives you an upfront discount on an eligible battery installed from July 2025 — taken straight off your invoice, not claimed back later. The more usable storage (up to the program cap), the bigger the discount, and it stacks with the state incentives in NSW and Victoria. We handle all the paperwork, and your exact figure is set out in your written quote." },
   { id: 'r2', c: 'pricing',
     q: 'What rebates are available in my state?',
     a: 'Federal: STCs (small-scale) for solar, Federal Battery Rebate for storage. State: NSW PDRS and Empowering Homes loan; VIC Solar Homes rebate; QLD interest-free loans. We confirm exactly what you qualify for in your written quote.' },

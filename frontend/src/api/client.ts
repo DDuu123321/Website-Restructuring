@@ -7,7 +7,7 @@
 
 import type {
   News, Project, FAQItem, Brand, Testimonial, SiteSettings, QuoteRequest, AssessmentRequest,
-  PaginatedResponse, Media,
+  PaginatedResponse, Media, RebatesPage,
 } from '@/types/cms'
 
 function getApiBase(): string {
@@ -149,6 +149,11 @@ export const api = {
   // Site settings
   siteSettings() {
     return request<SiteSettings>('/globals/site-settings?depth=1')
+  },
+
+  // Rebates landing page content
+  rebatesPage() {
+    return request<RebatesPage>('/globals/rebates-page?depth=0')
   },
 
   // Quote submission
