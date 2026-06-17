@@ -92,7 +92,7 @@ const Quotes: CollectionConfig = {
         ],
       },
     },
-    { name: 'email',    type: 'email', label: 'Email',    required: true, validate: auEmail(true) },
+    { name: 'email',    type: 'email', label: 'Email',    validate: auEmail(false) },
     { name: 'phone',    type: 'text',  label: 'Phone',    required: true, validate: auPhone(true) },
     {
       name: 'bestTime',

@@ -9,7 +9,7 @@ interface Message {
   content: string
 }
 
-export function ChatWidget() {
+export function ChatWidget({ greeting }: { greeting?: string }) {
   const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -79,7 +79,9 @@ export function ChatWidget() {
 
         <div className="bv-chat-body" ref={bodyRef}>
           <div className="bv-chat-msg ai">
-            <div className="bv-chat-bubble" dangerouslySetInnerHTML={{ __html: t('chat.welcome') }} />
+            {greeting
+              ? <div className="bv-chat-bubble">{greeting}</div>
+              : <div className="bv-chat-bubble" dangerouslySetInnerHTML={{ __html: t('chat.welcome') }} />}
           </div>
 
           {messages.length === 0 && (

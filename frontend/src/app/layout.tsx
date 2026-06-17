@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer'
 import { ChatWidget } from '@/components/layout/ChatWidget'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { SITE, organizationLd } from '@/lib/seo'
+import { api } from '@/api/client'
 
 import '@/styles/design-system.css'
 import '@/styles/chrome.css'
@@ -73,7 +74,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await api.siteSettings().catch(() => null)
+  const chat = settings?.chat
+  const chatEnabled = chat?.enabled !== false   // default on; respects the admin toggle
   return (
     <html lang="en-AU" data-lang="en" className={`${montserrat.variable} ${jetbrainsMono.variable}`}>
       <body>
@@ -83,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Nav />
           <main>{children}</main>
           <Footer />
-          <ChatWidget />
+          {chatEnabled && <ChatWidget greeting={chat?.greeting || undefined} />}
         </Providers>
       </body>
     </html>

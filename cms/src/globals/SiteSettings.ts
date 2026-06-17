@@ -85,7 +85,7 @@ const SiteSettings: GlobalConfig = {
       type: 'group',
       label: 'AI Chat Settings',
       fields: [
-        { name: 'enabled', type: 'checkbox', label: 'Enable AI chat widget', defaultValue: false },
+        { name: 'enabled', type: 'checkbox', label: 'Enable AI chat widget', defaultValue: true },
         { name: 'greeting', type: 'textarea', label: 'Welcome message' },
       ],
     },
