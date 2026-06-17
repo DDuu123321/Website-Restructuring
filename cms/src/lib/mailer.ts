@@ -2,7 +2,7 @@
  * Email transport — Zoho SMTP via Nodemailer.
  *
  * Loaded by every lead-collection's afterChange hook
- * (sendQuoteEmails / sendAssessmentEmails / sendReviewEmail) and by
+ * (sendQuoteEmails / sendAssessmentEmails) and by
  * the customer-confirmation send in the quote/assessment hooks.
  *
  * IMPORTANT: nodemailer is loaded via `eval('require')` so the Payload

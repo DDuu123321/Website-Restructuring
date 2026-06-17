@@ -72,19 +72,6 @@ export interface FAQItem {
   published: boolean
 }
 
-export interface Testimonial {
-  id: string
-  customerName: string
-  suburb: string
-  rating: '5' | '4' | '3' | '2' | '1'
-  review: string
-  systemInstalled?: string
-  status: 'new' | 'reviewed' | 'hidden'
-  pinned?: boolean
-  sortOrder: number
-  createdAt?: string
-}
-
 export interface Brand {
   id: string
   name: string

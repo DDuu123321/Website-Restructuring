@@ -5,17 +5,15 @@ import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { useI18n, T } from '@/i18n/I18nProvider'
 import { Reveal, AnimatedCounter } from '@/components/ui/Reveal'
-import { TestimonialForm } from '@/components/ui/TestimonialForm'
 import { FreeAssessmentHeroButton } from '@/components/assessment/FreeAssessmentModal'
 import { api } from '@/api/client'
-import type { Project, Testimonial } from '@/types/cms'
+import type { Project } from '@/types/cms'
 
 interface Props {
   featuredProjects: Project[]
-  featuredTestimonials: Testimonial[]
 }
 
-export function HomeView({ featuredProjects, featuredTestimonials }: Props) {
+export function HomeView({ featuredProjects }: Props) {
   // Meeting feedback: News section moved off homepage to /news standalone page
   return (
     <>
@@ -25,7 +23,6 @@ export function HomeView({ featuredProjects, featuredTestimonials }: Props) {
       <ProcessSection />
       <FeaturesCarousel />
       <ProjectsShowcase projects={featuredProjects} />
-      <TestimonialsSection testimonials={featuredTestimonials} />
     </>
   )
 }
@@ -231,8 +228,7 @@ function StatsBleed() {
         <div className="stats-grid">
           <Reveal className="stat"><div className="num"><AnimatedCounter to={2400} />+</div><div className="lbl">{t('h.s1')}</div></Reveal>
           <Reveal className="stat" delay={120}><div className="num"><AnimatedCounter to={42} />M+</div><div className="lbl">{t('h.s2')}</div></Reveal>
-          <Reveal className="stat" delay={240}><div className="num">4.9 / 5</div><div className="lbl">{t('h.s3')}</div></Reveal>
-          <Reveal className="stat" delay={360}><div className="num"><AnimatedCounter to={137} />+</div><div className="lbl">{t('h.s4')}</div></Reveal>
+          <Reveal className="stat" delay={240}><div className="num"><AnimatedCounter to={137} />+</div><div className="lbl">{t('h.s4')}</div></Reveal>
         </div>
       </div>
     </section>
@@ -1024,67 +1020,4 @@ function ProjectsCarousel({ cards }: { cards: Array<{ id: string; href: string; 
   )
 }
 
-function TestimonialsSection({ testimonials }: { testimonials: Testimonial[] }) {
-  const { t } = useI18n()
-
-  // Curated review examples — meeting feedback removed source labels (GOOGLE / FACEBOOK etc.)
-  const examples = [
-    { text: '"From quote to install in 11 days — neighbours waited 8 weeks."', name: 'Liam M.', location: 'Mosman, NSW' },
-    { text: '"Got 4 quotes — only Bluven sent an actual engineer onsite."', name: 'Priya S.', location: 'Box Hill, VIC' },
-    { text: '"4.2-year payback on our café system. Customers love it."', name: 'Marco D.', location: 'Newtown, NSW' },
-    { text: '"Engineer caught a roof shading issue the others missed."', name: 'David L.', location: 'Coogee, NSW' },
-    { text: '"Battery paid for itself faster than the loan."', name: 'Aisha K.', location: 'Brisbane, QLD' },
-    { text: '"Honest pricing. Zero upsell. Refreshing."', name: 'Mark R.', location: 'Perth, WA' },
-    { text: '"Bills dropped 92% in summer. Neighbours keep asking."', name: 'Rachel S.', location: 'Adelaide, SA' },
-    { text: '"They handled every rebate form. We just signed."', name: 'Tom B.', location: 'Hobart, TAS' },
-    { text: '"Two years in. Still answering my emails on weekends."', name: 'Jenny H.', location: 'Newcastle, NSW' },
-    { text: '"EV charging straight from the sun. Genius setup."', name: 'Liam W.', location: 'Geelong, VIC' },
-    { text: '"Quote was 22% lower than competitors for the same gear."', name: 'Priya N.', location: 'Canberra, ACT' },
-    { text: '"First proper engineer who understood our 3-phase setup."', name: 'Daniel M.', location: 'Sunshine Coast, QLD' },
-  ]
-
-  const live = testimonials.map(d => ({
-    text: `"${d.review}"`,
-    name: d.customerName,
-    location: d.suburb,
-  }))
-
-  // CMS reviews + examples; CMS first
-  const all = [...live, ...examples]
-  // Duplicate for seamless horizontal loop
-  const looped = [...all, ...all]
-
-  return (
-    <section className="section testimonials-fit" style={{ background: 'var(--bv-paper-2)' }}>
-      <div className="container">
-        <Reveal style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto' }}>
-          <div className="section-eye" style={{ display: 'inline-block' }}>{t('sect.test.eye')}</div>
-          <h2 className="section-h" style={{ margin: '0 auto', maxWidth: '24ch' }}>{t('sect.test.h')}</h2>
-        </Reveal>
-
-        <div className="test-row-marquee" aria-hidden="false">
-          <div className="test-row-track">
-            {looped.map((it, i) => (
-              <div className="test-card test-card-h" key={i}>
-                <div className="test-stars">★★★★★</div>
-                <p className="test-quote">{it.text}</p>
-                <div className="test-author">
-                  <div className="test-avatar">{it.name.charAt(0)}</div>
-                  <div>
-                    <div className="n">{it.name}</div>
-                    <div className="l">{it.location}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <Reveal style={{ marginTop: 40 }}>
-          <TestimonialForm viewMoreHref="/reviews" />
-        </Reveal>
-      </div>
-    </section>
-  )
-}
 

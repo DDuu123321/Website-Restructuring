@@ -6,7 +6,7 @@
  */
 
 import type {
-  News, Project, FAQItem, Brand, Testimonial, SiteSettings, QuoteRequest, AssessmentRequest,
+  News, Project, FAQItem, Brand, SiteSettings, QuoteRequest, AssessmentRequest,
   PaginatedResponse, Media, RebatesPage,
 } from '@/types/cms'
 
@@ -115,28 +115,6 @@ export const api = {
     return request<PaginatedResponse<FAQItem>>(
       '/faq' + buildQuery({ limit: 100, sort: 'sortOrder', depth: 0, locale: args.locale, where })
     )
-  },
-
-  // Testimonials — pinned first, then by sortOrder, then newest first
-  // Excludes hidden reviews. Pass { pinned: true } to filter to homepage-pinned only.
-  testimonials(args: { limit?: number; page?: number; pinned?: boolean } = {}) {
-    const where: WhereClause = { status: { not_equals: 'hidden' } }
-    if (args.pinned === true) where.pinned = { equals: true }
-    return request<PaginatedResponse<Testimonial>>(
-      '/testimonials' + buildQuery({
-        limit: args.limit ?? 8,
-        page: args.page ?? 1,
-        sort: '-pinned,sortOrder,-createdAt',
-        depth: 0,
-        where,
-      }),
-      { revalidate: 30 }
-    )
-  },
-  submitTestimonial(data: Partial<Testimonial>) {
-    return request<{ doc: Testimonial }>('/testimonials', {
-      method: 'POST', body: JSON.stringify(data),
-    })
   },
 
   // Brands

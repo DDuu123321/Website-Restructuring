@@ -24,7 +24,7 @@ const SiteSettings: GlobalConfig = {
       type: 'row',
       fields: [
         { name: 'email', type: 'email', label: 'Contact Email', defaultValue: 'info@bluven.com.au' },
-        { name: 'quoteEmail', type: 'email', label: 'Lead Notification Email', admin: { description: 'Optional — internal new-lead emails (quotes, assessments, reviews) are sent here. Leave blank to use the NOTIFY_EMAIL env var.' } },
+        { name: 'quoteEmail', type: 'email', label: 'Lead Notification Email', admin: { description: 'Optional — internal new-lead emails (quotes, assessments) are sent here. Leave blank to use the NOTIFY_EMAIL env var.' } },
       ],
     },
     {
@@ -114,13 +114,6 @@ const SiteSettings: GlobalConfig = {
           fields: [
             { name: 'emailOnAssessment', type: 'checkbox', label: '📧 Email me about new assessments',   defaultValue: true },
             { name: 'adminOnAssessment', type: 'checkbox', label: '🔔 Show unread assessments in admin', defaultValue: true },
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
-            { name: 'emailOnReview',     type: 'checkbox', label: '📧 Email me about new reviews',       defaultValue: true },
-            { name: 'adminOnReview',     type: 'checkbox', label: '🔔 Show unread reviews in admin',     defaultValue: true },
           ],
         },
       ],

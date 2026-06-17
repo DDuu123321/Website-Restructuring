@@ -22,21 +22,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'nav.call': '1300 BLUVEN',
     'nav.callLabel': 'CALL US',
     'nav.quote': 'Get a Quote',
-    // ── Reviews / Testimonials ──
-    'review.share': 'Share Your Experience',
-    'review.lede': "Tell us how we did. Your review helps other Aussie families switch to solar with confidence — no account required.",
-    'review.name': 'Your name',
-    'review.suburb': 'Suburb / state (e.g. Mosman, NSW)',
-    'review.system': 'System installed (optional)',
-    'review.rating': 'Rating',
-    'review.text': 'Your review',
-    'review.submit': 'Submit review',
-    'review.submitting': 'Submitting…',
-    'review.success': "Thank you! Your review has been received and will appear after a quick check by our team.",
-    'review.error': 'Sorry — we could not submit your review. Please try again.',
-    'review.toggleOpen': 'Write a review',
-    'review.toggleClose': 'Close',
-    'review.viewAll': 'View all reviews',
 
     // ── Footer ──
     'footer.tagline': "Australia's trusted partner for residential & commercial solar, battery and EV charging — designed, installed and supported locally.",
@@ -102,7 +87,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'h.cta2': 'Watch how it works',
     'h.s1': 'Homes powered',
     'h.s2': 'kWh generated',
-    'h.s3': 'Avg. customer review',
     'h.s4': 'Service partners',
 
     // ── Home: sections ──
@@ -130,9 +114,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'sect.proj.eye': "PROJECTS WE'VE BUILT",
     'sect.proj.h': '600+ Australian roofs.<br/>Every one engineered.',
     'sect.proj.see': 'See all projects',
-
-    'sect.test.eye': 'WHAT CUSTOMERS SAY',
-    'sect.test.h': '4.9 / 5 across 1,200+ reviews.',
 
     'sect.news.eye': 'INSIGHTS',
     'sect.news.h': 'Plain-English advice for<br/>Australian solar owners.',

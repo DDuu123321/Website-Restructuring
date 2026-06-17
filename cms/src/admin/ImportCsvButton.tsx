@@ -27,7 +27,6 @@ type RowResult = { row: number; ok: boolean; error?: string; id?: string }
 const multiValueFields: Record<string, string[]> = {
   quotes:        ['components'],
   assessments:   ['answers.majorLoads', 'answers.mainGoal', 'result.billReasons'],
-  testimonials:  [],
 }
 
 const ImportCsvButton: React.FC = () => {

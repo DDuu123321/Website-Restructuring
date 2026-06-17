@@ -13,7 +13,6 @@ import Projects from './collections/Projects'
 import FAQ from './collections/FAQ'
 import Quotes from './collections/Quotes'
 import Assessments from './collections/Assessments'
-import Testimonials from './collections/Testimonials'
 import Brands from './collections/Brands'
 import TeamMembers from './collections/TeamMembers'
 import SiteSettings from './globals/SiteSettings'
@@ -46,7 +45,6 @@ export default buildConfig({
     // ── Leads ──
     Quotes,
     Assessments,
-    Testimonials,
 
     // ── Content ──
     News,

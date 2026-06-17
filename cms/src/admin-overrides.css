@@ -222,7 +222,7 @@ select:focus {
   background: rgba(255, 255, 255, 0.28);
 }
 
-/* Reduce noise on the gigantic green Testimonials/Quotes title block */
+/* Reduce noise on the gigantic green Quotes title block */
 .collection-edit__header h1 {
   background: transparent !important;
   color: var(--bv-navy-900) !important;

@@ -35,8 +35,8 @@ app.use(cors({ origin: allowedOrigins, credentials: true }))
 // ── Anti-spam: 10 POST submissions per minute per IP ──────
 // GETs (admin list views, UnreadBadges polling, frontend ISR) are
 // not counted thanks to the `skip` filter.
-// Shared bucket across all three lead endpoints — an attacker
-// spreading their requests across quotes/assessments/testimonials
+// Shared bucket across both lead endpoints — an attacker
+// spreading their requests across quotes/assessments
 // still gets only 10 POSTs/min total.
 const submitLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -48,7 +48,6 @@ const submitLimiter = rateLimit({
 })
 app.use('/api/quotes',       submitLimiter)
 app.use('/api/assessments',  submitLimiter)
-app.use('/api/testimonials', submitLimiter)
 
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
 // Rate-limited and size-capped: each call costs real money on the Gemini
