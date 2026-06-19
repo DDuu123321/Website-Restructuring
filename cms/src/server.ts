@@ -5,6 +5,7 @@ import path from 'path'
 import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
+import crypto from 'crypto'
 
 const app = express()
 
@@ -191,6 +192,92 @@ app.post('/api/chat', chatLimiter, express.json({ limit: '16kb' }), async (req, 
   } catch (err) {
     console.error('[chat] proxy error:', err)
     return res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// ── CRM lead sync (one-way pull) ───────────────────────────
+// The standalone CRM polls this for new leads. Read-only, guarded by a shared
+// secret. Returns quotes + assessments created at/after ?since=<ISO>, in a
+// normalised shape so the CRM never couples to Payload's internal fields.
+// Inert until CRM_SYNC_KEY is set (returns 503), so it ships safely.
+const CRM_SYNC_KEY = process.env.CRM_SYNC_KEY
+if (!CRM_SYNC_KEY) {
+  console.warn('[crm-sync] CRM_SYNC_KEY not set — GET /api/crm/leads is disabled (503).')
+}
+
+// Constant-time Bearer check (compare SHA-256 digests so length never leaks and
+// timingSafeEqual always gets equal-length buffers).
+function crmSyncAuthOk(header: string | undefined): boolean {
+  if (!CRM_SYNC_KEY) return false
+  const a = crypto.createHash('sha256').update(header ?? '').digest()
+  const b = crypto.createHash('sha256').update(`Bearer ${CRM_SYNC_KEY}`).digest()
+  return crypto.timingSafeEqual(a, b)
+}
+
+app.get('/api/crm/leads', async (req, res) => {
+  if (!CRM_SYNC_KEY) {
+    return res.status(503).json({ error: 'CRM sync not configured' })
+  }
+  if (!crmSyncAuthOk(req.header('authorization'))) {
+    return res.status(401).json({ error: 'unauthorized' })
+  }
+
+  const sinceRaw = typeof req.query.since === 'string' ? req.query.since : ''
+  const since =
+    sinceRaw && !Number.isNaN(Date.parse(sinceRaw))
+      ? sinceRaw
+      : '1970-01-01T00:00:00.000Z'
+  // `>=` (not `>`) + the CRM's idempotent upsert-by-externalId means re-pulling
+  // boundary records is harmless and nothing is ever skipped.
+  const where = { createdAt: { greater_than_equal: since } } as any
+  const limit = 200
+
+  try {
+    const [quotes, assessments] = await Promise.all([
+      payload.find({ collection: 'quotes', where, sort: 'createdAt', limit, depth: 0 }),
+      payload.find({ collection: 'assessments', where, sort: 'createdAt', limit, depth: 0 }),
+    ])
+
+    const items = [
+      ...quotes.docs.map((q: any) => ({
+        kind: 'quote',
+        externalId: `quote:${q.id}`,
+        createdAt: q.createdAt,
+        firstName: q.firstName || '',
+        lastName: q.lastName || '',
+        email: q.email || '',
+        phone: q.phone || '',
+        address: q.address || '',
+        suburb: q.suburb || '',
+        state: q.state || '',
+        postcode: q.postcode || '',
+        source: q?.source?.referrer === 'ai-chat' ? 'AI_CHAT' : 'WEBSITE_QUOTE',
+        title:
+          Array.isArray(q.components) && q.components.length
+            ? q.components.join(' + ')
+            : 'Website quote',
+      })),
+      ...assessments.docs.map((a: any) => ({
+        kind: 'assessment',
+        externalId: `assessment:${a.id}`,
+        createdAt: a.createdAt,
+        firstName: a.firstName || '',
+        lastName: a.lastName || '',
+        email: a.email || '',
+        phone: a.phone || '',
+        address: a.address || '',
+        suburb: a.suburb || '',
+        state: a.state || '',
+        postcode: a.postcode || '',
+        source: 'WEBSITE_ASSESSMENT',
+        title: 'Free assessment',
+      })),
+    ].sort((x, y) => String(x.createdAt).localeCompare(String(y.createdAt)))
+
+    return res.json({ items, count: items.length })
+  } catch (err) {
+    payload.logger.error(`[crm-sync] query failed: ${err}`)
+    return res.status(500).json({ error: 'sync query failed' })
   }
 })
 
