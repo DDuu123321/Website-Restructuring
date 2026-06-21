@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Montserrat, JetBrains_Mono } from 'next/font/google'
 import { Providers } from '@/components/layout/Providers'
-import { MarqueeBar } from '@/components/layout/MarqueeBar'
 import { Nav } from '@/components/layout/Nav'
 import { Footer } from '@/components/layout/Footer'
 import { ChatWidget } from '@/components/layout/ChatWidget'
@@ -83,7 +82,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <JsonLd data={organizationLd()} />
         <Providers>
-          <MarqueeBar />
           <Nav />
           <main>{children}</main>
           <Footer />

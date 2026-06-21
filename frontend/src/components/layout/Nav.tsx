@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useI18n } from '@/i18n/I18nProvider'
-import { FreeAssessmentStickyButton } from '@/components/assessment/FreeAssessmentModal'
 import { Logo } from './Logo'
 import { MegaMenu } from './MegaMenu'
 
@@ -46,7 +45,10 @@ export function Nav() {
   const isActive = (paths: string[]) => paths.some(p => pathname.startsWith(p))
   const linkClass = (paths: string[]) => isActive(paths) ? 'is-active' : ''
 
-  const navClass = ['bv-nav', isDarkHero ? 'dark' : '', scrolled ? 'scrolled' : ''].filter(Boolean).join(' ')
+  // On dark-hero pages the nav is transparent + white over the video; once
+  // scrolled it turns solid white, so we drop `dark` and reuse the light theme
+  // (white bg, dark text, colour logo) instead of a translucent navy bar.
+  const navClass = ['bv-nav', (isDarkHero && !scrolled) ? 'dark' : '', scrolled ? 'scrolled' : ''].filter(Boolean).join(' ')
 
   return (
     <>
@@ -56,8 +58,6 @@ export function Nav() {
 
           <ul className="bv-nav-links">
             <li><Link className={pathname === '/' ? 'is-active' : ''} href="/">{t('nav.home')}</Link></li>
-
-            <li><Link className={pathname.startsWith('/rebates') ? 'is-active' : ''} href="/rebates">Rebates</Link></li>
 
             <li className={`bv-mm-item ${activePane==='products' ? 'mm-open' : ''}`}>
               <button
@@ -123,7 +123,6 @@ export function Nav() {
         <div className={`bv-mobile-menu ${mobileOpen ? 'open' : ''}`}>
           <Link className={pathname === '/' ? 'is-active' : ''} href="/">{t('nav.home')}</Link>
           <Link className={linkClass(['/products'])} href="/products">{t('nav.products')}</Link>
-          <Link className={linkClass(['/rebates'])} href="/rebates">Rebates</Link>
           <Link className={linkClass(['/projects'])} href="/projects">{t('nav.projects')}</Link>
           <Link className={linkClass(['/brands'])} href="/brands">{t('nav.brands')}</Link>
           <Link className={linkClass(['/who-we-are'])} href="/who-we-are">{t('nav.who')}</Link>
@@ -143,20 +142,17 @@ export function Nav() {
       </nav>
 
       {!pathname.startsWith('/quote') && (
-        <>
-          <FreeAssessmentStickyButton show={scrolled} />
-          <Link className={`bv-sticky-quote ${scrolled ? 'show' : ''}`} href="/quote" aria-label="Get a quote">
-            <span className="bv-sq-pulse"></span>
-            <span className="bv-sq-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
-                <circle cx="12" cy="12" r="4"/>
-              </svg>
-            </span>
-            <span className="bv-sq-label">{t('sticky.quote')}</span>
-            <span className="bv-sq-arrow">→</span>
-          </Link>
-        </>
+        <Link className={`bv-sticky-quote ${scrolled ? 'show' : ''}`} href="/quote" aria-label="Get a quote">
+          <span className="bv-sq-pulse"></span>
+          <span className="bv-sq-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </span>
+          <span className="bv-sq-label">{t('sticky.quote')}</span>
+          <span className="bv-sq-arrow">→</span>
+        </Link>
       )}
     </>
   )

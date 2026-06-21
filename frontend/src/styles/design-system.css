@@ -340,11 +340,15 @@ p  { margin: 0; }
   letter-spacing: 0.01em;
 }
 
-/* Scrollbar */
+/* Scrollbar — inner scroll areas (carousels, modals) keep a thin styled bar;
+   the main PAGE scrollbar is hidden per request. Scrolling still works via
+   wheel, trackpad, keyboard and touch — only the draggable bar is removed. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bv-ink-200); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--bv-ink-300); }
+html { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar { display: none; }
 
 /* Selection */
 ::selection { background: var(--bv-teal-100); color: var(--bv-ink-900); }

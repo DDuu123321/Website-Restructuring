@@ -2,90 +2,21 @@
    Chrome — Nav, Footer, Chat, Mobile menu
    ============================================================ */
 
-/* ---------- Marquee announcement bar (top of page) ---------- */
-.bv-marquee-bar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 101;
-  display: block;
-  height: 36px;
-  overflow: hidden;
-  background: linear-gradient(90deg, #1e4a8c 0%, #2657a3 50%, #1e4a8c 100%);
-  color: var(--bv-white);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  text-decoration: none;
-  cursor: pointer;
-}
-.bv-marquee-bar:hover {
-  background: linear-gradient(90deg, var(--bv-teal-700) 0%, #2657a3 50%, var(--bv-teal-700) 100%);
-}
-.bv-marquee-track {
-  display: inline-flex;
-  align-items: center;
-  width: max-content;
-  height: 100%;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  animation: bvMarqueeSlide 60s linear infinite;
-  will-change: transform;
-}
-.bv-marquee-track span {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 0 28px 0 0;
-  position: relative;
-}
-.bv-marquee-track span::after {
-  content: "·";
-  position: absolute;
-  right: 12px;
-  color: var(--bv-amber-400);
-  font-weight: 700;
-  font-size: 16px;
-}
-.bv-marquee-bar:hover .bv-marquee-track {
-  animation-play-state: paused;
-}
-@keyframes bvMarqueeSlide {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@media (max-width: 640px) {
-  .bv-marquee-bar { height: 32px; }
-  .bv-marquee-track { font-size: 12px; animation-duration: 48s; }
-  .bv-marquee-track span { padding-right: 22px; }
-  .bv-marquee-track span::after { right: 9px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bv-marquee-track { animation: none; }
-}
-
 /* ---------- Nav ---------- */
 .bv-nav {
   position: fixed;
-  top: 36px; left: 0; right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 100;
   transition: all 0.4s var(--ease-out);
   padding: 16px 0;
 }
-@media (max-width: 640px) {
-  .bv-nav { top: 32px; }
-}
 .bv-nav.scrolled {
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: #ffffff;
   border-bottom: 1px solid rgba(10, 18, 40, 0.06);
+  box-shadow: 0 1px 16px rgba(10, 18, 40, 0.06);
   padding: 12px 0;
 }
 .bv-nav.dark { color: var(--bv-white); }
-.bv-nav.dark.scrolled {
-  background: rgba(30, 74, 140, 0.82);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
 .bv-nav-inner {
   max-width: 1500px;
   margin: 0 auto;

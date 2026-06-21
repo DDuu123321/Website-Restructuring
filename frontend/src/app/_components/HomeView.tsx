@@ -27,6 +27,12 @@ export function HomeView({ featuredProjects }: Props) {
   )
 }
 
+// Hero background video: play a slow single pass from VIDEO_START and freeze on
+// VIDEO_REST (a hand-picked frame). The natural end (~12.3s) fades to black, so
+// we stop short — the scrim then sits over this frame so it shows through faintly.
+const VIDEO_START = 1.5
+const VIDEO_REST = 11.5
+
 function Hero() {
   const { t } = useI18n()
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -40,28 +46,43 @@ function Hero() {
     const v = videoRef.current
     if (!v) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVideoResting(true)
+      // No playback: jump straight to the resting frame and hold.
+      const settle = () => { try { v.currentTime = VIDEO_REST } catch {} ; v.pause(); setVideoResting(true) }
+      if (v.readyState >= 1) settle()
+      else v.addEventListener('loadedmetadata', settle, { once: true })
       return
     }
-    const slow = () => { v.playbackRate = 0.8 }
-    slow()
+    const init = () => {
+      v.playbackRate = 0.8
+      if (v.currentTime < VIDEO_START) { try { v.currentTime = VIDEO_START } catch {} }
+    }
+    if (v.readyState >= 1) init()
     const reveal = () => setVideoResting(true)
     let started = false
-    const onPlay = () => { started = true; slow() }
-    // Chrome pauses autoplaying video with no audio track to save power, so
-    // `ended` may never fire. Treat any pause after playback started as the
-    // signal to reveal — covers natural end, browser intervention, and skip.
+    const onPlay = () => { started = true; v.playbackRate = 0.8 }
+    // Freeze on VIDEO_REST rather than running on to the black end frame.
+    const onTimeUpdate = () => {
+      if (v.currentTime >= VIDEO_REST) {
+        v.pause()
+        try { v.currentTime = VIDEO_REST } catch {}
+        reveal()
+      }
+    }
+    // Chrome pauses autoplaying muted video to save power, so the rest may
+    // arrive early via `pause`; treat that as the reveal cue too.
     const onPause = () => { if (started) reveal() }
-    v.addEventListener('loadedmetadata', slow)
+    v.addEventListener('loadedmetadata', init)
     v.addEventListener('play', onPlay)
+    v.addEventListener('timeupdate', onTimeUpdate)
     v.addEventListener('pause', onPause)
     v.addEventListener('ended', reveal)
     v.addEventListener('error', reveal)
     // Safety net for blocked autoplay (e.g. data-saver, no user gesture).
-    const fallback = setTimeout(reveal, 6000)
+    const fallback = setTimeout(reveal, 15000)
     return () => {
-      v.removeEventListener('loadedmetadata', slow)
+      v.removeEventListener('loadedmetadata', init)
       v.removeEventListener('play', onPlay)
+      v.removeEventListener('timeupdate', onTimeUpdate)
       v.removeEventListener('pause', onPause)
       v.removeEventListener('ended', reveal)
       v.removeEventListener('error', reveal)
@@ -71,8 +92,8 @@ function Hero() {
 
   const skipVideo = () => {
     const v = videoRef.current
-    if (v && Number.isFinite(v.duration)) {
-      v.currentTime = v.duration
+    if (v) {
+      try { v.currentTime = VIDEO_REST } catch {}
       v.pause()
     }
     setVideoResting(true)

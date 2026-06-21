@@ -405,7 +405,7 @@
   opacity: 0;
   transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hero--video-rest::after { opacity: 1; }
+.hero--video-rest::after { opacity: 0.65; }
 /* Narrow screens: text spans the full width — use an even top-to-bottom scrim */
 @media (max-width: 760px) {
   .hero::after {
@@ -482,25 +482,24 @@
 }
 .hero-content {
   width: 100%;
-  max-width: 2000px;
+  max-width: 1840px;
   margin: 0 auto;
-  padding: 140px 40px 96px;
+  /* Left pad is 20px more than the right so the text column isn't flush against
+     the edge ("nudge copy right 20px"); columns stay exactly 1:1 (flex). */
+  padding: 140px 40px 96px 60px;
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 56px;
+  gap: 50px;
 }
 .hero-copy {
-  flex: 0 1 700px;
+  /* Copy and diagram split the row 1:1; the heading (sized in cqi off this
+     column) and the image scale together with the viewport. (The 20px right
+     nudge lives in .hero-content's asymmetric left padding.) */
+  flex: 1 1 0;
   min-width: 0;
-  transform: translateX(150px);
-}
-/* Reset the desktop nudge below 1280px: the diagram stays visible down to 700px,
-   so leaving the 150px shift on pushed the copy past the right edge in the
-   1101–1280 band (small laptops / landscape tablets). */
-@media (max-width: 1280px) {
-  .hero-copy { transform: none; }
+  container-type: inline-size;
 }
 .hero-diagram {
   flex: 1 1 0;
@@ -535,7 +534,7 @@
 }
 .hero-h1 {
   font-family: var(--font-display);
-  font-size: clamp(44px, 5.8vw, 82px);
+  font-size: clamp(40px, 9.2cqi, 84px);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: -0.028em;
@@ -700,11 +699,17 @@
 }
 @media (max-width: 1200px) {
   .hero-content { display: block; padding: 130px 32px 90px; }
-  .hero-copy { max-width: 720px; }
+  .hero-copy { max-width: 720px; margin: 0 auto; }
   .hero-diagram { display: none; }
 }
 @media (max-width: 640px) {
   .hero-content { padding: 120px 20px 80px; }
+  .hero-scroll { display: none; }
+}
+/* Short viewports (incl. zoomed-in windows): the vertically-centred hero copy
+   grows down to meet the bottom-pinned SCROLL cue and they overlap. Drop the
+   decorative cue when there isn't vertical room — so it "adjusts" with zoom. */
+@media (max-height: 900px) {
   .hero-scroll { display: none; }
 }
 
@@ -1009,8 +1014,9 @@
   max-width: 1000px;
   margin: 0 auto;
   aspect-ratio: 1536 / 1024;
-  /* User-requested: scale 10% larger, nudge 60px right + 20px down of center */
-  transform: translate(60px, 20px) scale(1.1);
+  /* Scale 10% larger, centred. (Both nudges removed — the horizontal one clipped
+     the house at the viewport edge; the 20px-down nudge served no purpose.) */
+  transform: scale(1.1);
   transform-origin: center center;
 }
 /* Below 1280px there isn't room for the 60px+scale nudge — center it cleanly
@@ -1041,33 +1047,11 @@
    ========================================================= */
 .proc-pin {
   position: relative;
-  background: linear-gradient(180deg, var(--bv-ink-800), var(--bv-ink-700));
+  background: var(--bv-ink-800);
   color: var(--bv-white);
   /* Total scroll = 4 steps × ~80vh = 320vh of scroll travel */
   height: 360vh;
   overflow: visible;
-}
-.proc-pin::before {
-  content: "";
-  position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1.5px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
-  pointer-events: none;
-  z-index: 0;
-}
-.proc-pin::after {
-  content: "";
-  position: absolute;
-  width: 700px; height: 700px;
-  border-radius: 50%;
-  top: 30%; left: -200px;
-  filter: blur(100px);
-  background: radial-gradient(circle, rgba(231,182,88,0.25), transparent 70%);
-  pointer-events: none;
-  animation: bvBlobFloat 24s ease-in-out infinite alternate;
-  z-index: 0;
 }
 .proc-pin-inner {
   position: sticky;
@@ -1399,7 +1383,7 @@ section.section.showcase {
    PROJECTS SHOWCASE — bottom of homepage
    ========================================================= */
 .section.showcase {
-  background: linear-gradient(180deg, var(--bv-ink-800) 0%, var(--bv-ink-700) 100%);
+  background: var(--bv-ink-800);
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
@@ -1408,26 +1392,6 @@ section.section.showcase {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-.section.showcase::before {
-  content: "";
-  position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1.5px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black, transparent);
-  pointer-events: none;
-}
-.section.showcase::after {
-  content: "";
-  position: absolute;
-  width: 600px; height: 600px;
-  border-radius: 50%;
-  top: -200px; right: -160px;
-  filter: blur(80px);
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(231,182,88,0.25), transparent 70%);
-  animation: bvBlobFloat 22s ease-in-out infinite alternate;
 }
 .section.showcase > .container { position: relative; z-index: 1; }
 
