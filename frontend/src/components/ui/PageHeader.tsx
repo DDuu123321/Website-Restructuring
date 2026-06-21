@@ -14,7 +14,7 @@ export function PageHeader({ eyebrow, title, lede, background = 'navy' }: PageHe
     ? 'linear-gradient(180deg, var(--bv-paper-2) 0%, var(--bv-paper-3) 100%)'
     : background === 'white'
       ? 'var(--bv-white)'
-      : 'linear-gradient(180deg, var(--bv-ink-950) 0%, var(--bv-ink-800) 100%)'
+      : 'var(--bv-ink-800)'
   const textColor = dark ? 'var(--bv-white)' : 'var(--bv-ink-900)'
   const ledeColor = dark ? 'rgba(255,255,255,0.78)' : 'var(--bv-ink-500)'
   const eyeColor = dark ? 'var(--bv-teal-300)' : 'var(--bv-teal-600)'

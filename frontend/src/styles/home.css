@@ -1343,20 +1343,12 @@ section.section.showcase {
    BOTTOM CTA
    ========================================================= */
 .cta-bottom {
-  background: linear-gradient(135deg, var(--bv-ink-900) 0%, var(--bv-teal-700) 140%);
+  background: var(--bv-ink-800);
   color: var(--bv-white);
   padding: clamp(70px, 9vw, 120px) 32px;
   text-align: center;
   position: relative;
   overflow: hidden;
-}
-.cta-bottom::before {
-  content: "";
-  position: absolute; inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 80%, rgba(231, 182, 88, 0.30), transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.18), transparent 50%);
-  pointer-events: none;
 }
 .cta-bottom > * { position: relative; z-index: 1; }
 .cta-bottom .section-eye { color: var(--bv-teal-300) !important; }
