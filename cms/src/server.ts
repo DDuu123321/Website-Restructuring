@@ -6,6 +6,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import crypto from 'crypto'
+import { r2Enabled } from './lib/storage'
 
 const app = express()
 
@@ -281,8 +282,13 @@ app.get('/api/crm/leads', async (req, res) => {
   }
 })
 
-// ── Serve uploaded media ───────────────────────────────────
-app.use('/uploads', express.static(path.resolve(__dirname, '../../uploads')))
+// ── Serve uploaded media (local-disk mode only) ────────────
+// In R2 mode the cloud-storage plugin registers its own /uploads handler during
+// payload.init(); mounting express.static here would shadow it and 404 files
+// that aren't on Railway's ephemeral disk.
+if (!r2Enabled) {
+  app.use('/uploads', express.static(path.resolve(__dirname, '../../uploads')))
+}
 
 // ── Initialise Payload ────────────────────────────────────
 //

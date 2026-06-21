@@ -16,7 +16,9 @@ import Assessments from './collections/Assessments'
 import Brands from './collections/Brands'
 import TeamMembers from './collections/TeamMembers'
 import SiteSettings from './globals/SiteSettings'
-import RebatesPage from './globals/RebatesPage'
+import { cloudStorage } from '@payloadcms/plugin-cloud-storage'
+import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
+import { r2Enabled } from './lib/storage'
 
 export default buildConfig({
   serverURL: process.env.SERVER_URL || 'http://localhost:3001',
@@ -60,7 +62,6 @@ export default buildConfig({
 
   globals: [
     SiteSettings,
-    RebatesPage,
   ],
 
   db: postgresAdapter({
@@ -71,12 +72,43 @@ export default buildConfig({
     // pool: { connectionString: ..., ssl: { rejectUnauthorized: false } },
   }),
 
-  // Upload storage (local for now — swap to S3/R2 later)
+  // Upload limits. Media bytes go to Cloudflare R2 when r2Enabled (see plugins
+  // below); otherwise Payload writes to local disk (staticDir in Media.ts).
   upload: {
     limits: {
       fileSize: 10_000_000, // 10 MB
     },
   },
+
+  // Cloudflare R2 object storage (S3-compatible) — proxied mode: bytes are
+  // served back through Payload at /uploads/**, so the bucket stays private and
+  // the frontend needs no remotePatterns change. Enabled only when all four
+  // R2_* env vars are present; otherwise falls back to local-disk uploads.
+  plugins: r2Enabled
+    ? [
+        cloudStorage({
+          collections: {
+            media: {
+              adapter: s3Adapter({
+                bucket: process.env.R2_BUCKET as string,
+                // R2 has no ACL support; pass 'private' (it ignores it but
+                // avoids the empty/public-read x-amz-acl header it rejects).
+                acl: 'private',
+                config: {
+                  endpoint: process.env.R2_ENDPOINT,
+                  region: 'auto',
+                  forcePathStyle: true,
+                  credentials: {
+                    accessKeyId: process.env.R2_ACCESS_KEY_ID as string,
+                    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY as string,
+                  },
+                },
+              }),
+            },
+          },
+        }),
+      ]
+    : [],
 
   // CORS — allow frontend origin
   cors: [

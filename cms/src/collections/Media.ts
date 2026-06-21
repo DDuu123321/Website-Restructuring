@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types'
 import path from 'path'
+import { r2Enabled } from '../lib/storage'
 
 const Media: CollectionConfig = {
   slug: 'media',
@@ -11,6 +12,9 @@ const Media: CollectionConfig = {
     read: () => true,
   },
   upload: {
+    // In R2 mode the cloud-storage plugin handles bytes; skip writing to the
+    // (ephemeral on Railway) local disk. Local dev keeps staticDir.
+    disableLocalStorage: r2Enabled,
     staticDir: path.resolve(__dirname, '../../../uploads'),
     staticURL: '/uploads',
     imageSizes: [
