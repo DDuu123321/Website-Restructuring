@@ -23,7 +23,54 @@ export function HomeView({ featuredProjects }: Props) {
       <ProcessSection />
       <FeaturesCarousel />
       <ProjectsShowcase projects={featuredProjects} />
+      <BrandWall />
     </>
+  )
+}
+
+// Brand partners — the brands we install, grouped by category. Replaces the old
+// standalone /brands page; reuses the sect.brands.* copy.
+function BrandWall() {
+  const { t } = useI18n()
+  const groups = [
+    { label: 'Solar Panels', brands: ['Aiko', 'REC', 'SunPower', 'Jinko', 'Trina', 'LONGi', 'Q CELLS', 'JA Solar', 'Canadian Solar'] },
+    { label: 'Inverters', brands: ['Fronius', 'Sungrow', 'SMA', 'GoodWe', 'SolarEdge', 'Enphase', 'Sigenergy'] },
+    { label: 'Batteries', brands: ['Tesla', 'Sigenergy', 'Sungrow', 'BYD', 'Alpha ESS', 'Enphase', 'sonnen'] },
+    { label: 'EV Chargers', brands: ['Fronius', 'Tesla', 'Zappi', 'Wallbox', 'Sigenergy'] },
+  ]
+  return (
+    <section className="section brandwall" id="brands">
+      <div className="container">
+        <Reveal className="brandwall-head">
+          <span className="section-eye">{t('sect.brands.eye')}</span>
+          <h2 className="section-h">{t('sect.brands.h')}</h2>
+          <p className="section-lede">
+            Tier-1, CEC-approved gear across every category — the brands Australians actually
+            trust, not whatever&apos;s cheapest this month.
+          </p>
+        </Reveal>
+
+        <div className="brandwall-groups">
+          {groups.map((g, i) => (
+            <Reveal key={g.label} className="brandwall-group" delay={i * 80}>
+              <div className="brandwall-cat">
+                <span className="brandwall-cat-label">{g.label}</span>
+                <span className="brandwall-cat-line" aria-hidden />
+              </div>
+              <div className="brandwall-chips">
+                {g.brands.map((b) => (
+                  <span key={b} className="brandwall-chip">{b}</span>
+                ))}
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <p className="brandwall-note">
+          All products are Clean Energy Council (CEC) approved and rebate-eligible.
+        </p>
+      </div>
+    </section>
   )
 }
 
@@ -1035,6 +1082,7 @@ function ProjectsCarousel({ cards }: { cards: Array<{ id: string; href: string; 
             <div className="pc-slide" key={c.id}>
               <Link href={c.href} className="pc-card">
                 <div className="pc-img" style={{ backgroundImage: `url(${c.img})` }} />
+                <div className="pc-photo" style={{ backgroundImage: `url(${c.img})` }} />
                 <div className="pc-overlay" />
                 <div className="pc-body">
                   {c.spec && <span className="pc-tag">{c.spec}</span>}

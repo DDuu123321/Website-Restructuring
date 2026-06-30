@@ -245,10 +245,23 @@ export function ProjectsListView({ projects }: { projects: Project[] }) {
 
           <div className="proj-grid">
             {useCMS
-              ? projects.map((p, i) => (
-                  <Reveal key={p.id} delay={Math.min(i * 50, 300)}>
+              ? projects.map((p) => {
+                  const src = api.imgUrl(p.coverImage, 'card')
+                  return (
+                  <Reveal key={p.id}>
                     <Link href={`/projects/${p.slug}`} className="proj-card">
-                      <div className="proj-img" style={{ backgroundImage: `url(${api.imgUrl(p.coverImage, 'card')})` }} />
+                      {src ? (
+                        <img
+                          className="proj-img"
+                          src={src}
+                          alt={p.coverImage?.alt || p.title}
+                          width={p.coverImage?.sizes?.card?.width}
+                          height={p.coverImage?.sizes?.card?.height}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="proj-img" aria-hidden />
+                      )}
                       <div className="proj-meta">
                         <span className="tag tag-amber">{p.systemType}</span>
                         <span>{p.location}</span>
@@ -257,13 +270,14 @@ export function ProjectsListView({ projects }: { projects: Project[] }) {
                       <p>{p.summary}</p>
                     </Link>
                   </Reveal>
-                ))
+                  )
+                })
               : filtered.slice(0, visible).map((p, i) => {
                   const fp = p as FallbackProject
                   return (
-                    <Reveal key={fp.id} delay={Math.min(i * 50, 300)}>
+                    <Reveal key={fp.id}>
                       <a className="proj-card" href="#">
-                        <div className="proj-img" style={{ backgroundImage: `url(${fp.img})` }} />
+                        <img className="proj-img" src={fp.img} alt={fp.title} loading="lazy" />
                         <div className="proj-meta">
                           <span className="tag tag-amber">{fp.tag}</span>
                           <span>{fp.loc}</span>

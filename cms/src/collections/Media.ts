@@ -17,10 +17,13 @@ const Media: CollectionConfig = {
     disableLocalStorage: r2Enabled,
     staticDir: path.resolve(__dirname, '../../../uploads'),
     staticURL: '/uploads',
+    // Width-only sizes: sharp resizes by WIDTH and keeps each photo's original
+    // aspect ratio (no centre-crop). A 9:16 phone shot and a 4:3 landscape both
+    // survive intact; the frontend decides how to frame them per surface.
     imageSizes: [
-      { name: 'thumbnail', width: 400, height: 300, position: 'centre' },
-      { name: 'card', width: 800, height: 600, position: 'centre' },
-      { name: 'hero', width: 1600, height: 900, position: 'centre' },
+      { name: 'thumbnail', width: 400 },
+      { name: 'card', width: 800 },
+      { name: 'hero', width: 1600 },
     ],
     adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],

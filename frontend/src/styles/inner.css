@@ -112,14 +112,20 @@
 .proj-filter:hover { border-color: var(--bv-ink-900); }
 .proj-filter.active { background: var(--bv-ink-900); color: var(--bv-white); border-color: var(--bv-ink-900); }
 
+/* Masonry — each card keeps its photo's natural ratio (9:16 tall, 4:3 wide),
+   so phone shots and landscape shots both show uncropped, like a real wall. */
 .proj-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  columns: 3;
+  column-gap: 24px;
   margin-top: 16px;
 }
-@media (max-width: 1000px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px)  { .proj-grid { grid-template-columns: 1fr; } }
+.proj-grid > * { break-inside: avoid; margin-bottom: 24px; }
+@media (max-width: 1000px) { .proj-grid { columns: 2; } }
+@media (max-width: 640px)  { .proj-grid { columns: 1; } }
+/* Gallery masonry (project detail) */
+.proj-gallery { columns: 2; column-gap: 16px; }
+.proj-gallery > img { break-inside: avoid; margin-bottom: 16px; width: 100%; height: auto; display: block; }
+@media (max-width: 640px) { .proj-gallery { columns: 1; } }
 .proj-card {
   background: var(--bv-white);
   border-radius: var(--radius-xl);
@@ -136,11 +142,16 @@
   border-color: var(--bv-teal-300);
 }
 .proj-img {
-  aspect-ratio: 16/10;
-  background-size: cover;
-  background-position: center;
+  display: block;
+  width: 100%;
+  height: auto;                 /* natural aspect ratio — never cropped */
+  /* reserve space before load (kills masonry CLS): natural ratio wins when the
+     <img> carries width/height attrs; 4:5 is the fallback for dimensionless
+     placeholder/unsplash sources. */
+  aspect-ratio: auto 4 / 5;
   background-color: var(--bv-ink-100);
 }
+.proj-gallery > img { aspect-ratio: auto 4 / 5; background-color: var(--bv-ink-100); }
 .proj-meta {
   display: flex;
   gap: 10px;

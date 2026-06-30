@@ -1507,9 +1507,21 @@ section.section.showcase {
   inset: 0;
   background-size: cover;
   background-position: center;
+  /* Blurred fill of the SAME photo. .pc-photo (below) shows the whole image with
+     object-fit:contain, so a 9:16 portrait or 4:3 landscape is never cropped and
+     never sits in empty bars — the blur fills the gaps. */
+  filter: blur(34px) saturate(1.3) brightness(0.5);
+  transform: scale(1.18);
+}
+.pc-photo {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   transition: transform 0.6s var(--ease-out);
 }
-.pc-card:hover .pc-img { transform: scale(1.04); }
+.pc-card:hover .pc-photo { transform: scale(1.03); }
 .pc-overlay {
   position: absolute;
   inset: 0;
@@ -1794,4 +1806,49 @@ button:hover > .arrow {
   color: var(--bv-ink-700);
   max-width: 50ch;
   line-height: 1.55;
+}
+
+/* =========================================================
+   BRAND WALL — the brands we install, grouped by category
+   (replaces the old standalone /brands page). White section.
+   ========================================================= */
+.brandwall { background: var(--bv-white); padding: clamp(64px, 8vw, 104px) 0; }
+.brandwall-head { text-align: center; max-width: 620px; margin: 0 auto; }
+.brandwall-head .section-h { margin: 12px auto 14px; }
+.brandwall-head .section-lede { margin: 0 auto; max-width: 56ch; }
+
+.brandwall-groups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px 56px;
+  max-width: 1000px;
+  margin: clamp(40px, 5vw, 60px) auto 0;
+}
+@media (max-width: 760px) { .brandwall-groups { grid-template-columns: 1fr; gap: 28px; } }
+
+.brandwall-cat { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.brandwall-cat-label {
+  font-family: var(--font-display); font-size: 12px; font-weight: 800;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--bv-ink-900);
+  white-space: nowrap;
+}
+.brandwall-cat-line { flex: 1; height: 1px; background: var(--bv-ink-100); }
+
+.brandwall-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.brandwall-chip {
+  font-family: var(--font-display); font-weight: 700; font-size: 14.5px;
+  color: var(--bv-ink-800); background: var(--bv-paper);
+  border: 1px solid var(--bv-ink-100); border-radius: var(--radius-full);
+  padding: 9px 17px; transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.brandwall-chip:hover {
+  border-color: var(--bv-teal-400);
+  background: var(--bv-white);
+  box-shadow: 0 6px 18px rgba(13,31,60,0.08), 0 0 0 1px var(--bv-teal-400);
+  transform: translateY(-1px);
+}
+
+.brandwall-note {
+  text-align: center; margin: clamp(36px, 5vw, 52px) auto 0;
+  font-size: 13px; color: var(--bv-ink-500);
 }

@@ -67,7 +67,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </h1>
             <p style={{ fontSize: 19, color: 'var(--bv-gray-700)', lineHeight: 1.55, marginBottom: 40, maxWidth: 720 }}>{p.summary}</p>
 
-            <img src={api.imgUrl(p.coverImage, 'hero')} alt={p.coverImage.alt} style={{ width: '100%', borderRadius: 'var(--radius-2xl)', marginBottom: 40 }} />
+            <img src={api.imgUrl(p.coverImage, 'hero')} alt={p.coverImage.alt || p.title} width={p.coverImage?.sizes?.hero?.width} height={p.coverImage?.sizes?.hero?.height} fetchPriority="high" style={{ display: 'block', width: 'auto', maxWidth: '100%', maxHeight: '80vh', margin: '0 auto 40px', borderRadius: 'var(--radius-2xl)' }} />
 
             {p.specs && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 24, padding: '32px 0', borderTop: '1px solid var(--bv-gray-100)', borderBottom: '1px solid var(--bv-gray-100)', marginBottom: 40 }}>
@@ -82,9 +82,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             {p.description && <RichText data={p.description} />}
 
             {p.gallery && p.gallery.length > 0 && (
-              <div className="news-grid" style={{ marginTop: 40 }}>
+              <div className="proj-gallery" style={{ marginTop: 40 }}>
                 {p.gallery.map((g, i) => (
-                  <img key={i} src={api.imgUrl(g.image, 'card')} alt={g.image.alt} style={{ width: '100%', borderRadius: 'var(--radius-lg)' }} />
+                  <img key={i} src={api.imgUrl(g.image, 'card')} alt={g.image?.alt || `${p.title} — photo ${i + 1}`} width={g.image?.sizes?.card?.width} height={g.image?.sizes?.card?.height} loading="lazy" style={{ borderRadius: 'var(--radius-lg)' }} />
                 ))}
               </div>
             )}
