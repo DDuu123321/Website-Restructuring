@@ -186,7 +186,7 @@ p  { margin: 0; }
 
 .text-eyebrow {
   font-size: 12px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--bv-teal-600);
   font-weight: 700;

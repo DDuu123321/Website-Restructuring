@@ -801,7 +801,7 @@
 }
 .next-card > * { position: relative; }
 .next-eye {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--bv-teal-300);
@@ -818,7 +818,8 @@
   line-height: 1.25;
 }
 .next-lede {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
   color: rgba(255,255,255,0.74);
   line-height: 1.6;
   margin-bottom: 24px;
@@ -1418,8 +1419,33 @@
      fought min-height and forced the card ~420px wide on a 320px screen. */
   height: clamp(260px, 60vw, 460px);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.map-svg { width: 100%; height: 100%; display: block; }
+/* Real Australia map fitted to the card HEIGHT (squarish), centred — navy panel
+   either side, like a coverage map. Pins are % of the map image box. */
+.map-au { position: relative; height: 100%; padding: 18px 0; box-sizing: border-box; }
+.map-au-img { height: 100%; width: auto; display: block; }
+.map-pin { position: absolute; transform: translate(-50%, -50%); z-index: 2; }
+.map-pin-dot {
+  display: block; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--bv-teal-500);
+  box-shadow: 0 0 0 5px rgba(251,199,7,0.20), 0 0 14px rgba(251,199,7,0.55);
+}
+.map-pin.is-hq .map-pin-dot {
+  width: 17px; height: 17px;
+  box-shadow: 0 0 0 7px rgba(251,199,7,0.24), 0 0 22px rgba(251,199,7,0.7);
+  animation: pulseDot 2s infinite;
+}
+.map-pin-label {
+  position: absolute; top: 50%; left: calc(100% + 9px); transform: translateY(-50%);
+  white-space: nowrap; color: #fff; font-family: var(--font-display);
+  font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.7);
+}
+.map-pin.lab-l .map-pin-label { left: auto; right: calc(100% + 9px); }
+.map-pin.is-hq .map-pin-label { font-size: 14px; font-weight: 800; }
 .map-legend {
   position: absolute;
   bottom: 16px; left: 16px;

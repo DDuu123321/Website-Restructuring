@@ -12,21 +12,21 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
 
   const offices = [
     {
-      city: 'Sydney', tag: 'SYD · HEAD OFFICE',
-      addr: 'Unit 14, 39 Herbert St,',
-      addr2: 'St Leonards NSW 2065',
+      city: 'Sydney', tag: 'NSW · HEAD OFFICE',
+      addr: '135-153 New South Head Road,',
+      addr2: 'Edgecliff NSW 2027',
       hours: 'Mon–Fri 8:30am – 5:30pm · Sat 9am – 1pm',
     },
     {
-      city: 'Melbourne', tag: 'VIC',
-      addr: 'Suite 6, 124 Victoria St,',
-      addr2: 'Richmond VIC 3121',
+      city: 'Brisbane', tag: 'QLD',
+      addr: '23-25 Burchill St,',
+      addr2: 'Loganholme QLD 4129',
       hours: 'Mon–Fri 9am – 5pm · Sat by appointment',
     },
     {
-      city: 'Brisbane', tag: 'QLD',
-      addr: 'Lvl 2, 88 Vulture St,',
-      addr2: 'South Brisbane QLD 4101',
+      city: 'Perth', tag: 'WA',
+      addr: '80 Belgravia St,',
+      addr2: 'Belmont WA 6104',
       hours: 'Mon–Fri 9am – 5pm · Sat by appointment',
     },
   ]
@@ -36,7 +36,7 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
       <PageHeader
         eyebrow="Get in touch"
         title="Three offices.<br/>One promise: a real engineer answers."
-        lede="Showrooms in Sydney, Melbourne and Brisbane. Or call, email, or just open the chat — we usually answer within 30 minutes during business hours."
+        lede="Showrooms in Sydney, Brisbane and Perth. Or call, email, or just open the chat — we usually answer within 30 minutes during business hours."
       />
 
       <section className="section" style={{ background: 'var(--bv-paper-2)', paddingTop: 60 }}>
@@ -79,7 +79,7 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
                 Visit a showroom
               </span>
               <h2 style={{ fontSize: 'clamp(24px, 2.6vw, 32px)', margin: '12px 0 24px' }}>
-                Three offices across the east coast.
+                Three offices, coast to coast.
               </h2>
 
               {offices.map((o, i) => (
@@ -99,42 +99,29 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
               {/* Australia map */}
               <div style={{ marginTop: 48 }}>
                 <Reveal className="map-card">
-                  <svg className="map-svg" viewBox="0 0 600 480" xmlns="http://www.w3.org/2000/svg" aria-label="Australia service coverage">
-                    <rect width="600" height="480" fill="#0a1828" />
-                    {/* Simplified Australia outline */}
-                    <path
-                      d="M100 180 Q140 130 220 130 Q310 110 380 130 Q470 130 510 170 Q540 220 530 280 Q500 340 460 360 Q420 380 380 370 Q360 400 320 410 Q260 420 220 400 Q170 390 140 360 Q100 320 90 270 Q90 220 100 180 Z"
-                      fill="#142b4d" stroke="rgba(251, 199, 7, 0.30)" strokeWidth="1"
-                    />
-                    {/* Tasmania */}
-                    <ellipse cx="370" cy="430" rx="22" ry="14" fill="#142b4d" stroke="rgba(251, 199, 7, 0.30)" strokeWidth="1" />
-                    {/* Service rings */}
-                    <circle cx="430" cy="320" r="60" fill="none" stroke="rgba(231, 182, 88, 0.18)" strokeDasharray="4 4" />
-                    <circle cx="430" cy="320" r="100" fill="none" stroke="rgba(231, 182, 88, 0.10)" strokeDasharray="4 4" />
-                    {/* Brisbane */}
-                    <g>
-                      <circle cx="450" cy="220" r="14" fill="#19c0b1" opacity="0.25"/>
-                      <circle cx="450" cy="220" r="6" fill="#19c0b1" />
-                      <text x="468" y="225" fill="#fff" fontFamily="Montserrat, sans-serif" fontSize="12" fontWeight="600">Brisbane</text>
-                    </g>
-                    {/* Sydney HQ */}
-                    <g>
-                      <circle cx="430" cy="320" r="20" fill="#19c0b1" opacity="0.32" />
-                      <circle cx="430" cy="320" r="9" fill="#19c0b1" />
-                      <text x="448" y="325" fill="#fff" fontFamily="Montserrat, sans-serif" fontSize="13" fontWeight="800">Sydney · HQ</text>
-                    </g>
-                    {/* Melbourne */}
-                    <g>
-                      <circle cx="370" cy="375" r="14" fill="#19c0b1" opacity="0.25" />
-                      <circle cx="370" cy="375" r="6" fill="#19c0b1" />
-                      <text x="295" y="380" fill="#fff" fontFamily="Montserrat, sans-serif" fontSize="12" fontWeight="600">Melbourne</text>
-                    </g>
-                  </svg>
+                  <div className="map-au">
+                    {/* Real Australia map — Wikimedia "Australia states blank.svg" (CC BY-SA 4.0), recoloured for the dark theme */}
+                    <img className="map-au-img" src="/au-states.svg" alt="Australia — Bluven office locations" />
+                    {[
+                      { city: 'Brisbane', x: 91, y: 53, hq: false, lab: 'l' },
+                      { city: 'Sydney · HQ', x: 88, y: 66, hq: true, lab: 'l' },
+                      { city: 'Perth', x: 13, y: 66, hq: false, lab: 'r' },
+                    ].map((p) => (
+                      <span
+                        key={p.city}
+                        className={`map-pin ${p.hq ? 'is-hq' : ''} lab-${p.lab}`}
+                        style={{ left: `${p.x}%`, top: `${p.y}%` }}
+                      >
+                        <span className="map-pin-dot" />
+                        <span className="map-pin-label">{p.city}</span>
+                      </span>
+                    ))}
+                  </div>
                   <div className="map-legend">
                     <b>SERVICE COVERAGE</b>
-                    Greater Sydney · Greater Melbourne · SE Queensland
+                    Greater Sydney · SE Queensland · Greater Perth
                     <span style={{ color: 'var(--bv-ink-400)' }}>
-                      {' · Regional NSW/VIC by appointment'}
+                      {' · Regional NSW/QLD/WA by appointment'}
                     </span>
                   </div>
                 </Reveal>

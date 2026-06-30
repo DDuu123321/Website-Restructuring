@@ -588,54 +588,91 @@ function ProcessSection() {
   return (
     <section ref={sectionRef} className="proc-pin" id="how">
       <div className="proc-pin-inner">
-        <div className="container proc-pin-grid">
-          {/* LEFT — sticky title + step list */}
-          <div className="proc-pin-l">
+        <div className="container proc-pin-stack">
+
+          {/* 1 — CENTERED HEADER (full-width block, no left column) */}
+          <header className="proc-pin-head">
             <div className="section-eye" style={{ color: 'var(--bv-teal-300)' }}>
               {t('sect.process.eye')}
             </div>
+            {/* heading kept verbatim (incl. any <br/>) via the i18n string */}
             <h2 className="proc-pin-h" dangerouslySetInnerHTML={{ __html: t('sect.process.h') }} />
-            <p className="proc-pin-lede">{t('sect.process.lede')}</p>
+          </header>
 
-            <ol className="proc-pin-list">
+          {/* 2 — HORIZONTAL STEPPER (journey indicator + progress fill) */}
+          <nav className="proc-pin-stepper" aria-label="Process steps">
+            {/* progress track behind the 4 cells; fill WIDTH driven by activeIdx
+                (same formula the old vertical rail used, now horizontal) */}
+            <span className="proc-pin-prog" aria-hidden>
+              <span
+                className="proc-pin-prog-fill"
+                style={{ width: `${(activeIdx / (steps.length - 1)) * 100}%` }}
+              />
+            </span>
+            <ol className="proc-pin-steps">
               {steps.map((s, i) => (
                 <li
                   key={s.n}
-                  className={`proc-pin-item ${i === activeIdx ? 'active' : ''} ${i < activeIdx ? 'past' : ''}`}
+                  className={`proc-pin-step ${i === activeIdx ? 'active' : ''} ${i < activeIdx ? 'past' : ''}`}
+                  aria-current={i === activeIdx ? 'step' : undefined}
+                  aria-label={`Step ${s.n}: ${s.t}`}
                 >
-                  <span className="proc-pin-n">{s.n}</span>
-                  <div className="proc-pin-body">
-                    <h4>{s.t}</h4>
-                    <p>{s.d}</p>
-                  </div>
-                  <span className="proc-pin-bar"><span className="proc-pin-bar-fill" /></span>
+                  <span className="proc-pin-dot" aria-hidden>{s.n}</span>
                 </li>
               ))}
             </ol>
+          </nav>
 
-            <div className="proc-pin-progress" aria-hidden>
-              <span className="proc-pin-progress-fill" style={{ width: `${((activeIdx + 1) / steps.length) * 100}%` }} />
-            </div>
-          </div>
+          {/* 3 — STAGE: image + glass card that CYCLES the 4 corners by step */}
+          <div className="proc-pin-stage">
+            <div className="proc-pin-imgwrap">
+              <div className="proc-pin-frame">
+                {steps.map((s, i) => (
+                  <div
+                    key={s.n}
+                    className={`proc-pin-img ${i === activeIdx ? 'active' : ''}`}
+                    style={{ backgroundImage: `url(${s.img})` }}
+                    aria-hidden
+                  />
+                ))}
+                <div className="proc-pin-img-overlay" aria-hidden />
+                <div className="proc-pin-img-tag" aria-hidden>
+                  <span className="dot" />
+                  <span>STEP {steps[activeIdx].n} / {steps[steps.length - 1].n}</span>
+                </div>
+              </div>
 
-          {/* RIGHT — sticky image stack, crossfade by activeIdx */}
-          <div className="proc-pin-r">
-            <div className="proc-pin-frame">
-              {steps.map((s, i) => (
-                <div
-                  key={s.n}
-                  className={`proc-pin-img ${i === activeIdx ? 'active' : ''}`}
-                  style={{ backgroundImage: `url(${s.img})` }}
-                  aria-hidden
-                />
-              ))}
-              <div className="proc-pin-img-overlay" />
-              <div className="proc-pin-img-tag">
-                <span className="dot" />
-                <span>STEP {steps[activeIdx].n} / {steps[steps.length - 1].n}</span>
+              {/* glass card — ACTIVE step's FULL content. Corner set by activeIdx
+                  (tl → bl → br → tr) and animates between corners via left/top %.
+                  key={activeIdx} re-fires the content fade. */}
+              <div
+                className={`proc-pin-card pos-${['tl', 'bl', 'br', 'tr'][activeIdx] || 'tl'}`}
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <div className="proc-pin-card-inner" key={activeIdx}>
+                  <span className="proc-pin-card-n">{steps[activeIdx].n}</span>
+                  <h3 className="proc-pin-card-t">{steps[activeIdx].t}</h3>
+                  <p className="proc-pin-card-d">{steps[activeIdx].d}</p>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* 4 — MOBILE-ONLY static list: ALL four steps, full text, no truncation.
+              Hidden on desktop via CSS; shown at <=900px so no description is lost. */}
+          <ol className="proc-pin-mlist">
+            {steps.map((s, i) => (
+              <li key={s.n} className={`proc-pin-mitem ${i === activeIdx ? 'active' : ''}`}>
+                <span className="proc-pin-mn">{s.n}</span>
+                <div className="proc-pin-mbody">
+                  <h4>{s.t}</h4>
+                  <p>{s.d}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
         </div>
       </div>
     </section>
@@ -944,7 +981,7 @@ function ProjectsShowcase({ projects }: { projects: Project[] }) {
             600+ Australian roofs. Every one engineered.
           </h2>
           <p className="section-lede" style={{ color: 'rgba(255,255,255,0.72)', margin: '0 auto' }}>
-            From Sydney to Melbourne to Brisbane — see what we built recently.
+            From Sydney to Brisbane to Perth — see what we built recently.
           </p>
         </Reveal>
 

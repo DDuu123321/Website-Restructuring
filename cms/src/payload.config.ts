@@ -16,8 +16,6 @@ import Assessments from './collections/Assessments'
 import Brands from './collections/Brands'
 import TeamMembers from './collections/TeamMembers'
 import SiteSettings from './globals/SiteSettings'
-import { cloudStorage } from '@payloadcms/plugin-cloud-storage'
-import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
 import { r2Enabled } from './lib/storage'
 
 export default buildConfig({
@@ -86,27 +84,37 @@ export default buildConfig({
   // R2_* env vars are present; otherwise falls back to local-disk uploads.
   plugins: r2Enabled
     ? [
-        cloudStorage({
-          collections: {
-            media: {
-              adapter: s3Adapter({
-                bucket: process.env.R2_BUCKET as string,
-                // R2 has no ACL support; pass 'private' (it ignores it but
-                // avoids the empty/public-read x-amz-acl header it rejects).
-                acl: 'private',
-                config: {
-                  endpoint: process.env.R2_ENDPOINT,
-                  region: 'auto',
-                  forcePathStyle: true,
-                  credentials: {
-                    accessKeyId: process.env.R2_ACCESS_KEY_ID as string,
-                    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY as string,
+        (() => {
+          // Late-bind via eval('require') — same trick as lib/mailer.ts — so the
+          // admin's webpack bundler can't statically follow the Node-only S3
+          // adapter (fs/util/os) into the SPA bundle. Runs server-side only,
+          // and only when R2 is configured.
+          // eslint-disable-next-line no-eval
+          const { cloudStorage } = eval('require')('@payloadcms/plugin-cloud-storage')
+          // eslint-disable-next-line no-eval
+          const { s3Adapter } = eval('require')('@payloadcms/plugin-cloud-storage/s3')
+          return cloudStorage({
+            collections: {
+              media: {
+                adapter: s3Adapter({
+                  bucket: process.env.R2_BUCKET as string,
+                  // R2 has no ACL support; pass 'private' (it ignores it but
+                  // avoids the empty/public-read x-amz-acl header it rejects).
+                  acl: 'private',
+                  config: {
+                    endpoint: process.env.R2_ENDPOINT,
+                    region: 'auto',
+                    forcePathStyle: true,
+                    credentials: {
+                      accessKeyId: process.env.R2_ACCESS_KEY_ID as string,
+                      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY as string,
+                    },
                   },
-                },
-              }),
+                }),
+              },
             },
-          },
-        }),
+          })
+        })(),
       ]
     : [],
 

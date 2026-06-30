@@ -237,7 +237,7 @@
 .section-h {
   font-family: var(--font-display);
   font-size: clamp(24px, 3vw, 40px);
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0 0 16px;
@@ -247,7 +247,8 @@
 .section-h-light { color: var(--bv-white); }
 
 .section-lede {
-  font-size: clamp(14px, 1vw, 16px);
+  font-size: clamp(16px, 1.1vw, 18px);
+  font-weight: 500;
   color: var(--bv-ink-500);
   line-height: 1.65;
   max-width: 64ch;
@@ -777,25 +778,25 @@
 }
 .tier-eye {
   color: #0a4d89;
-  font-size: 13px;
-  font-weight: 900;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5em;
-  margin: 0 0 12px;
+  letter-spacing: 0.18em;
+  margin: 0 0 16px;
 }
 .tier-h {
   font-size: 30px;
-  font-weight: 900;
+  font-weight: 800;
   color: #042744;
   line-height: 1.1;
-  margin: 0 0 14px;
+  margin: 0 0 18px;
   letter-spacing: -0.01em;
 }
 @media (min-width: 768px) {
   .tier-h { font-size: 44px; }
 }
 .tier-lede {
-  font-size: 16px;
+  font-size: clamp(16px, 1.1vw, 18px);
   color: #64748b; /* slate-500 */
   font-weight: 500;
   max-width: 620px;
@@ -1043,14 +1044,32 @@
 }
 
 /* =========================================================
-   PROCESS — pinned scroll-driven step reveal (Sigenergy-inspired)
+   PROCESS — pinned scroll-driven step reveal  (NEW LAYOUT)
+   Centered header -> horizontal stepper -> image stage with a
+   LEFT floating glass card overlapping the image's LEFT edge.
+
+   This block REPLACES every old .proc-pin* rule below the
+   "PROCESS — pinned scroll-driven step reveal (Sigenergy-inspired)"
+   banner (home.css ~1046-1309), INCLUDING the @media(max-width:900px)
+   block (~1272-1284) and the "ONE-SCREEN COMPACT" Process overrides
+   (~1293-1309, i.e. through the `.proc-pin-frame { aspect-ratio:16/11 }`
+   line — do NOT touch the .features-carousel / .showcase rules after it).
+
+   REMOVE entirely (classes no longer emitted, dead CSS otherwise):
+     .proc-pin-grid .proc-pin-l .proc-pin-lede .proc-pin-track
+     .proc-pin-rail .proc-pin-rail-fill .proc-pin-list .proc-pin-item(.past/.active)
+     .proc-pin-n .proc-pin-body(+h4/p) .proc-pin-bar .proc-pin-r
+   KEEP-but-restyled (still emitted): .proc-pin .proc-pin-inner
+     .proc-pin-frame .proc-pin-img(.active) .proc-pin-img-overlay
+     .proc-pin-img-tag (+ .dot).
+
+   Real tokens. GOTCHA: --bv-teal-* are YELLOW (#fbc707 / #ffd233 / #ffe16a).
    ========================================================= */
 .proc-pin {
   position: relative;
-  background: var(--bv-ink-800);
+  background: var(--bv-ink-800);              /* section navy */
   color: var(--bv-white);
-  /* Total scroll = 4 steps × ~80vh = 320vh of scroll travel */
-  height: 360vh;
+  height: 360vh;                              /* mobile base travel; desktop overridden to 210vh below */
   overflow: visible;
 }
 .proc-pin-inner {
@@ -1059,137 +1078,139 @@
   height: 100vh;
   height: 100dvh;
   display: flex;
-  align-items: center;
+  align-items: center;                        /* vertically center the whole stack in the viewport */
   z-index: 1;
 }
-.proc-pin-grid {
-  display: grid;
-  grid-template-columns: 1fr 2.5fr;
-  gap: clamp(40px, 5vw, 80px);
-  align-items: center;
+
+/* Single centered vertical column holding all three regions.
+   .container already supplies max-width + side padding; we add the
+   flex column + clamp()'d vertical rhythm so it stays inside 100vh. */
+.proc-pin-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;                        /* center header + stepper + stage as blocks */
+  gap: clamp(18px, 3vh, 38px);
   width: 100%;
+  min-height: 0;                              /* let children shrink instead of overflowing */
 }
 
-/* LEFT */
-.proc-pin-l { position: relative; z-index: 1; }
+/* ---- 1. CENTERED HEADER ---- */
+.proc-pin-head {
+  text-align: center;
+  max-width: 760px;                           /* comfortable centered measure for the heading */
+  margin: 0 auto;
+}
+/* .section-eye is the SHARED class (do not modify it); it's centered by the
+   text-align:center parent. Its yellow color is set inline in the JSX. */
 .proc-pin-h {
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 48px);
+  font-size: clamp(26px, 3vw, 44px);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -0.02em;
   color: var(--bv-white);
-  margin: 12px 0 16px;
-}
-.proc-pin-lede {
-  font-size: 15.5px;
-  color: rgba(255,255,255,0.72);
-  line-height: 1.65;
-  margin-bottom: 36px;
-  max-width: 52ch;
+  margin: 10px 0 0;
 }
 
-.proc-pin-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.proc-pin-item {
+/* ---- 2. HORIZONTAL STEPPER ---- */
+.proc-pin-stepper {
   position: relative;
-  display: grid;
-  grid-template-columns: 56px 1fr;
-  gap: 18px;
-  padding: 18px 0;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  opacity: 0.4;
-  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  width: 100%;
+  max-width: 880px;                           /* centered 4-up indicator; nudge if it feels too wide */
+  margin: 0 auto;
+  --dot-size: 46px;                           /* single source for the dot diameter + progress-track center */
 }
-.proc-pin-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.08); }
-.proc-pin-item.past   { opacity: 0.5; }
-.proc-pin-item.active { opacity: 1; transform: translateX(8px); }
-
-.proc-pin-n {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: rgba(255,255,255,0.35);
-  line-height: 1;
-  padding-top: 4px;
-  transition: color 0.4s, transform 0.4s;
+/* Progress track behind the cells. left/right 12.5% = center of the 1st and
+   4th of four equal cells (1/8 of the width), so the fill spans dot-center to
+   dot-center. top is the vertical center of the 46px dots (see note below). */
+.proc-pin-prog {
+  position: absolute;
+  top: calc(var(--dot-size) / 2);             /* vertical center of the dots — derived from --dot-size */
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background: rgba(255,255,255,0.14);
+  border-radius: 2px;
+  z-index: 0;
 }
-.proc-pin-item.active .proc-pin-n {
-  color: var(--bv-teal-300);
-  transform: scale(1.1);
-  transform-origin: left center;
-}
-.proc-pin-item.past .proc-pin-n { color: rgba(231,182,88,0.5); }
-
-.proc-pin-body h4 {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--bv-white);
-  margin: 0 0 6px;
-  line-height: 1.3;
-}
-.proc-pin-body p {
-  font-size: 14px;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.55;
-  margin: 0;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.5s var(--ease-out), opacity 0.4s, margin 0.4s;
-}
-.proc-pin-item.active .proc-pin-body p {
-  max-height: 80px;
-  opacity: 1;
-  margin-top: 4px;
-}
-
-/* per-item progress bar (the line on the right of each row) */
-.proc-pin-bar {
-  display: none;
-}
-
-.proc-pin-progress {
-  margin-top: 32px;
-  height: 3px;
-  background: rgba(255,255,255,0.10);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.proc-pin-progress-fill {
+.proc-pin-prog-fill {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, var(--bv-teal-500), var(--bv-teal-300));
-  border-radius: 99px;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(251,199,7,0.5);
   transition: width 0.5s var(--ease-out);
-  box-shadow: 0 0 12px rgba(231,182,88,0.6);
 }
-
-/* RIGHT — sticky image stack */
-.proc-pin-r {
+.proc-pin-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);      /* 4 equal cells — self-aligns at any width */
   position: relative;
   z-index: 1;
+}
+.proc-pin-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 0 8px;
+  opacity: 0.55;
+  transition: opacity 0.4s var(--ease-out);
+}
+.proc-pin-step.past   { opacity: 0.9; }
+.proc-pin-step.active { opacity: 1; }
+.proc-pin-dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: var(--bv-ink-800);              /* navy fill hides the track behind the dot -> "node on a path" */
+  border: 2px solid rgba(255,255,255,0.18);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.6);
+  transition: all 0.4s var(--ease-out);
 }
+.proc-pin-step.past .proc-pin-dot {
+  border-color: var(--bv-teal-500);
+  color: var(--bv-teal-300);
+}
+.proc-pin-step.active .proc-pin-dot {
+  border-color: var(--bv-teal-300);
+  background: var(--bv-teal-400);
+  color: var(--bv-ink-900);
+  box-shadow: 0 0 0 6px rgba(251,199,7,0.14), 0 0 22px rgba(251,199,7,0.45);
+  transform: scale(1.06);
+}
+/* ---- 3. STAGE: image + a glass card that CYCLES THE 4 CORNERS by step ---- */
+/* The stage is the centred image box. The card is absolutely positioned and moves
+   between the four corners (pos-tl -> bl -> br -> tr) by animating left/top
+   PERCENTAGES of the image box + a constant translate(-50%,-50%). Percentages
+   animate smoothly and the translate keeps the card centred on its anchor point
+   regardless of card height — self-aligns at any width and any text length.
+   overflow stays visible so the card hangs off the picture and only lightly
+   intrudes on it. */
+.proc-pin-stage {
+  --card-w: 320px;
+  --img-w: 720px;
+  position: relative;
+  width: 100%;
+  max-width: var(--img-w);
+  margin: 0 auto;
+  min-height: 0;
+}
+.proc-pin-imgwrap { position: relative; width: 100%; }
 .proc-pin-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 9 / 5;
-  max-height: 82vh;
-  /* (Dropped the translateX(100px) desktop nudge: the container hits its
-     max-width before there's margin to absorb it, so it clipped the frame's
-     right edge across the 1281–1700 band. Centred in its column is cleaner.) */
+  aspect-ratio: 16 / 10;
+  max-height: 52vh;
   border-radius: var(--radius-2xl);
   overflow: hidden;
   box-shadow: 0 32px 80px rgba(0,0,0,0.45);
@@ -1197,83 +1218,145 @@
 }
 .proc-pin-img {
   position: absolute; inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transform: scale(1.04);
+  background-size: cover; background-position: center;
+  opacity: 0; transform: scale(1.04);
   transition: opacity 0.7s var(--ease-out), transform 1.6s var(--ease-out);
 }
-.proc-pin-img.active {
-  opacity: 1;
-  transform: scale(1);
-}
+.proc-pin-img.active { opacity: 1; transform: scale(1); }
 .proc-pin-img-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(6,20,31,0.10) 0%, rgba(6,20,31,0.55) 100%);
+  /* all-edge vignette so white card text stays legible in ANY corner */
+  background:
+    radial-gradient(125% 125% at 50% 45%, rgba(13,31,60,0) 50%, rgba(13,31,60,0.5) 100%),
+    linear-gradient(180deg, rgba(6,20,31,0.04) 0%, rgba(6,20,31,0.3) 100%);
   pointer-events: none;
   z-index: 1;
 }
 .proc-pin-img-tag {
   position: absolute;
-  left: 22px; bottom: 22px;
+  left: 50%; bottom: 14px; transform: translateX(-50%);   /* centre-bottom: out of the corners' way */
   z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(8px);
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
   border-radius: var(--radius-full);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.10em;
-  color: var(--bv-ink-900);
-  box-shadow: var(--shadow-md);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.10em;
+  color: var(--bv-ink-900); box-shadow: var(--shadow-md);
 }
 .proc-pin-img-tag .dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--bv-teal-500);
-  box-shadow: 0 0 0 4px rgba(231,182,88,0.20);
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--bv-teal-500); box-shadow: 0 0 0 4px rgba(251,199,7,0.20);
   animation: pulseDot 1.8s infinite;
 }
 
+/* ---- the corner-cycling glass card ---- */
+.proc-pin-card {
+  position: absolute;
+  z-index: 3;
+  width: var(--card-w);
+  left: 50%; top: 50%;                          /* per-corner overrides below */
+  transform: translate(-50%, -50%);
+  transition: left 0.65s var(--ease-out), top 0.65s var(--ease-out);
+  padding: 18px 20px 20px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(20,43,77,0.86), rgba(13,31,60,0.93));
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(251,199,7,0.30);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 34px rgba(251,199,7,0.10);
+}
+/* anchor points = card CENTRE as % of the image box. Tuned so the card sits in
+   the corner with only its inner third over the picture, the rest hanging off. */
+.proc-pin-card.pos-tl { left: -5%;  top: 25%; }
+.proc-pin-card.pos-bl { left: -5%;  top: 75%; }
+.proc-pin-card.pos-br { left: 105%; top: 75%; }
+.proc-pin-card.pos-tr { left: 105%; top: 25%; }
+.proc-pin-card-inner { animation: procCardIn 0.5s var(--ease-out) both; }
+@keyframes procCardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.proc-pin-card-n {
+  display: inline-block; font-family: var(--font-display);
+  font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em;
+  color: var(--bv-ink-900); background: var(--bv-teal-400);
+  padding: 4px 10px; border-radius: var(--radius-full);
+  box-shadow: 0 0 20px rgba(251,199,7,0.4);
+}
+.proc-pin-card-t {
+  font-family: var(--font-display);
+  font-size: clamp(17px, 1.4vw, 21px); font-weight: 800;
+  line-height: 1.25; letter-spacing: -0.01em; color: var(--bv-white);
+  margin: 11px 0 7px;
+}
+.proc-pin-card-d { font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,0.82); margin: 0; }
+
+/* mobile static list hidden unless reduced-motion (below) */
+.proc-pin-mlist { display: none; }
+
+/* ---- DESKTOP scroll travel ---- */
+@media (min-width: 901px) { .proc-pin { height: 210vh; } }
+
+/* short-desktop height guard (1366x768 etc.) */
+@media (min-width: 901px) and (max-height: 850px) {
+  .proc-pin-frame { max-height: 46vh; }
+  .proc-pin-h { font-size: clamp(24px, 2.6vw, 36px); }
+}
+
+/* intermediate desktop (901-1200): smaller image+card, and pull the card back
+   on-screen (less hang-off room here, so corners sit closer to the image edge). */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .proc-pin-stage { --card-w: 296px; --img-w: 560px; }
+  .proc-pin-frame { max-height: 46vh; }
+  .proc-pin-card.pos-tl, .proc-pin-card.pos-bl { left: 4%; }
+  .proc-pin-card.pos-tr, .proc-pin-card.pos-br { left: 96%; }
+}
+
+/* ---- MOBILE (<=900px): pinned scroll-step, simplified (no corner cycling) ---- */
 @media (max-width: 900px) {
-  .proc-pin { height: auto; }
-  .proc-pin-inner { position: static; height: auto; padding: 60px 0; }
-  .proc-pin-grid { grid-template-columns: 1fr; gap: 32px; }
-  .proc-pin-r { display: none; }
-  .proc-pin-item { opacity: 1; }
-  .proc-pin-item.active .proc-pin-body p,
-  .proc-pin-item .proc-pin-body p {
-    max-height: 200px;
-    opacity: 1;
-    margin-top: 4px;
+  .proc-pin { height: 280vh; }                  /* tuned: 4 steps over ~180vh travel ~= 45vh/step */
+  .proc-pin-stack { gap: 16px; }
+  .proc-pin-head { max-width: 100%; }
+  .proc-pin-h { font-size: clamp(21px, 6vw, 30px); }
+
+  .proc-pin-stepper { --dot-size: 36px; max-width: 320px; }
+  .proc-pin-dot { font-size: 13px; }
+
+  /* full-width image with the card BELOW, overlapping its bottom (normal flow) */
+  .proc-pin-stage { --img-w: 100%; max-width: 460px; }
+  .proc-pin-imgwrap { display: flex; flex-direction: column; }
+  .proc-pin-frame { aspect-ratio: 4 / 3; max-height: 34vh; }
+  .proc-pin-img-tag { display: none; }
+  .proc-pin-card {
+    position: relative; left: auto; top: auto; transform: none;
+    width: calc(100% - 28px);
+    margin: -36px auto 0;                        /* overlap onto the image bottom, centred */
+    transition: none;
   }
+  .proc-pin-card.pos-tl, .proc-pin-card.pos-bl,
+  .proc-pin-card.pos-br, .proc-pin-card.pos-tr { left: auto; top: auto; }
 }
 
-/* =========================================================
-   ONE-SCREEN COMPACT — keep each home section close to the
-   .tier-section reference (~880px) so they all fit in one
-   viewport. Process retains its Sigenergy-style pin-scroll
-   but on a much shorter 150vh travel (was 360vh).
-   ========================================================= */
-
-/* Process — pin-scroll preserved, just shorter & tighter.
-   Guarded to >900px: below that the section is a static list (see the
-   max-width:900px block above), so it must NOT be forced to 150vh. */
-@media (min-width: 901px) { .proc-pin { height: 150vh; } }   /* was 360vh */
-.proc-pin-h { font-size: clamp(24px, 3vw, 36px); margin: 8px 0 10px; }
-.proc-pin-lede { margin-bottom: 20px; font-size: 14px; line-height: 1.55; }
-.proc-pin-item { padding: 12px 0; }
-.proc-pin-body h4 { font-size: 16px; margin-bottom: 4px; }
-.proc-pin-item.active .proc-pin-body p {
-  max-height: 60px;
-  font-size: 13px;
-  margin-top: 2px;
+/* reduced-motion on small screens: drop the pin, show the full static list */
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .proc-pin { height: auto; }
+  .proc-pin-inner { position: static; height: auto; display: block; padding: 48px 0; }
+  .proc-pin-stage { display: none; }
+  .proc-pin-mlist {
+    display: flex; flex-direction: column; gap: 14px;
+    max-width: 560px; margin: 0 auto; padding: 0; list-style: none;
+  }
+  .proc-pin-mitem {
+    display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start;
+    padding: 16px; border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  }
+  .proc-pin-mitem.active { background: rgba(251,199,7,0.06); border-color: rgba(251,199,7,0.35); }
+  .proc-pin-mn {
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-full); font-family: var(--font-display);
+    font-weight: 800; font-size: 14px; color: var(--bv-ink-900); background: var(--bv-teal-400);
+  }
+  .proc-pin-mbody h4 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--bv-white); margin: 2px 0 6px; }
+  .proc-pin-mbody p { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.78); margin: 0; }
 }
-.proc-pin-progress { margin-top: 16px; }
-.proc-pin-frame { aspect-ratio: 16 / 11; max-height: 460px; }
 
 /* Features carousel — target ~880px tall (matches Our Packages) */
 .features-carousel { padding: 96px 0 112px; }

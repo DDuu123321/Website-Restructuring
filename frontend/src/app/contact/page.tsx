@@ -8,7 +8,7 @@ export const revalidate = 300
 
 export const metadata: Metadata = buildMetadata({
   title: 'Contact Bluven Energy',
-  description: 'Talk to a real engineer — Sydney, Melbourne, Brisbane. Phone, email, or request a free quote online.',
+  description: 'Talk to a real engineer — Sydney, Brisbane, Perth. Phone, email, or request a free quote online.',
   path: '/contact',
 })
 

@@ -14,7 +14,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'nav.home': 'Home',
     'nav.products': 'Products',
     'nav.projects': 'Projects',
-    'nav.brands': 'Brands',
     'nav.who': 'Who We Are',
     'nav.news': 'Insights',
     'nav.faq': 'FAQ',
@@ -33,7 +32,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'footer.company': 'Company',
     'footer.who': 'Who We Are',
     'footer.proj': 'Projects',
-    'footer.brands': 'Brands',
     'footer.insights': 'Insights',
     'footer.careers': 'Careers',
     'footer.support': 'Support',
@@ -45,7 +43,7 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
     'footer.cookies': 'Cookie Notice',
-    'footer.copy': '© 2026 Bluven Energy Pty Ltd · ABN 00 000 000 000',
+    'footer.copy': '© 2026 Bluven Energy Pty Ltd · ABN 38 692 264 412',
     'footer.cec': 'CEC Approved Retailer · Clean Energy Council Member',
 
     // ── AI Chat ──
@@ -69,11 +67,10 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'mm.about.eye': 'COMPANY',
     'mm.about.who': 'Who we are', 'mm.about.who.s': 'Engineering-led, Australian',
     'mm.about.proj': 'Projects', 'mm.about.proj.s': '600+ installs nationwide',
-    'mm.about.brands': 'Brand partners', 'mm.about.brands.s': 'Tier-1 only — our gear list',
     'mm.about.news': 'Insights', 'mm.about.news.s': 'Plain-English advice',
     'mm.support.eye': 'SUPPORT',
     'mm.support.faq': 'FAQ', 'mm.support.faq.s': 'Rebates · sizing · install',
-    'mm.support.contact': 'Contact', 'mm.support.contact.s': 'Sydney · Melbourne · Brisbane',
+    'mm.support.contact': 'Contact', 'mm.support.contact.s': 'Sydney · Brisbane · Perth',
     'mm.support.admin': 'Admin portal', 'mm.support.admin.s': 'For partners & staff',
     'sticky.quote': 'Free quote',
 
@@ -97,7 +94,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
 
     'sect.process.eye': 'OUR PROCESS',
     'sect.process.h': 'From Concept to Power:<br/>Your A-to-Z Energy Solution',
-    'sect.process.lede': 'Designed by engineers, installed by certified electricians, supported by a local team — every step, end to end.',
     'p.s1.t': 'Consult & System Design',
     'p.s1.d': 'In-depth consultation, site assessment, and a tailored system design led by engineers — built around your home, energy usage, and long-term goals.',
     'p.s2.t': 'Proposal, Delivery & Installation',

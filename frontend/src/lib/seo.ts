@@ -68,18 +68,19 @@ export function organizationLd() {
     description: SITE.defaultDescription,
     telephone: '+611300258836',
     email: 'hello@bluven.com.au',
+    taxID: '38 692 264 412',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Unit 14, 39 Herbert St',
-      addressLocality: 'St Leonards',
+      streetAddress: '135-153 New South Head Road',
+      addressLocality: 'Edgecliff',
       addressRegion: 'NSW',
-      postalCode: '2065',
+      postalCode: '2027',
       addressCountry: 'AU',
     },
     areaServed: [
       { '@type': 'AdministrativeArea', name: 'New South Wales' },
-      { '@type': 'AdministrativeArea', name: 'Victoria' },
       { '@type': 'AdministrativeArea', name: 'Queensland' },
+      { '@type': 'AdministrativeArea', name: 'Western Australia' },
     ],
     sameAs: [
       'https://www.facebook.com/bluvenenergy',

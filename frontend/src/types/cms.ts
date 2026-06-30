@@ -72,22 +72,6 @@ export interface FAQItem {
   published: boolean
 }
 
-export interface Brand {
-  id: string
-  name: string
-  model?: string
-  logo?: Media
-  logoUrl?: string
-  category: 'panels' | 'inverter' | 'battery' | 'ev' | 'monitoring'
-  tier?: 'tier-1' | 'premium'
-  description: string
-  spec1?: string
-  spec2?: string
-  websiteUrl?: string
-  featured: boolean
-  sortOrder: number
-}
-
 export interface TeamMember {
   id: string
   name: string

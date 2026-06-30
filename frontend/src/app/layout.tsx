@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   authors: [{ name: SITE.name, url: SITE.url }],
   keywords: [
     'solar', 'solar panels', 'battery storage', 'EV charging', 'Australia',
-    'solar installer Sydney', 'solar Melbourne', 'solar Brisbane',
+    'solar installer Sydney', 'solar Brisbane', 'solar Perth',
     'Tesla Powerwall', 'BYD battery', 'federal battery rebate',
     'Bluven Energy',
   ],

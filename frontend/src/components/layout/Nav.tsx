@@ -72,7 +72,7 @@ export function Nav() {
 
             <li className={`bv-mm-item ${activePane==='company' ? 'mm-open' : ''}`}>
               <button
-                className={`bv-mm-trigger ${isActive(['/who-we-are','/projects','/brands','/news']) ? 'is-active' : ''}`}
+                className={`bv-mm-trigger ${isActive(['/who-we-are','/projects','/news']) ? 'is-active' : ''}`}
                 onMouseEnter={() => openPane('company')}
                 onClick={() => setActivePane(activePane === 'company' ? null : 'company')}
               >
@@ -124,7 +124,6 @@ export function Nav() {
           <Link className={pathname === '/' ? 'is-active' : ''} href="/">{t('nav.home')}</Link>
           <Link className={linkClass(['/products'])} href="/products">{t('nav.products')}</Link>
           <Link className={linkClass(['/projects'])} href="/projects">{t('nav.projects')}</Link>
-          <Link className={linkClass(['/brands'])} href="/brands">{t('nav.brands')}</Link>
           <Link className={linkClass(['/who-we-are'])} href="/who-we-are">{t('nav.who')}</Link>
           <Link className={linkClass(['/news'])} href="/news">{t('nav.news')}</Link>
           <Link className={linkClass(['/faq'])} href="/faq">{t('nav.faq')}</Link>

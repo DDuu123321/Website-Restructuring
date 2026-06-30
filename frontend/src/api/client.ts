@@ -6,7 +6,7 @@
  */
 
 import type {
-  News, Project, FAQItem, Brand, SiteSettings, QuoteRequest, AssessmentRequest,
+  News, Project, FAQItem, SiteSettings, QuoteRequest, AssessmentRequest,
   PaginatedResponse, Media,
 } from '@/types/cms'
 
@@ -114,13 +114,6 @@ export const api = {
     if (args.category) where.category = { equals: args.category }
     return request<PaginatedResponse<FAQItem>>(
       '/faq' + buildQuery({ limit: 100, sort: 'sortOrder', depth: 0, locale: args.locale, where })
-    )
-  },
-
-  // Brands
-  brands() {
-    return request<PaginatedResponse<Brand>>(
-      '/brands' + buildQuery({ limit: 50, sort: 'sortOrder', depth: 1 })
     )
   },
 
