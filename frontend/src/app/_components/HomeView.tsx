@@ -1081,8 +1081,8 @@ function ProjectsCarousel({ cards }: { cards: Array<{ id: string; href: string; 
           {cards.map(c => (
             <div className="pc-slide" key={c.id}>
               <Link href={c.href} className="pc-card">
-                <div className="pc-img" style={{ backgroundImage: `url(${c.img})` }} />
-                <div className="pc-photo" style={{ backgroundImage: `url(${c.img})` }} />
+                <div className="pc-img" style={{ backgroundImage: `url("${c.img}")` }} />
+                <div className="pc-photo" style={{ backgroundImage: `url("${c.img}")` }} />
                 <div className="pc-overlay" />
                 <div className="pc-body">
                   {c.spec && <span className="pc-tag">{c.spec}</span>}

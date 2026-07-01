@@ -21,6 +21,10 @@ app.use(
   helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
+    // Allow the Next.js frontend (different origin) to embed /uploads images.
+    // Helmet defaults CORP to same-origin, which blocks cross-origin <img>
+    // (ERR_BLOCKED_BY_RESPONSE.NotSameOrigin) once real media is served.
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 )
 
