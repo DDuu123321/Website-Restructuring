@@ -35,7 +35,7 @@ export function HomeView({ featuredProjects }: Props) {
 // card shows it; brands without a file yet fall back to a monogram + name.
 const BRAND_GROUPS: { label: string; brands: { name: string; slug: string }[] }[] = [
   {
-    label: 'Solar Panels',
+    label: '',
     brands: [
       { name: 'Aiko', slug: 'aiko' }, { name: 'REC', slug: 'rec' }, { name: 'SunPower', slug: 'sunpower' },
       { name: 'Jinko', slug: 'jinko' }, { name: 'Trina', slug: 'trina' }, { name: 'LONGi', slug: 'longi' },
@@ -43,26 +43,11 @@ const BRAND_GROUPS: { label: string; brands: { name: string; slug: string }[] }[
     ],
   },
   {
-    label: 'Inverters',
+    label: '',
     brands: [
       { name: 'Fronius', slug: 'fronius' }, { name: 'Sungrow', slug: 'sungrow' }, { name: 'SMA', slug: 'sma' },
       { name: 'GoodWe', slug: 'goodwe' }, { name: 'FoxESS', slug: 'foxess' }, { name: 'SolarEdge', slug: 'solaredge' },
       { name: 'Enphase', slug: 'enphase' }, { name: 'Sigenergy', slug: 'sigenergy' },
-    ],
-  },
-  {
-    label: 'Batteries',
-    brands: [
-      { name: 'Tesla', slug: 'tesla' }, { name: 'Sigenergy', slug: 'sigenergy' }, { name: 'Sungrow', slug: 'sungrow' },
-      { name: 'BYD', slug: 'byd' }, { name: 'Alpha ESS', slug: 'alphaess' }, { name: 'FoxESS', slug: 'foxess' },
-      { name: 'Enphase', slug: 'enphase' }, { name: 'sonnen', slug: 'sonnen' },
-    ],
-  },
-  {
-    label: 'EV Chargers',
-    brands: [
-      { name: 'Fronius', slug: 'fronius' }, { name: 'Tesla', slug: 'tesla' }, { name: 'Zappi', slug: 'zappi' },
-      { name: 'Wallbox', slug: 'wallbox' }, { name: 'Sigenergy', slug: 'sigenergy' },
     ],
   },
 ]
@@ -112,9 +97,6 @@ function BrandWall() {
       <div className="container">
         <Reveal className="brandwall-head">
           <h2 className="section-h section-h--2line">{t('sect.brands.h')}</h2>
-          <p className="section-lede">
-            Tier-1, CEC-approved gear across every category — the brands Australians actually trust.
-          </p>
         </Reveal>
       </div>
 
@@ -146,12 +128,6 @@ function BrandWall() {
             </Reveal>
           )
         })}
-      </div>
-
-      <div className="container">
-        <p className="brandwall-note">
-          All products are Clean Energy Council (CEC) approved and rebate-eligible.
-        </p>
       </div>
     </section>
   )
@@ -290,7 +266,7 @@ function Hero() {
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </span>
-              <b>CPEng-led design</b>
+              <b>Engineer-Led</b>
             </li>
             <li>
               <span className="hero-adv-check" aria-hidden="true">
@@ -306,7 +282,7 @@ function Hero() {
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </span>
-              <b>10-Year product warranty</b>
+              <b>10+ Years product warranty</b>
             </li>
           </ul>
         </div>
@@ -377,9 +353,9 @@ function StatsBleed() {
     <section className="stats-bleed">
       <div className="container">
         <div className="stats-grid">
-          <Reveal className="stat"><div className="num"><AnimatedCounter to={2400} />+</div><div className="lbl">{t('h.s1')}</div></Reveal>
-          <Reveal className="stat" delay={120}><div className="num"><AnimatedCounter to={42} />M+</div><div className="lbl">{t('h.s2')}</div></Reveal>
-          <Reveal className="stat" delay={240}><div className="num"><AnimatedCounter to={137} />+</div><div className="lbl">{t('h.s4')}</div></Reveal>
+          <Reveal className="stat"><div className="num"><AnimatedCounter to={1800} />+</div><div className="lbl">{t('h.s1')}</div></Reveal>
+          <Reveal className="stat" delay={120}><div className="num"><AnimatedCounter to={36} />K+</div><div className="lbl">{t('h.s2')}</div></Reveal>
+          <Reveal className="stat" delay={240}><div className="num"><AnimatedCounter to={200} />+</div><div className="lbl">{t('h.s4')}</div></Reveal>
         </div>
       </div>
     </section>
@@ -922,7 +898,7 @@ function RebatesPanel() {
     },
     {
       title: 'We Handle Everything',
-      desc: 'From eligibility checks to STC applications and flexible green finance.',
+      desc: 'From eligibility checks to rebate applications.',
     },
   ]
   return (
@@ -933,7 +909,6 @@ function RebatesPanel() {
       <div className="feature-panel-content">
         <h2 className="section-h">Let Government Rebates Do the Heavy Lifting on Your Costs</h2>
         <span className="feature-panel-divider" />
-        <p className="feature-panel-lede">Take advantage of federal and state rebates to lower your upfront cost — we handle the paperwork.</p>
         <ul className="feature-panel-checklist">
           {items.map((it, i) => (
             <li key={i}>
@@ -957,15 +932,15 @@ function WhyChoosePanel() {
   const items = [
     {
       title: 'Engineering-Led, Not Sales-Driven',
-      desc: 'Designed and reviewed by qualified engineers — focused on safety, performance, and long-term reliability.',
+      desc: 'Your system is designed and reviewed by qualified engineers — focused on safety, performance, and long-term reliability from day one.',
     },
     {
       title: 'Local, Accountable, Responsive',
-      desc: 'A local Australian team that listens first — responsive support before, during, and after installation.',
+      desc: 'A local Australian team that listens first, then delivers solutions that truly fit your needs — with responsive support before, during, and after installation.',
     },
     {
       title: 'From Start to Long-Term Support',
-      desc: 'End-to-end service from design to installation and beyond — only trusted Tier 1 products.',
+      desc: 'End-to-end service from design to installation and beyond, using only trusted Tier 1 products you can rely on.',
     },
   ]
   return (
@@ -976,7 +951,6 @@ function WhyChoosePanel() {
       <div className="feature-panel-content">
         <h2 className="section-h">Why Choose Bluven Energy?</h2>
         <span className="feature-panel-divider" />
-        <p className="feature-panel-lede">Engineer-led design, local team, long-term support — you deserve more than just solar.</p>
         <ul className="feature-panel-checklist">
           {items.map((it, i) => (
             <li key={i}>
@@ -997,15 +971,15 @@ function BatteryBenefitsPanel() {
   const items = [
     {
       title: 'Harvest Today, Power Tonight',
-      desc: 'Store your daytime sun to cancel out expensive peak rates at night, instead of leaking it back to the grid.',
+      desc: 'Stop letting your solar leak back to the grid for pennies. Store your daytime sun to cancel out expensive peak rates at night.',
     },
     {
       title: 'Track Your Flow, Own Your Data',
-      desc: "Monitor your home's energy in real-time and shift usage away from high-cost hours.",
+      desc: "See exactly where your power goes with the intuitive App. Monitor your home’s energy pulse in real-time and shift your usage to avoid high-cost hours.",
     },
     {
       title: 'Stay Connected, Stay Bright',
-      desc: 'Automatically keep your essential appliances running during any grid outage.',
+      desc: 'Don’t let a grid failure pause your life. Automatically keep your essential appliances running smoothly during any outage.',
     },
   ]
   return (
@@ -1016,7 +990,6 @@ function BatteryBenefitsPanel() {
       <div className="feature-panel-content">
         <h2 className="section-h">Cut your electricity bills with 3 hours of free midday charging</h2>
         <span className="feature-panel-divider" />
-        <p className="feature-panel-lede">Battery storage is more than a box on the wall — it makes your solar work 24/7.</p>
         <ul className="feature-panel-checklist">
           {items.map((it, i) => (
             <li key={i}>

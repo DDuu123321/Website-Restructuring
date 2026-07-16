@@ -475,7 +475,7 @@
   font-family: var(--font-display);
   font-size: 17px;
   font-weight: 700;
-  color: var(--bv-teal-300);
+  color: #fec61f; /* matches the logo bolt/ENERGY colour (sampled from bluven-logo-white.png) */
   margin-bottom: 18px;
   letter-spacing: 0.005em;
 }

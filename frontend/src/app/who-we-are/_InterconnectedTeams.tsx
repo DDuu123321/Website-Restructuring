@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react'
 
-// Verbatim embed of the standalone "Interconnected Expert Teams" diagram
-// (user-authored graphic). Only the DC-framework template placeholders were
-// substituted/removed so it runs outside that framework; design is unchanged.
+// Embed of the standalone "Interconnected Expert Teams" diagram
+// (user-authored graphic). DC-framework template placeholders were
+// substituted/removed so it runs outside that framework; the rounded
+// panel around the diagram was dropped so content sits directly on the
+// section's dark background.
 const IET_HTML = `<style>
 .iet{
   --accent:#ffc61f;
@@ -29,8 +31,7 @@ const IET_HTML = `<style>
 </style>
 <section class="iet" data-rm="false" style="font-family:Montserrat,sans-serif; background:linear-gradient(180deg,#04243f,#03162a); padding:52px 28px 64px; display:flex; flex-direction:column; align-items:center; --accent: #ffc61f;">
 
-  <div data-screen-label="Interconnected Expert Teams" style="position:relative; width:1240px; max-width:100%; border-radius:24px; overflow:hidden; background:radial-gradient(120% 100% at 50% 32%, #0a4d89 0%, #073257 48%, #042744 100%); box-shadow:0 40px 100px rgba(0,0,0,.55), inset 0 0 0 1px rgba(120,170,230,.16);">
-    <div style="position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(rgba(255,255,255,.5) 1px, transparent 1.2px); background-size:96px 74px; opacity:.10;"></div>
+  <div data-screen-label="Interconnected Expert Teams" style="position:relative; width:1240px; max-width:100%; overflow:hidden;">
 
     <!-- HEADER -->
     <div style="position:relative; z-index:2; text-align:center; padding:52px 40px 6px;">

@@ -21,7 +21,7 @@ const CONTENT = {
       },
       {
         h: '4. Contact us',
-        p: 'For questions, email privacy@bluven.com.au',
+        p: 'For questions, email info@bluven.com.au',
       },
     ],
   },

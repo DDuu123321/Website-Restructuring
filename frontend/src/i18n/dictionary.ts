@@ -43,8 +43,7 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
     'footer.cookies': 'Cookie Notice',
-    'footer.copy': '© 2026 Bluven Energy Pty Ltd · ABN 38 692 264 412',
-    'footer.cec': 'CEC Approved Retailer · Clean Energy Council Member',
+    'footer.copy': '© 2026 Bluven Pty Ltd',
 
     // ── AI Chat ──
     'chat.title': 'Sunny · Bluven Assistant',
@@ -83,8 +82,8 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'h.cta1': 'Get a free quote',
     'h.cta2': 'Watch how it works',
     'h.s1': 'Homes powered',
-    'h.s2': 'kWh generated',
-    'h.s4': 'Service partners',
+    'h.s2': 'kWh installed',
+    'h.s4': 'Electrical partners',
 
     // ── Home: sections ──
     'sect.products.eye': 'WHAT WE BUILD',
@@ -98,11 +97,11 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'p.s2.t': 'Proposal, Delivery & Installation',
     'p.s2.d': 'Clear and detailed proposal, followed by coordinated delivery and professional installation by certified electricians.',
     'p.s3.t': 'Commissioning & Ongoing Support',
-    'p.s3.d': 'System setup, performance testing, app monitoring, and ongoing technical support to ensure everything operates reliably.',
+    'p.s3.d': 'System setup, performance testing, app monitoring, and ongoing technical support to ensure everything operates as expected.',
     'p.s4.t': 'Long-Term Service & Warranty',
     'p.s4.d': 'Reliable after-sales support, warranty assistance, and long-term service from a local team you can count on.',
 
-    'sect.brands.h': "We don't make panels. We pick the best ones.",
+    'sect.brands.h': "Our Trusted Partners",
     'sect.brands.btn': 'Explore our brand partners',
 
     'sect.proj.eye': "PROJECTS WE'VE BUILT",

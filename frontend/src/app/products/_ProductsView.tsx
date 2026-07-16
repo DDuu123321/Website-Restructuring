@@ -81,64 +81,10 @@ export function ProductsView() {
     },
   ]
 
-  // ── 3 packages — meeting feedback: 3 tiers (Starter / Standard / Premium) ──
-  const packages = [
-    {
-      id: 'starter',
-      eyebrow: 'First-time buyers',
-      h:       'Starter',
-      tagline: 'Save',
-      sub:     '6.6 kW solar · No battery',
-      from:    'From $5,990 · incl. STCs',
-      bullets: [
-        '16× 410 W panels',
-        '5 kW string inverter',
-        'Real-time Bluven Live app',
-        '10+ years workmanship warranty',
-      ],
-      payback: '~3.3 yrs',
-    },
-    {
-      id: 'essential',
-      featured: true,
-      eyebrow: 'Solar + battery',
-      h:       'Standard',
-      tagline: 'Stable',
-      sub:     '10 kW solar · 10 kWh battery',
-      from:    'From $13,490 · incl. all rebates',
-      bullets: [
-        'All Starter features included',
-        '24× 440 W panels',
-        '10 kW hybrid inverter',
-        '10 kWh battery — essential backup',
-        'Federal Battery Rebate handled',
-      ],
-      payback: '~4.0 yrs',
-      ribbon:  'Most chosen · 64%',
-    },
-    {
-      id: 'premium',
-      eyebrow: 'Whole-home energy',
-      h:       'Premium',
-      tagline: 'Save · Stable · No limits',
-      sub:     '13.2 kW solar · 20 kWh battery',
-      from:    'From $22,990 · incl. all rebates',
-      bullets: [
-        'All Standard features included',
-        '32× 440 W premium panels',
-        'SigenStor full-stack hybrid',
-        '20 kWh expandable battery',
-        'Whole-home backup',
-        'EV-ready (charger optional)',
-      ],
-      payback: '~5.1 yrs',
-    },
-  ]
-
   return (
     <>
       <PageHeader
-        eyebrow="Products & packages"
+        eyebrow="Products"
         title="Engineered for Australian roofs."
         lede="Solar, batteries and EV charging — all from one team that designs, installs and supports the whole system as a single energy stack."
       />
@@ -200,7 +146,7 @@ export function ProductsView() {
                 )}
               </Reveal>
 
-              <Reveal>
+              <Reveal className="cat-media">
                 <div className="cat-visual" style={{ backgroundImage: `url(${c.img})` }} />
               </Reveal>
             </div>
@@ -220,51 +166,6 @@ export function ProductsView() {
           </div>
         </section>
       ))}
-
-      {/* 3 packages */}
-      <section id="packages" className="section" style={{ background: 'var(--bv-white)', scrollMarginTop: 80 }}>
-        <div className="container">
-          <Reveal style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 56px' }}>
-            <span className="text-eyebrow">Packages</span>
-            <h2
-              className="section-h"
-              style={{ margin: '12px auto 12px', textAlign: 'center' }}
-              dangerouslySetInnerHTML={{
-                __html: 'Pick a starting point.<br/>Customise from there.'
-              }}
-            />
-            <p className="section-lede" style={{ margin: '0 auto', textAlign: 'center' }}>
-              Three engineered tiers. Each one builds on the previous — pick the closest fit, our engineer refines it to your roof.
-            </p>
-          </Reveal>
-
-          <div className="pkg-tier-grid">
-            {packages.map((p, i) => (
-              <Reveal key={p.id} className={`pkg-tier ${p.featured ? 'is-featured' : ''}`} delay={i * 100}>
-                {p.ribbon && <div className="pkg-ribbon">{p.ribbon}</div>}
-                <header>
-                  <span className="pkg-tier-eye">{p.eyebrow}</span>
-                  <h3 className="pkg-tier-h">{p.h}</h3>
-                  <div className="pkg-tier-tagline">{p.tagline}</div>
-                  <p className="pkg-tier-sub">{p.sub}</p>
-                  <div className="pkg-tier-from">{p.from}</div>
-                </header>
-                <ul className="pkg-tier-list">
-                  {p.bullets.map((b, k) => <li key={k}>{b}</li>)}
-                </ul>
-                <div className="pkg-tier-payback">
-                  <span>Typical payback</span>
-                  <b>{p.payback}</b>
-                </div>
-                <Link className={`btn ${p.featured ? 'btn-primary' : 'btn-ghost'} pkg-tier-cta`} href={`/quote?pack=${p.id}`}>
-                  <span>Get this package</span> <span className="arrow">→</span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="cta-bottom">
         <Reveal>

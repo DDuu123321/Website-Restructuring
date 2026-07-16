@@ -8,7 +8,7 @@ import type { SiteSettings } from '@/types/cms'
 export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
   const phone = settings?.phone || '1300 BLUVEN (1300 258 836)'
   const phoneHref = settings?.phoneHref || '+611300258836'
-  const email = settings?.email || 'hello@bluven.com.au'
+  const email = settings?.email || 'info@bluven.com.au'
 
   const offices = [
     {

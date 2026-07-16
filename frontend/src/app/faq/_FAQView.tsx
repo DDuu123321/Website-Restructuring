@@ -16,89 +16,7 @@ type FallbackFaq = {
 }
 
 const FALLBACK_FAQS: FallbackFaq[] = [
-  // General
-  { id: 'g1', c: 'general',
-    q: 'How do I know if my roof is suitable for solar?',
-    a: 'Most Australian roofs work — even south-facing in some cases. Our engineers do a free desktop assessment from satellite imagery first, then a 30-minute site visit to confirm pitch, shading, structural condition and switchboard space. Tile, tin and Klip-Lok are all supported.' },
-  { id: 'g2', c: 'general',
-    q: 'What size system do I need?',
-    a: 'A rough rule of thumb: take your average daily usage (kWh) from your bill and aim to generate 1.5× that on a sunny day. For most Sydney households that lands around 6.6 – 10 kW. Add a battery if you want to use more than 50% of your generation at home.' },
-  { id: 'g3', c: 'general',
-    q: 'How long does a quote take?',
-    a: 'A free desktop quote takes 60 seconds via our online sizer. A full engineered design (with 3D shade modelling and switchboard inspection) takes 3–5 business days after your site visit.' },
 
-  // Rebates & pricing
-  { id: 'r1', c: 'pricing',
-    q: 'How does the Federal Battery Rebate work in 2026?',
-    a: "The Cheaper Home Batteries Program gives you an upfront discount on an eligible battery installed from July 2025 — taken straight off your invoice, not claimed back later. The more usable storage (up to the program cap), the bigger the discount, and it stacks with the state incentives in NSW and Victoria. We handle all the paperwork, and your exact figure is set out in your written quote." },
-  { id: 'r2', c: 'pricing',
-    q: 'What rebates are available in my state?',
-    a: 'Federal: STCs (small-scale) for solar, Federal Battery Rebate for storage. State: NSW PDRS and Empowering Homes loan; VIC Solar Homes rebate; QLD interest-free loans. We confirm exactly what you qualify for in your written quote.' },
-  { id: 'r3', c: 'pricing',
-    q: 'Do I need to apply for rebates myself?',
-    a: 'No. We handle every form — STC creation, federal rebate paperwork, state rebate applications, and the meter reconfiguration with your retailer. You sign once. We do the rest.' },
-  { id: 'r4', c: 'pricing',
-    q: 'Are there finance options?',
-    a: 'Yes. We partner with green finance providers offering 0% interest options up to 7 years on approved solar + battery installs. We also offer PPAs for commercial sites. Final terms confirmed in your quote.' },
-  { id: 'r5', c: 'pricing',
-    q: "What's a net meter and do I need a new one?",
-    a: 'A net meter records both how much you import from the grid and how much you export back. Most homes installed since 2017 already have one. If yours doesn\'t, we coordinate the upgrade with your retailer at install — usually no extra cost.' },
-
-  // Installation
-  { id: 'i1', c: 'installation',
-    q: 'How long does installation take?',
-    a: 'A typical 6.6 – 10 kW residential install takes 1 – 2 days. Adding a battery adds half a day. Commercial 50 – 200 kW installs take 1 – 3 weeks depending on access and electrical work.' },
-  { id: 'i2', c: 'installation',
-    q: 'Will you damage my roof?',
-    a: 'No. Our installers are CEC-accredited and use roof-specific mounting systems (KlipLok, tile-foot, fold-back tin). Every penetration is sealed with butyl + flashing, and we provide a workmanship warranty covering any roof leak caused by our install.' },
-  { id: 'i3', c: 'installation',
-    q: 'Do I need to be home during install?',
-    a: 'You need to be home for ~15 minutes at the start (briefing) and end (commissioning walk-through and app setup). Otherwise, you\'re free to head out — we\'ll text updates and a final report.' },
-  { id: 'i4', c: 'installation',
-    q: 'What happens if it rains on install day?',
-    a: "We'll reschedule. Safety first — wet roofs are no place for installers. We typically have spare slots within the same week." },
-
-  // Battery
-  { id: 'b1', c: 'products',
-    q: 'Is a battery worth it for my home?',
-    a: "For most NSW households generating > 8 kW with a daily usage > 25 kWh, yes — payback is 4 – 6 years depending on rebates. Below those thresholds it's a lifestyle choice (blackout protection, energy independence) more than a financial one. Our engineers run the exact calc for your bill." },
-  { id: 'b2', c: 'products',
-    q: "What's the difference between essential and whole-home backup?",
-    a: 'Essential backup keeps a few key circuits (fridge, lights, internet, one power point) running during a blackout. Whole-home backup keeps everything running. Whole-home requires a more sophisticated battery + gateway and is ~$2,500 more.' },
-  { id: 'b3', c: 'products',
-    q: 'How long does a battery last?',
-    a: 'Most modern LiFePO₄ batteries are warrantied for 10 years and 6,000 – 10,000 cycles. Real-world expected life is 12 – 15 years before they degrade to ~70% of original capacity.' },
-  { id: 'b4', c: 'products',
-    q: 'Can I add a battery to my existing solar?',
-    a: 'Almost always, yes. We do this regularly — using AC-coupled batteries (Tesla Powerwall, Alpha SMILE) that talk to your existing inverter, or replacing your inverter with a hybrid if it makes more economic sense.' },
-
-  // EV
-  { id: 'e1', c: 'products',
-    q: 'Will my solar power my EV?',
-    a: 'Yes — and there are smart ways to do it. A solar-aware charger (Zappi, Ocular IQ) can be set to "Eco+" mode, which only charges your EV from solar surplus. On a sunny day with a 10 kW system, you can fully charge most EVs in 4 – 6 hours of free sunshine.' },
-  { id: 'e2', c: 'products',
-    q: 'Do I need a battery to charge my EV from solar?',
-    a: "No, but it helps for evening charging. Without a battery, you'll only solar-charge during daylight. With one, surplus solar fills the battery first then powers the car overnight at off-peak rates." },
-  { id: 'e3', c: 'products',
-    q: 'Can I install an EV charger now and add solar later?',
-    a: 'Yes. We pre-wire the home for solar at the same time so the future install is half the price.' },
-
-  // Warranty / support
-  { id: 'w1', c: 'support',
-    q: 'What warranties come with my system?',
-    a: '25 years on panels (product), 30 years on panels (performance), 10+ years on inverters and batteries, and 10+ years Bluven workmanship warranty on the install itself. All in writing, all backed by manufacturers with Australian offices.' },
-  { id: 'w2', c: 'support',
-    q: 'What if my system stops working?',
-    a: 'Our app pings us before you notice anything\'s off. If something does go wrong, we have an Australian support team and most issues are resolved within 24 hours. Engineers visit on-site if needed — included in workmanship warranty.' },
-  { id: 'w3', c: 'support',
-    q: 'Do you offer ongoing monitoring?',
-    a: 'Yes — included with every system, free for life. The Bluven Live app tracks generation, battery state, household loads, EV charging, plus alerts you to anything unusual.' },
-  { id: 'w4', c: 'support',
-    q: 'What if I sell my house?',
-    a: "Our warranties are transferable to the new owner at no charge — we'll even do a free system health-check before settlement to keep things smooth." },
-  { id: 'w5', c: 'support',
-    q: 'Are you a CEC Approved Retailer?',
-    a: "Yes — we're a CEC Approved Retailer and a signatory to the New Energy Tech Consumer Code (NETCC). It's the highest consumer-protection benchmark in Australian solar." },
 ]
 
 const CATEGORIES = [
@@ -144,8 +62,7 @@ export function FAQView({ items }: { items: FAQItem[] }) {
   return (
     <>
       <PageHeader
-        eyebrow="Frequently asked questions"
-        title="Got questions?<br/>We've got answers."
+        title="Frequently Asked Questions"
         lede="Everything you need to know about solar, batteries, EV charging, rebates and what to expect from a Bluven install."
       />
 

@@ -50,7 +50,7 @@
   align-items: center;
 }
 .cat-grid.reverse { grid-template-columns: 1.1fr 1fr; }
-.cat-grid.reverse .cat-visual { order: -1; }
+.cat-grid.reverse .cat-media { order: -1; }
 .cat-copy .text-eyebrow { display: inline-block; margin-bottom: 16px; }
 .cat-copy h2 { margin: 0 0 18px; font-size: clamp(28px, 3.6vw, 44px); }
 .cat-copy > p { font-size: 17px; line-height: 1.65; color: var(--bv-ink-500); margin-bottom: 26px; max-width: 56ch; }
@@ -91,7 +91,7 @@
 }
 @media (max-width: 900px) {
   .cat-grid, .cat-grid.reverse { grid-template-columns: 1fr; gap: 40px; }
-  .cat-grid.reverse .cat-visual { order: 0; }
+  .cat-grid.reverse .cat-media { order: 0; }
 }
 
 
@@ -1573,7 +1573,7 @@
 /* Story 2-col grid */
 .story-grid {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
+  grid-template-columns: 1fr 1fr;
   gap: clamp(36px, 6vw, 80px);
   align-items: center;
 }
@@ -2103,103 +2103,177 @@
 }
 
 /* =========================================================
-   WHO WE ARE — accreditations strip, quote card, values,
-   mission/vision, closed-loop teams, why-choose grid
+   WHO WE ARE — hero, accreditations strip, quote card,
+   values, mission/vision, closed-loop teams, why-choose grid
+   Mirrors the old-site About section: Montserrat, navy
+   #042744 / blue #0a4d89 / yellow #ffc61f.
    ========================================================= */
+.about-hero {
+  background: #042744;
+  padding: clamp(140px, 16vw, 180px) 0 clamp(90px, 10vw, 128px);
+  text-align: center;
+}
+.about-hero h1 {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: clamp(42px, 4vw, 60px);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1.25;
+  color: var(--bv-white);
+  margin: 0 0 40px;
+}
+.about-hero-lede {
+  max-width: 896px;
+  margin: 0 auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.about-hero-lede p {
+  margin: 0;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.625;
+  color: #dbeafe;
+}
+
 .accred-strip {
-  background: var(--bv-teal-500);
-  color: var(--bv-ink-900);
-  padding: 22px 0;
+  background: #ffc61f;
+  color: #042744;
+  padding: 24px 0;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 .accred-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 14px 28px;
+  gap: 24px 40px;
 }
 .accred-item {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  font-size: 13.5px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  gap: 8px;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: clamp(14px, 1.1vw, 16px);
+  font-weight: 900;
+  letter-spacing: 0.05em;
 }
-.accred-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--bv-ink-900);
-  flex: 0 0 8px;
-}
+.accred-item svg { width: 20px; height: 20px; flex: 0 0 20px; }
 @media (max-width: 720px) {
   .accred-row { justify-content: center; }
-  .accred-item { font-size: 12px; }
+}
+
+.drives-eyebrow {
+  display: block;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: #0a4d89;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  margin: 0 0 24px;
+}
+.drives-h {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: #042744;
+  letter-spacing: normal;
+  line-height: 1.12;
+  margin: 0 0 32px;
 }
 
 .quote-card {
-  background: var(--bv-paper-2);
-  border-left: 4px solid var(--bv-teal-500);
-  border-radius: var(--radius-xl);
-  padding: 26px 28px;
-  margin: 0 0 30px;
+  background: #f8fafc;
+  border-left: 4px solid #ffc61f;
+  border-radius: 24px;
+  padding: 32px;
+  margin: 0 0 40px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 .quote-card p {
   margin: 0;
-  font-size: 17px;
-  line-height: 1.55;
-  color: var(--bv-ink-900);
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 20px;
+  line-height: 1.625;
+  color: #042744;
   font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
 }
 
+.values-h {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #042744;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 24px;
+}
 .values-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
 }
 .value-chip {
   display: inline-flex;
-  padding: 9px 18px;
+  padding: 12px 20px;
   border-radius: var(--radius-full);
-  background: var(--bv-ink-900);
+  background: #0a4d89;
   color: var(--bv-white);
-  font-size: 12.5px;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
 
-.mv-card {
-  background: var(--bv-white);
-  border: 1px solid var(--bv-ink-100);
-  border-radius: var(--radius-2xl);
-  padding: 30px 28px;
-  margin-bottom: 20px;
-  transition: all 0.3s var(--ease-out);
+.mv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
 }
-.mv-card:last-child { margin-bottom: 0; }
+.mv-card {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 32px;
+  padding: 40px;
+  transition: box-shadow 0.3s var(--ease-out);
+}
+.mv-card.is-offset { transform: translateY(48px); }
 .mv-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-  border-color: var(--bv-teal-300);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+.mv-card > svg {
+  width: 48px; height: 48px;
+  color: #ffc61f;
+  margin-bottom: 24px;
 }
 .mv-card h4 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--bv-ink-900);
-  margin: 0 0 10px;
-  letter-spacing: -0.01em;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: #042744;
+  margin: 0 0 16px;
+  letter-spacing: normal;
 }
 .mv-card p {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--bv-ink-500);
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.625;
+  color: #64748b;
+}
+@media (max-width: 640px) {
+  .mv-grid { grid-template-columns: 1fr; }
+  .mv-card.is-offset { transform: none; }
 }
 
 /* ---- Closed-Loop ring layout ---- */
