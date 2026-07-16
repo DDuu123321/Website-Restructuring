@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Montserrat, JetBrains_Mono } from 'next/font/google'
+import { Montserrat, JetBrains_Mono, Archivo_Black, Roboto_Slab } from 'next/font/google'
 import { Providers } from '@/components/layout/Providers'
 import { Nav } from '@/components/layout/Nav'
 import { Footer } from '@/components/layout/Footer'
@@ -25,6 +25,22 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
   variable: '--font-jetbrains',
+  display: 'swap',
+})
+// Heading font — Archivo Black (single heavy display weight). Wired to --font-display.
+// Headings request 700/800 but only 400 exists → font-synthesis-weight:none in CSS
+// keeps its true black shape instead of a faux-bold.
+const archivoBlack = Archivo_Black({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-archivo',
+  display: 'swap',
+})
+// Body font — Roboto Slab (slab serif). Wired to --font-sans.
+const robotoSlab = Roboto_Slab({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-roboto-slab',
   display: 'swap',
 })
 
@@ -78,7 +94,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const chat = settings?.chat
   const chatEnabled = chat?.enabled !== false   // default on; respects the admin toggle
   return (
-    <html lang="en-AU" data-lang="en" className={`${montserrat.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en-AU" data-lang="en" className={`${montserrat.variable} ${jetbrainsMono.variable} ${archivoBlack.variable} ${robotoSlab.variable}`}>
       <body>
         <JsonLd data={organizationLd()} />
         <Providers>

@@ -501,6 +501,10 @@
   flex: 1 1 0;
   min-width: 0;
   container-type: inline-size;
+  /* Visual +50px nudge to the right (desktop only; reset in the <=1200px block).
+     Applied to the container, not its children, so it doesn't touch the staggered
+     slide-in reveal on .hero-copy > * and doesn't reflow/resize anything. */
+  transform: translateX(50px);
 }
 .hero-diagram {
   flex: 1 1 0;
@@ -700,7 +704,7 @@
 }
 @media (max-width: 1200px) {
   .hero-content { display: block; padding: 130px 32px 90px; }
-  .hero-copy { max-width: 720px; margin: 0 auto; }
+  .hero-copy { max-width: 720px; margin: 0 auto; transform: none; }   /* no +50px nudge once stacked/centred */
   .hero-diagram { display: none; }
 }
 @media (max-width: 640px) {
@@ -1106,7 +1110,7 @@
   font-family: var(--font-display);
   font-size: clamp(26px, 3vw, 44px);
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.55;              /* looser: ~20px more air between the two lines */
   letter-spacing: -0.02em;
   color: var(--bv-white);
   margin: 10px 0 0;
@@ -1197,15 +1201,19 @@
    overflow stays visible so the card hangs off the picture and only lightly
    intrudes on it. */
 .proc-pin-stage {
-  --card-w: 320px;
-  --img-w: 720px;
+  --card-w: clamp(340px, 30vw, 460px);
+  --img-w: clamp(460px, 50vw, 720px);
   position: relative;
   width: 100%;
-  max-width: var(--img-w);
+  max-width: 1240px;
   margin: 0 auto;
   min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(36px, 5vw, 84px);            /* the clear space between card and image */
 }
-.proc-pin-imgwrap { position: relative; width: 100%; }
+.proc-pin-imgwrap { position: relative; flex: 0 1 var(--img-w); width: var(--img-w); }
 .proc-pin-frame {
   position: relative;
   width: 100%;
@@ -1249,50 +1257,44 @@
   animation: pulseDot 1.8s infinite;
 }
 
-/* ---- the corner-cycling glass card ---- */
+/* ---- the glass card — sits to the LEFT of the image, in flow ---- */
 .proc-pin-card {
-  position: absolute;
+  position: relative;
   z-index: 3;
+  flex: 0 0 var(--card-w);
   width: var(--card-w);
-  left: 50%; top: 50%;                          /* per-corner overrides below */
-  transform: translate(-50%, -50%);
-  transition: left 0.65s var(--ease-out), top 0.65s var(--ease-out);
-  padding: 18px 20px 20px;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, rgba(20,43,77,0.86), rgba(13,31,60,0.93));
+  padding: clamp(26px, 2.4vw, 40px);
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(180deg, rgba(20,43,77,0.88), rgba(13,31,60,0.94));
   backdrop-filter: blur(14px) saturate(120%);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
   border: 1px solid rgba(251,199,7,0.30);
   box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 34px rgba(251,199,7,0.10);
 }
-/* anchor points = card CENTRE as % of the image box. Tuned so the card sits in
-   the corner with only its inner third over the picture, the rest hanging off. */
-.proc-pin-card.pos-tl { left: -5%;  top: 25%; }
-.proc-pin-card.pos-bl { left: -5%;  top: 75%; }
-.proc-pin-card.pos-br { left: 105%; top: 75%; }
-.proc-pin-card.pos-tr { left: 105%; top: 25%; }
-.proc-pin-card-inner { animation: procCardIn 0.5s var(--ease-out) both; }
-@keyframes procCardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+/* each step: fade in + fly in from the left */
+.proc-pin-card-inner { animation: procCardIn 0.55s var(--ease-out) both; }
+@keyframes procCardIn { from { opacity: 0; transform: translateX(-34px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes procCardInY { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .proc-pin-card-n {
   display: inline-block; font-family: var(--font-display);
-  font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em;
+  font-size: 13px; font-weight: 800; letter-spacing: 0.14em;
   color: var(--bv-ink-900); background: var(--bv-teal-400);
-  padding: 4px 10px; border-radius: var(--radius-full);
+  padding: 5px 12px; border-radius: var(--radius-full);
   box-shadow: 0 0 20px rgba(251,199,7,0.4);
 }
 .proc-pin-card-t {
   font-family: var(--font-display);
-  font-size: clamp(17px, 1.4vw, 21px); font-weight: 800;
-  line-height: 1.25; letter-spacing: -0.01em; color: var(--bv-white);
-  margin: 11px 0 7px;
+  font-size: clamp(20px, 1.8vw, 27px); font-weight: 800;
+  line-height: 1.24; letter-spacing: -0.01em; color: var(--bv-white);
+  margin: 16px 0 11px;
 }
-.proc-pin-card-d { font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,0.82); margin: 0; }
+.proc-pin-card-d { font-size: clamp(15px, 1.25vw, 18px); line-height: 1.65; color: rgba(255,255,255,0.88); margin: 0; }
 
 /* mobile static list hidden unless reduced-motion (below) */
 .proc-pin-mlist { display: none; }
 
 /* ---- DESKTOP scroll travel ---- */
-@media (min-width: 901px) { .proc-pin { height: 210vh; } }
+@media (min-width: 901px) { .proc-pin { height: 350vh; } }  /* travel 250vh / 4 steps ≈ 62vh per step (less sensitive) */
 
 /* short-desktop height guard (1366x768 etc.) */
 @media (min-width: 901px) and (max-height: 850px) {
@@ -1303,15 +1305,17 @@
 /* intermediate desktop (901-1200): smaller image+card, and pull the card back
    on-screen (less hang-off room here, so corners sit closer to the image edge). */
 @media (min-width: 901px) and (max-width: 1200px) {
-  .proc-pin-stage { --card-w: 296px; --img-w: 560px; }
+  .proc-pin-stage {
+    --card-w: clamp(300px, 32vw, 360px);
+    --img-w: clamp(400px, 44vw, 520px);
+    gap: clamp(28px, 3.5vw, 48px);
+  }
   .proc-pin-frame { max-height: 46vh; }
-  .proc-pin-card.pos-tl, .proc-pin-card.pos-bl { left: 4%; }
-  .proc-pin-card.pos-tr, .proc-pin-card.pos-br { left: 96%; }
 }
 
 /* ---- MOBILE (<=900px): pinned scroll-step, simplified (no corner cycling) ---- */
 @media (max-width: 900px) {
-  .proc-pin { height: 280vh; }                  /* tuned: 4 steps over ~180vh travel ~= 45vh/step */
+  .proc-pin { height: 360vh; }                  /* 4 steps over ~260vh travel ≈ 65vh/step */
   .proc-pin-stack { gap: 16px; }
   .proc-pin-head { max-width: 100%; }
   .proc-pin-h { font-size: clamp(21px, 6vw, 30px); }
@@ -1319,19 +1323,22 @@
   .proc-pin-stepper { --dot-size: 36px; max-width: 320px; }
   .proc-pin-dot { font-size: 13px; }
 
-  /* full-width image with the card BELOW, overlapping its bottom (normal flow) */
-  .proc-pin-stage { --img-w: 100%; max-width: 460px; }
-  .proc-pin-imgwrap { display: flex; flex-direction: column; }
+  /* stack: image on top, card below (slightly overlapping its bottom) */
+  .proc-pin-stage {
+    flex-direction: column-reverse;
+    gap: 0;
+    max-width: 460px;
+    --img-w: 100%;
+  }
+  .proc-pin-imgwrap { width: 100%; }
   .proc-pin-frame { aspect-ratio: 4 / 3; max-height: 34vh; }
   .proc-pin-img-tag { display: none; }
   .proc-pin-card {
-    position: relative; left: auto; top: auto; transform: none;
+    flex: none;
     width: calc(100% - 28px);
     margin: -36px auto 0;                        /* overlap onto the image bottom, centred */
-    transition: none;
   }
-  .proc-pin-card.pos-tl, .proc-pin-card.pos-bl,
-  .proc-pin-card.pos-br, .proc-pin-card.pos-tr { left: auto; top: auto; }
+  .proc-pin-card-inner { animation-name: procCardInY; }   /* vertical fly-in on mobile */
 }
 
 /* reduced-motion on small screens: drop the pin, show the full static list */
@@ -1470,216 +1477,169 @@ section.section.showcase {
 }
 .section.showcase > .container { position: relative; z-index: 1; }
 
-/* ---- Carousel shell ---- */
-.pc-shell {
+/* =========================================================
+   RECENT INSTALLATIONS — 3D stacked photo deck ("dock" album)
+   Portrait phone photos keep their real ratio; cards overlap
+   toward the centre (Mac-dock magnification + coverflow tilt).
+   Drag / trackpad / arrows browse; click the front photo to
+   open it hi-res in the lightbox.
+   NOTE: --bv-teal-* tokens are actually YELLOW (#fbc707…).
+   ========================================================= */
+.dock { position: relative; margin-top: 30px; }
+.dock-stage {
   position: relative;
-  margin-top: 28px;
-  border-radius: var(--radius-2xl);
+  height: clamp(300px, 44vh, 460px);
+  perspective: 1700px;
+  transform-style: preserve-3d;
+  touch-action: pan-y;                 /* vertical page scroll stays native; horizontal = JS drag */
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.pc-viewport {
-  overflow: hidden;
-  border-radius: var(--radius-2xl);
-  box-shadow: 0 22px 56px rgba(0,0,0,0.35);
-}
-.pc-track {
-  display: flex;
-  width: 100%;
-  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-.pc-slide {
-  flex: 0 0 100%;
-  min-width: 0;
-}
+.dock-stage.is-dragging { cursor: grabbing; }
+.dock-stage:focus-visible { outline: 2px solid var(--bv-teal-400); outline-offset: 8px; border-radius: 14px; }
 
-/* ---- Slide card ---- */
-.pc-card {
-  position: relative;
-  display: block;
-  height: clamp(340px, 48vh, 480px);
-  text-decoration: none;
-  color: inherit;
-  isolation: isolate;
-  overflow: hidden;
-}
-.pc-img {
+.dock-card {
   position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  /* Blurred fill of the SAME photo. .pc-photo (below) shows the whole image with
-     object-fit:contain, so a 9:16 portrait or 4:3 landscape is never cropped and
-     never sits in empty bars — the blur fills the gaps. */
-  filter: blur(34px) saturate(1.3) brightness(0.5);
-  transform: scale(1.18);
-}
-.pc-photo {
-  position: absolute;
-  inset: 0;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.6s var(--ease-out);
-}
-.pc-card:hover .pc-photo { transform: scale(1.03); }
-.pc-overlay {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(6,20,31,0.10) 0%, rgba(6,20,31,0.85) 100%),
-    linear-gradient(90deg, rgba(6,20,31,0.55) 0%, transparent 55%);
-  pointer-events: none;
-  z-index: 1;
-}
-.pc-body {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  padding: clamp(24px, 4vw, 44px) clamp(28px, 5vw, 60px);
-  z-index: 2;
-  color: var(--bv-white);
-  max-width: 720px;
-}
-.pc-tag {
-  display: inline-block;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--bv-teal-300);
-  background: rgba(231,182,88,0.18);
-  border: 1px solid rgba(240,200,120,0.32);
-  padding: 5px 11px;
-  border-radius: var(--radius-full);
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-.pc-loc {
-  font-size: 12.5px;
-  color: rgba(255,255,255,0.72);
-  letter-spacing: 0.06em;
-  margin-bottom: 6px;
-}
-.pc-title {
-  font-family: var(--font-display);
-  font-size: clamp(22px, 2.6vw, 32px);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--bv-white);
-  line-height: 1.2;
-  margin: 0 0 10px;
-}
-.pc-sum {
-  font-size: 14.5px;
-  color: rgba(255,255,255,0.85);
-  line-height: 1.55;
-  margin: 0 0 16px;
-  max-width: 56ch;
-}
-.pc-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--bv-teal-300);
-  letter-spacing: 0.01em;
-  transition: gap 0.2s, color 0.2s;
-}
-.pc-card:hover .pc-cta { gap: 14px; color: var(--bv-white); }
-
-/* ---- Arrows ---- */
-.pc-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 5;
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.92);
-  color: var(--bv-ink-900);
-  display: grid; place-items: center;
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.5);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.30);
-  transform: translateY(-50%);
-  transition: all 0.2s var(--ease-out);
-}
-.pc-arrow:hover {
-  background: var(--bv-teal-500);
-  color: var(--bv-white);
-  transform: translateY(-50%) scale(1.05);
-  border-color: var(--bv-teal-500);
-}
-.pc-prev { left: 18px; }
-.pc-next { right: 18px; }
-@media (max-width: 640px) {
-  .pc-arrow { width: 40px; height: 40px; }
-  .pc-prev { left: 10px; }
-  .pc-next { right: 10px; }
-}
-
-/* ---- Controls (counter + dots + progress) ---- */
-.pc-controls {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 18px;
-  margin-top: 18px;
-  color: var(--bv-white);
-}
-.pc-counter {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.85);
-}
-.pc-counter-divider { color: rgba(255,255,255,0.4); font-weight: 400; }
-.pc-counter span:first-child { color: var(--bv-teal-300); font-size: 22px; }
-.pc-dots {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-.pc-dot {
-  width: 22px; height: 4px;
-  border-radius: 99px;
-  background: rgba(255,255,255,0.25);
-  transition: all 0.25s var(--ease-out);
-  cursor: pointer;
-  border: none;
-}
-.pc-dot:hover { background: rgba(255,255,255,0.5); }
-.pc-dot.active {
-  background: var(--bv-teal-400);
-  width: 36px;
-}
-.pc-progress {
-  width: 120px;
-  height: 3px;
-  background: rgba(255,255,255,0.10);
-  border-radius: 99px;
-  overflow: hidden;
-  justify-self: end;
-}
-.pc-progress-fill {
-  display: block;
+  left: 50%; top: 50%;
   height: 100%;
-  background: linear-gradient(90deg, var(--bv-teal-500), var(--bv-teal-300));
-  border-radius: 99px;
-  width: 0%;
-  animation: pcProgress 5.5s linear forwards;
+  aspect-ratio: 0.75;                  /* overwritten inline with each photo's real ratio */
+  padding: 0;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0b1b2b;
+  box-shadow: 0 28px 55px -14px rgba(0,0,0,0.65);
+  transform-origin: center center;
+  transition: transform 0.55s var(--ease-out), opacity 0.55s var(--ease-out), filter 0.55s var(--ease-out);
+  will-change: transform, opacity, filter;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.pc-progress-fill.paused { animation-play-state: paused; }
-@keyframes pcProgress {
-  from { width: 0%; }
-  to   { width: 100%; }
+.dock-stage.is-dragging .dock-card { transition: none; }
+.dock-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
 }
+/* thin edge ring + top glare for a glassy 3D read */
+.dock-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(255,255,255,0.14), transparent 26%, transparent 74%, rgba(0,0,0,0.20));
+  pointer-events: none;
+}
+.dock-card.is-active {
+  box-shadow: 0 46px 84px -18px rgba(0,0,0,0.72), 0 0 0 1px rgba(255,255,255,0.16);
+}
+.dock-card-tag {
+  position: absolute; left: 12px; top: 12px;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+  color: var(--bv-white);
+  background: rgba(6,20,31,0.55);
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 5px 10px; border-radius: 999px;
+  z-index: 2;
+}
+.dock-card-zoom {
+  position: absolute; right: 12px; bottom: 12px;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  color: var(--bv-ink-900);
+  background: rgba(255,255,255,0.92);
+  border-radius: 50%;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  z-index: 2;
+  opacity: 0; transform: scale(0.85);
+  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.dock-card.is-active .dock-card-zoom { opacity: 1; transform: scale(1); }
+
+/* side arrows (sit at the deck's vertical centre) */
+.dock-arrow {
+  position: absolute;
+  top: clamp(150px, 22vh, 230px);
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: rgba(255,255,255,0.94); color: var(--bv-ink-900);
+  display: grid; place-items: center; cursor: pointer; border: none;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.34);
+  transition: transform 0.2s var(--ease-out), background-color 0.2s;
+}
+.dock-arrow:hover { background: var(--bv-teal-400); transform: translateY(-50%) scale(1.08); }
+.dock-arrow-prev { left: max(6px, 2vw); }
+.dock-arrow-next { right: max(6px, 2vw); }
+
+/* dots */
+.dock-dots { display: flex; gap: 7px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+.dock-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.26); border: none; cursor: pointer; padding: 0; transition: all 0.25s var(--ease-out); }
+.dock-dot:hover { background: rgba(255,255,255,0.5); }
+.dock-dot.active { background: var(--bv-teal-400); width: 22px; border-radius: 99px; }
+
+/* click-to-enlarge lightbox */
+.dock-lb {
+  position: fixed; inset: 0; z-index: 1000;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: clamp(8px, 2vw, 24px);
+  padding: clamp(16px, 4vw, 48px);
+  background: rgba(4,12,20,0.92);
+  backdrop-filter: blur(8px);
+  animation: dockLbIn 0.25s var(--ease-out);
+}
+@keyframes dockLbIn { from { opacity: 0; } to { opacity: 1; } }
+.dock-lb-figure {
+  grid-column: 2; margin: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  max-height: 100%; min-width: 0;
+  animation: dockLbFig 0.3s var(--ease-out);
+}
+@keyframes dockLbFig { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+.dock-lb-figure img {
+  max-width: 100%; max-height: 78vh; width: auto; height: auto;
+  object-fit: contain; border-radius: 10px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+.dock-lb-cap { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--bv-white); text-align: center; }
+.dock-lb-loc { font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--bv-teal-300); }
+.dock-lb-title { font-family: var(--font-display); font-size: clamp(16px, 2vw, 22px); font-weight: 700; }
+.dock-lb-count { font-size: 12px; color: rgba(255,255,255,0.55); font-family: var(--font-mono); }
+.dock-lb-close {
+  position: absolute; top: clamp(14px, 3vw, 28px); right: clamp(14px, 3vw, 28px);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); color: var(--bv-white);
+  display: grid; place-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+  transition: background-color 0.2s;
+}
+.dock-lb-close:hover { background: rgba(255,255,255,0.24); }
+.dock-lb-arrow {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255,255,255,0.10); color: var(--bv-white);
+  display: grid; place-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.18);
+  transition: background-color 0.2s, transform 0.2s; z-index: 2;
+}
+.dock-lb-arrow:hover { background: rgba(255,255,255,0.22); transform: scale(1.06); }
+.dock-lb-prev { grid-column: 1; }
+.dock-lb-next { grid-column: 3; }
+
 @media (max-width: 640px) {
-  .pc-controls { grid-template-columns: 1fr; gap: 10px; justify-items: center; }
-  .pc-progress { width: 100%; justify-self: stretch; }
+  .dock-stage { height: clamp(280px, 56vw, 400px); }
+  .dock-arrow { width: 40px; height: 40px; }
+  .dock-lb { grid-template-columns: 1fr; }
+  .dock-lb-figure { grid-column: 1; }
+  .dock-lb-arrow { position: absolute; top: 50%; transform: translateY(-50%); }
+  .dock-lb-prev { left: 8px; }
+  .dock-lb-next { right: 8px; }
+  .dock-lb-figure img { max-height: 70vh; }
 }
+@media (prefers-reduced-motion: reduce) {
+  .dock-card { transition: opacity 0.3s ease; }
+  .dock-lb, .dock-lb-figure { animation: none; }
+}
+
 
 /* ---------- Container ---------- */
 .container {
@@ -1817,16 +1777,15 @@ button:hover > .arrow {
 .brandwall-head .section-h { margin: 12px auto 14px; }
 .brandwall-head .section-lede { margin: 0 auto; max-width: 56ch; }
 
-.brandwall-groups {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 36px 56px;
-  max-width: 1000px;
-  margin: clamp(40px, 5vw, 60px) auto 0;
+/* ---- per-category infinite brand-card marquees ---- */
+.brandwall-rows {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(26px, 3.4vw, 42px);
+  margin-top: clamp(36px, 4.5vw, 56px);
 }
-@media (max-width: 760px) { .brandwall-groups { grid-template-columns: 1fr; gap: 28px; } }
 
-.brandwall-cat { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.brandwall-cat { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
 .brandwall-cat-label {
   font-family: var(--font-display); font-size: 12px; font-weight: 800;
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--bv-ink-900);
@@ -1834,21 +1793,141 @@ button:hover > .arrow {
 }
 .brandwall-cat-line { flex: 1; height: 1px; background: var(--bv-ink-100); }
 
-.brandwall-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-.brandwall-chip {
-  font-family: var(--font-display); font-weight: 700; font-size: 14.5px;
-  color: var(--bv-ink-800); background: var(--bv-paper);
-  border: 1px solid var(--bv-ink-100); border-radius: var(--radius-full);
-  padding: 9px 17px; transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+/* full-bleed scroll band with soft fade at both edges */
+.brandrow-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
 }
-.brandwall-chip:hover {
-  border-color: var(--bv-teal-400);
+/* two identical halves side by side; sliding one half's width loops seamlessly */
+.brandrow-track {
+  display: flex;
+  width: max-content;
+  animation: brandrowScroll calc(var(--n, 10) * 3.2s) linear infinite;
+  will-change: transform;
+}
+.brandrow-marquee.is-reverse .brandrow-track { animation-direction: reverse; }
+.brandrow-marquee:hover .brandrow-track { animation-play-state: paused; }
+@keyframes brandrowScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.brandrow-seg {
+  display: flex;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 6px 7px;         /* 7px each side → 14px junction = the internal gap */
+}
+
+/* brand card — consistent height. Logo cards show the wordmark on its own; text
+   cards (brand has no logo file yet) show a monogram + name. */
+.brandcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
   background: var(--bv-white);
-  box-shadow: 0 6px 18px rgba(13,31,60,0.08), 0 0 0 1px var(--bv-teal-400);
-  transform: translateY(-1px);
+  border: 1px solid var(--bv-ink-100);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 10px rgba(13,31,60,0.06);
+  white-space: nowrap;
+  list-style: none;
+  transition: border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.brandcard:hover {
+  border-color: var(--bv-teal-400);
+  box-shadow: 0 10px 24px rgba(13,31,60,0.10);
+  transform: translateY(-2px);
+}
+
+/* logo card — the brand wordmark, sized to a consistent height. A DEFINITE height
+   (not max-height) is important: viewBox-only SVGs with no width/height attribute
+   otherwise collapse to 0×0 as a flex item in Chrome. */
+.brandcard--logo { padding: 0 26px; }
+.brandcard-img {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+/* reversed (white) logos need a dark backing to read on the white card */
+.brandcard--logo.is-dark .brandcard-img {
+  height: 46px;
+  padding: 8px 13px;
+  border-radius: 9px;
+  background: var(--bv-ink-900);
+  box-sizing: border-box;
+}
+
+/* text fallback card — brand has no logo file yet */
+.brandcard--text { gap: 12px; padding: 0 22px; }
+.brandcard-mono {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--bv-paper);
+  border: 1px solid var(--bv-ink-100);
+  font-family: var(--font-display); font-weight: 800; font-size: 16px;
+  color: var(--bv-ink-500);
+  flex-shrink: 0;
+}
+.brandcard-name {
+  font-family: var(--font-display); font-weight: 700; font-size: 15px;
+  color: var(--bv-ink-800);
+}
+
+@media (max-width: 640px) {
+  .brandcard { height: 60px; }
+  .brandcard--logo { padding: 0 18px; }
+  .brandcard-img { height: 26px; max-width: 120px; }
+  .brandcard--logo.is-dark .brandcard-img { height: 40px; }
+  .brandcard-mono { width: 34px; height: 34px; font-size: 14px; }
+  .brandcard-name { font-size: 13.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brandrow-track { animation: none; }
+  .brandrow-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
 }
 
 .brandwall-note {
   text-align: center; margin: clamp(36px, 5vw, 52px) auto 0;
   font-size: 13px; color: var(--bv-ink-500);
+}
+
+/* Force certain section headings onto a single line on desktop (they still wrap
+   on mobile, where one line wouldn't fit). Overrides any inherited max-width. */
+@media (min-width: 901px) {
+  .section-h--nowrap-lg { white-space: nowrap; max-width: none; }
+}
+/* Force a heading onto two balanced, centred lines (e.g. the brand wall). */
+.section-h--2line {
+  max-width: 22ch;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: normal;
+  text-wrap: balance;
+}
+
+/* =========================================================
+   CONSISTENT SECTION SIZING
+   Unify the four main content sections to one vertical rhythm:
+   shared min-height + padding, content vertically centred so
+   shorter sections don't look ragged. Left out on purpose:
+   Hero (first), the thin Stats band, the pinned Process
+   section (scroll-driven), and the footer (last).
+   Appended last so it overrides each section's own padding.
+   On narrow screens content taller than the min-height just
+   grows naturally, so this reads mainly on desktop.
+   ========================================================= */
+.tier-section,
+.features-carousel,
+section.section.showcase,
+.brandwall {
+  min-height: clamp(640px, 86vh, 940px);
+  padding: clamp(56px, 7vh, 96px) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

@@ -92,7 +92,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'sect.products.lede': "Whether you're starting small with a 6.6 kW solar starter, or running a warehouse with 100 kW + battery — there's a Bluven pack engineered for it.",
     'sect.products.see': 'See all packages',
 
-    'sect.process.eye': 'OUR PROCESS',
     'sect.process.h': 'From Concept to Power:<br/>Your A-to-Z Energy Solution',
     'p.s1.t': 'Consult & System Design',
     'p.s1.d': 'In-depth consultation, site assessment, and a tailored system design led by engineers — built around your home, energy usage, and long-term goals.',
@@ -103,7 +102,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'p.s4.t': 'Long-Term Service & Warranty',
     'p.s4.d': 'Reliable after-sales support, warranty assistance, and long-term service from a local team you can count on.',
 
-    'sect.brands.eye': 'BUILT WITH THE BEST',
     'sect.brands.h': "We don't make panels. We pick the best ones.",
     'sect.brands.btn': 'Explore our brand partners',
 

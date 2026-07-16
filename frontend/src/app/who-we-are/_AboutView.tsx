@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Reveal } from '@/components/ui/Reveal'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { InterconnectedTeams } from './_InterconnectedTeams'
 
 export function AboutView() {
   const accreditations = [
@@ -18,27 +19,6 @@ export function AboutView() {
     'Quality Over Price',
     'Long-Term Performance',
     'Customer-Centric Solutions',
-  ]
-
-  const loopTeams: Array<{ icon: 'pen' | 'wrench' | 'phone'; title: string; action: string; roles: string }> = [
-    {
-      icon: 'pen',
-      title: 'Engineering Team',
-      action: 'Design the system',
-      roles: 'Design · Quotation · Solutions · System Optimization',
-    },
-    {
-      icon: 'wrench',
-      title: 'Project Delivery Team',
-      action: 'Execute the system',
-      roles: 'Procurement · Scheduling · Delivery · Risk Assessment',
-    },
-    {
-      icon: 'phone',
-      title: 'Customer Support Team',
-      action: 'Maintain the system',
-      roles: 'Monitoring · Diagnostics · Troubleshooting · After-Sales Support',
-    },
   ]
 
   const reasons = [
@@ -76,6 +56,20 @@ export function AboutView() {
         lede="Bluven Energy is an Australian-based solar and battery solutions provider delivering premium, engineer-led solar and battery energy storage systems across multiple states."
       />
 
+      {/* Accreditations strip — sits at the navy/white boundary, above the intro copy */}
+      <section className="accred-strip">
+        <div className="container">
+          <div className="accred-row">
+            {accreditations.map((label, i) => (
+              <div className="accred-item" key={i}>
+                <span className="accred-dot" />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Intro continuation */}
       <section className="section" style={{ background: 'var(--bv-white)', paddingTop: 48, paddingBottom: 48 }}>
         <div className="container" style={{ maxWidth: 920 }}>
@@ -87,20 +81,6 @@ export function AboutView() {
               We specialise in delivering high-quality solar and battery energy storage systems for homeowners who prioritise performance, reliability, and professional service.
             </p>
           </Reveal>
-        </div>
-      </section>
-
-      {/* Accreditations strip */}
-      <section className="accred-strip">
-        <div className="container">
-          <div className="accred-row">
-            {accreditations.map((label, i) => (
-              <div className="accred-item" key={i}>
-                <span className="accred-dot" />
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -159,45 +139,8 @@ export function AboutView() {
         </div>
       </section>
 
-      {/* Closed-Loop Bluven — circular ring layout (preserved from original site) */}
-      <section className="section closed-loop-section">
-        <div className="container">
-          <Reveal style={{ textAlign: 'center', maxWidth: 760, margin: '0 auto' }}>
-            <span className="text-eyebrow">Closed-Loop Bluven</span>
-            <h2 className="section-h" style={{ margin: '12px auto 14px', textAlign: 'center' }}>
-              Interconnected Expert Teams
-            </h2>
-            <p className="section-lede" style={{ margin: '0 auto', textAlign: 'center' }}>
-              Our three core teams operate as one continuous system — working together to design, deliver, and support every project with precision and long-term performance in mind.
-            </p>
-          </Reveal>
-
-          {/* Mobile / tablet: vertical stack */}
-          <div className="loop-stack">
-            {loopTeams.map((team, i) => (
-              <Reveal key={i} className="loop-card" delay={i * 100}>
-                <LoopCardBody team={team} />
-              </Reveal>
-            ))}
-          </div>
-
-          {/* Desktop (≥1024px): circular ring with center hub */}
-          <div className="loop-ring" aria-hidden={false}>
-            <div className="loop-ring-orbit" aria-hidden />
-            <div className="loop-ring-hub">
-              <svg className="loop-ring-hub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <polyline points="23 4 23 10 17 10" />
-                <polyline points="1 20 1 14 7 14" />
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-              </svg>
-              <span>BLUVEN</span>
-            </div>
-            <div className="loop-ring-card pos-top"><LoopCardBody team={loopTeams[0]} /></div>
-            <div className="loop-ring-card pos-br"><LoopCardBody team={loopTeams[1]} /></div>
-            <div className="loop-ring-card pos-bl"><LoopCardBody team={loopTeams[2]} /></div>
-          </div>
-        </div>
-      </section>
+      {/* Interconnected Expert Teams — user's standalone diagram, embedded verbatim */}
+      <InterconnectedTeams />
 
       {/* Why Choose Bluven Energy */}
       <section className="section" style={{ background: 'var(--bv-white)' }}>
@@ -241,61 +184,6 @@ export function AboutView() {
           </div>
         </Reveal>
       </section>
-    </>
-  )
-}
-
-function LoopIcon({ kind }: { kind: 'pen' | 'wrench' | 'phone' }) {
-  const common = {
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 2.1,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-    'aria-hidden': true,
-  }
-  if (kind === 'pen') {
-    return (
-      <svg {...common}>
-        <path d="M12 19l7-7 3 3-7 7-3-3z" />
-        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-        <path d="M2 2l7.586 7.586" />
-        <circle cx="11" cy="11" r="2" />
-      </svg>
-    )
-  }
-  if (kind === 'wrench') {
-    return (
-      <svg {...common}>
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-      </svg>
-    )
-  }
-  return (
-    <svg {...common}>
-      <path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94" />
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
-    </svg>
-  )
-}
-
-function LoopCardBody({ team }: { team: { icon: 'pen' | 'wrench' | 'phone'; title: string; action: string; roles: string } }) {
-  return (
-    <>
-      <div className="loop-card-head">
-        <div className="loop-card-icon"><LoopIcon kind={team.icon} /></div>
-        <h4 className="loop-card-title">{team.title}</h4>
-      </div>
-      <div className="loop-card-action">{team.action}</div>
-      <div className="loop-card-roles-head">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="9 11.5 11.5 14 16 9.5" />
-        </svg>
-        <span>CORE ROLES</span>
-      </div>
-      <p className="loop-card-roles">{team.roles}</p>
     </>
   )
 }

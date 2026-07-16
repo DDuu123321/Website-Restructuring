@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
+import type * as React from 'react'
 import { useI18n, T } from '@/i18n/I18nProvider'
 import { Reveal, AnimatedCounter } from '@/components/ui/Reveal'
 import { FreeAssessmentHeroButton } from '@/components/assessment/FreeAssessmentModal'
@@ -28,44 +30,125 @@ export function HomeView({ featuredProjects }: Props) {
   )
 }
 
-// Brand partners — the brands we install, grouped by category. Replaces the old
-// standalone /brands page; reuses the sect.brands.* copy.
+// Brand partners — per-category infinite card marquees (categories never mix).
+// Logo files live at /public/brand-logos/<slug>.(svg|png|webp) — drop one in and the
+// card shows it; brands without a file yet fall back to a monogram + name.
+const BRAND_GROUPS: { label: string; brands: { name: string; slug: string }[] }[] = [
+  {
+    label: 'Solar Panels',
+    brands: [
+      { name: 'Aiko', slug: 'aiko' }, { name: 'REC', slug: 'rec' }, { name: 'SunPower', slug: 'sunpower' },
+      { name: 'Jinko', slug: 'jinko' }, { name: 'Trina', slug: 'trina' }, { name: 'LONGi', slug: 'longi' },
+      { name: 'Q CELLS', slug: 'qcells' }, { name: 'JA Solar', slug: 'jasolar' }, { name: 'Canadian Solar', slug: 'canadiansolar' },
+    ],
+  },
+  {
+    label: 'Inverters',
+    brands: [
+      { name: 'Fronius', slug: 'fronius' }, { name: 'Sungrow', slug: 'sungrow' }, { name: 'SMA', slug: 'sma' },
+      { name: 'GoodWe', slug: 'goodwe' }, { name: 'FoxESS', slug: 'foxess' }, { name: 'SolarEdge', slug: 'solaredge' },
+      { name: 'Enphase', slug: 'enphase' }, { name: 'Sigenergy', slug: 'sigenergy' },
+    ],
+  },
+  {
+    label: 'Batteries',
+    brands: [
+      { name: 'Tesla', slug: 'tesla' }, { name: 'Sigenergy', slug: 'sigenergy' }, { name: 'Sungrow', slug: 'sungrow' },
+      { name: 'BYD', slug: 'byd' }, { name: 'Alpha ESS', slug: 'alphaess' }, { name: 'FoxESS', slug: 'foxess' },
+      { name: 'Enphase', slug: 'enphase' }, { name: 'sonnen', slug: 'sonnen' },
+    ],
+  },
+  {
+    label: 'EV Chargers',
+    brands: [
+      { name: 'Fronius', slug: 'fronius' }, { name: 'Tesla', slug: 'tesla' }, { name: 'Zappi', slug: 'zappi' },
+      { name: 'Wallbox', slug: 'wallbox' }, { name: 'Sigenergy', slug: 'sigenergy' },
+    ],
+  },
+]
+
+const LOGO_EXTS = ['svg', 'png', 'webp'] as const
+// Reversed logos (white artwork made for dark backgrounds) get a dark inset so they
+// stay visible on the white card. Every other logo is colour and sits on the card.
+const DARK_LOGOS = new Set(['aiko', 'sigenergy', 'enphase'])
+
+// One brand card. A resolved logo is shown on its own (the wordmark already carries
+// the name); a brand with no logo file yet falls back to a monogram + name. The <img>
+// resolves /public/brand-logos/<slug>.(svg|png|webp) in order, and only starts loading
+// after mount — a fast SSR 404 could otherwise fire its error before onError is wired,
+// and an SVG's zero intrinsic size could be misread as a failure.
+function BrandCard({ name, slug }: { name: string; slug: string }) {
+  const [mounted, setMounted] = useState(false)
+  const [extIdx, setExtIdx] = useState(0)
+  useEffect(() => setMounted(true), [])
+
+  if (extIdx >= LOGO_EXTS.length) {
+    return (
+      <li className="brandcard brandcard--text">
+        <span className="brandcard-mono" aria-hidden="true">{name.charAt(0).toUpperCase()}</span>
+        <span className="brandcard-name">{name}</span>
+      </li>
+    )
+  }
+  return (
+    <li className={`brandcard brandcard--logo ${DARK_LOGOS.has(slug) ? 'is-dark' : ''}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        key={extIdx}
+        className="brandcard-img"
+        src={mounted ? `/brand-logos/${slug}.${LOGO_EXTS[extIdx]}` : undefined}
+        alt={name}
+        draggable={false}
+        onError={() => setExtIdx(i => i + 1)}
+      />
+    </li>
+  )
+}
+
 function BrandWall() {
   const { t } = useI18n()
-  const groups = [
-    { label: 'Solar Panels', brands: ['Aiko', 'REC', 'SunPower', 'Jinko', 'Trina', 'LONGi', 'Q CELLS', 'JA Solar', 'Canadian Solar'] },
-    { label: 'Inverters', brands: ['Fronius', 'Sungrow', 'SMA', 'GoodWe', 'SolarEdge', 'Enphase', 'Sigenergy'] },
-    { label: 'Batteries', brands: ['Tesla', 'Sigenergy', 'Sungrow', 'BYD', 'Alpha ESS', 'Enphase', 'sonnen'] },
-    { label: 'EV Chargers', brands: ['Fronius', 'Tesla', 'Zappi', 'Wallbox', 'Sigenergy'] },
-  ]
   return (
     <section className="section brandwall" id="brands">
       <div className="container">
         <Reveal className="brandwall-head">
-          <span className="section-eye">{t('sect.brands.eye')}</span>
-          <h2 className="section-h">{t('sect.brands.h')}</h2>
+          <h2 className="section-h section-h--2line">{t('sect.brands.h')}</h2>
           <p className="section-lede">
-            Tier-1, CEC-approved gear across every category — the brands Australians actually
-            trust, not whatever&apos;s cheapest this month.
+            Tier-1, CEC-approved gear across every category — the brands Australians actually trust.
           </p>
         </Reveal>
+      </div>
 
-        <div className="brandwall-groups">
-          {groups.map((g, i) => (
-            <Reveal key={g.label} className="brandwall-group" delay={i * 80}>
-              <div className="brandwall-cat">
-                <span className="brandwall-cat-label">{g.label}</span>
-                <span className="brandwall-cat-line" aria-hidden />
+      <div className="brandwall-rows">
+        {BRAND_GROUPS.map((g, gi) => {
+          // One marquee half must be wider than the viewport for a seamless loop,
+          // so short categories repeat their brand list until there are ≥10 cards.
+          const repeats = Math.max(1, Math.ceil(10 / g.brands.length))
+          const half = Array.from({ length: repeats }, () => g.brands).flat()
+          return (
+            <Reveal key={g.label} className="brandrow" delay={gi * 80}>
+              <div className="container">
+                <div className="brandwall-cat">
+                  <span className="brandwall-cat-label">{g.label}</span>
+                  <span className="brandwall-cat-line" aria-hidden />
+                </div>
               </div>
-              <div className="brandwall-chips">
-                {g.brands.map((b) => (
-                  <span key={b} className="brandwall-chip">{b}</span>
-                ))}
+              <div className={`brandrow-marquee ${gi % 2 === 1 ? 'is-reverse' : ''}`}>
+                <div className="brandrow-track" style={{ '--n': half.length } as React.CSSProperties}>
+                  {[0, 1].map(dup => (
+                    <ul className="brandrow-seg" key={dup} aria-hidden={dup === 1 || undefined}>
+                      {half.map((b, i) => (
+                        <BrandCard key={`${b.slug}-${i}`} name={b.name} slug={b.slug} />
+                      ))}
+                    </ul>
+                  ))}
+                </div>
               </div>
             </Reveal>
-          ))}
-        </div>
+          )
+        })}
+      </div>
 
+      <div className="container">
         <p className="brandwall-note">
           All products are Clean Energy Council (CEC) approved and rebate-eligible.
         </p>
@@ -351,7 +434,6 @@ function PackagesSection() {
     <section id="packages" className="tier-section">
       <div className="tier-container">
         <Reveal className="tier-header">
-          <h2 className="tier-eye">Our Packages</h2>
           <h3 className="tier-h">Find the Right Fit for Your Home</h3>
           <p className="tier-lede">
             From lower bills to full energy independence — there's a system built for your home.
@@ -639,9 +721,6 @@ function ProcessSection() {
 
           {/* 1 — CENTERED HEADER (full-width block, no left column) */}
           <header className="proc-pin-head">
-            <div className="section-eye" style={{ color: 'var(--bv-teal-300)' }}>
-              {t('sect.process.eye')}
-            </div>
             {/* heading kept verbatim (incl. any <br/>) via the i18n string */}
             <h2 className="proc-pin-h" dangerouslySetInnerHTML={{ __html: t('sect.process.h') }} />
           </header>
@@ -670,8 +749,18 @@ function ProcessSection() {
             </ol>
           </nav>
 
-          {/* 3 — STAGE: image + glass card that CYCLES the 4 corners by step */}
+          {/* 3 — STAGE: card on the LEFT, image on the RIGHT, side by side with a
+              clear gap (no overlap). Each step fades + flies the card content in
+              from the left; the images crossfade. key={activeIdx} re-fires it. */}
           <div className="proc-pin-stage">
+            <div className="proc-pin-card" aria-live="polite" aria-atomic="true">
+              <div className="proc-pin-card-inner" key={activeIdx}>
+                <span className="proc-pin-card-n">{steps[activeIdx].n}</span>
+                <h3 className="proc-pin-card-t">{steps[activeIdx].t}</h3>
+                <p className="proc-pin-card-d">{steps[activeIdx].d}</p>
+              </div>
+            </div>
+
             <div className="proc-pin-imgwrap">
               <div className="proc-pin-frame">
                 {steps.map((s, i) => (
@@ -686,21 +775,6 @@ function ProcessSection() {
                 <div className="proc-pin-img-tag" aria-hidden>
                   <span className="dot" />
                   <span>STEP {steps[activeIdx].n} / {steps[steps.length - 1].n}</span>
-                </div>
-              </div>
-
-              {/* glass card — ACTIVE step's FULL content. Corner set by activeIdx
-                  (tl → bl → br → tr) and animates between corners via left/top %.
-                  key={activeIdx} re-fires the content fade. */}
-              <div
-                className={`proc-pin-card pos-${['tl', 'bl', 'br', 'tr'][activeIdx] || 'tl'}`}
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                <div className="proc-pin-card-inner" key={activeIdx}>
-                  <span className="proc-pin-card-n">{steps[activeIdx].n}</span>
-                  <h3 className="proc-pin-card-t">{steps[activeIdx].t}</h3>
-                  <p className="proc-pin-card-d">{steps[activeIdx].d}</p>
                 </div>
               </div>
             </div>
@@ -740,8 +814,12 @@ function FeaturesCarousel() {
   const goTo = (i: number) => {
     const track = trackRef.current
     if (!track) return
-    setActiveIdx(i)
-    const target = i * track.clientWidth
+    // Wrap around so navigation is cyclic: next past the last panel → first,
+    // prev before the first → last.
+    const n = tabs.length
+    const idx = ((i % n) + n) % n
+    setActiveIdx(idx)
+    const target = idx * track.clientWidth
     track.scrollTo({ left: target, behavior: 'smooth' })
     requestAnimationFrame(() => {
       if (Math.abs(track.scrollLeft - target) > track.clientWidth / 2) {
@@ -815,8 +893,7 @@ function FeaturesCarousel() {
       <button
         type="button"
         className="features-nav features-nav-prev"
-        onClick={() => goTo(Math.max(0, activeIdx - 1))}
-        disabled={activeIdx === 0}
+        onClick={() => goTo(activeIdx - 1)}
         aria-label="Previous panel"
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
@@ -824,8 +901,7 @@ function FeaturesCarousel() {
       <button
         type="button"
         className="features-nav features-nav-next"
-        onClick={() => goTo(Math.min(2, activeIdx + 1))}
-        disabled={activeIdx === 2}
+        onClick={() => goTo(activeIdx + 1)}
         aria-label="Next panel"
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
@@ -855,7 +931,6 @@ function RebatesPanel() {
         <Image src="/Rebates.png" alt="Happy Australian couple reviewing energy savings dashboard outside their solar-powered home" width={480} height={600} sizes="(max-width: 900px) 100vw, 480px" />
       </div>
       <div className="feature-panel-content">
-        <div className="section-eye">MAXIMIZE ROI</div>
         <h2 className="section-h">Let Government Rebates Do the Heavy Lifting on Your Costs</h2>
         <span className="feature-panel-divider" />
         <p className="feature-panel-lede">Take advantage of federal and state rebates to lower your upfront cost — we handle the paperwork.</p>
@@ -899,7 +974,6 @@ function WhyChoosePanel() {
         <Image src="/why-bluven.png" alt="Bluven engineer on a residential rooftop reviewing solar installation on a tablet" width={480} height={600} sizes="(max-width: 900px) 100vw, 480px" />
       </div>
       <div className="feature-panel-content">
-        <div className="section-eye">CHOOSE BLUVEN</div>
         <h2 className="section-h">Why Choose Bluven Energy?</h2>
         <span className="feature-panel-divider" />
         <p className="feature-panel-lede">Engineer-led design, local team, long-term support — you deserve more than just solar.</p>
@@ -940,7 +1014,6 @@ function BatteryBenefitsPanel() {
         <Image src="/battery-value.png" alt="Modern Australian home with wall-mounted battery and EV charging in the carport" width={480} height={600} sizes="(max-width: 900px) 100vw, 480px" />
       </div>
       <div className="feature-panel-content">
-        <div className="section-eye">WHY UPGRADE TO BATTERY STORAGE NOW?</div>
         <h2 className="section-h">Cut your electricity bills with 3 hours of free midday charging</h2>
         <span className="feature-panel-divider" />
         <p className="feature-panel-lede">Battery storage is more than a box on the wall — it makes your solar work 24/7.</p>
@@ -960,19 +1033,50 @@ function BatteryBenefitsPanel() {
   )
 }
 
+// Turn the CMS systemType enum into a short human tag for the album cards.
+const SYSTEM_LABEL: Record<string, string> = {
+  solar: 'Solar',
+  'solar-battery': 'Solar + Battery',
+  'solar-ev': 'Solar + EV',
+  full: 'Full System',
+  commercial: 'Commercial',
+  'battery-retrofit': 'Battery Retrofit',
+}
+
+type DockCard = {
+  id: string; href: string; img: string
+  full?: string                     // hi-res source loaded for the click-to-enlarge lightbox
+  ratio?: number                    // real photo aspect ratio (w/h); portrait shots stay portrait
+  location: string; title: string; summary: string; spec?: string
+}
+
+// Respect the OS "reduce motion" setting — flattens the 3D tilt/scale in the album.
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(false)
+  useEffect(() => {
+    const m = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setReduce(m.matches)
+    sync()
+    m.addEventListener('change', sync)
+    return () => m.removeEventListener('change', sync)
+  }, [])
+  return reduce
+}
+
 function ProjectsShowcase({ projects }: { projects: Project[] }) {
   // Use CMS projects when available; otherwise show curated placeholders
-  type Card = { id: string; href: string; img: string; location: string; title: string; summary: string; spec?: string }
-
-  const cards: Card[] = projects.length
-    ? projects.slice(0, 6).map(p => ({
+  const cards: DockCard[] = projects.length
+    ? projects.slice(0, 12).map(p => ({
         id: p.id,
         href: `/projects/${p.slug}`,
-        img: api.imgUrl(p.coverImage, 'hero') || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1600&q=80',
+        img: api.imgUrl(p.coverImage, 'card') || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80',
+        full: api.imgUrl(p.coverImage, 'hero') || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1600&q=80',
+        // real photo aspect ratio (w/h) — portrait phone shots stay portrait, never letter-boxed
+        ratio: p.coverImage?.width && p.coverImage?.height ? p.coverImage.width / p.coverImage.height : 0.75,
         location: p.location,
         title: p.title,
         summary: p.summary,
-        spec: p.systemType,
+        spec: SYSTEM_LABEL[p.systemType] || p.systemType,
       }))
     : [
         {
@@ -1020,19 +1124,13 @@ function ProjectsShowcase({ projects }: { projects: Project[] }) {
   return (
     <section className="section showcase">
       <div className="container">
-        <Reveal style={{ textAlign: 'center', maxWidth: 760, margin: '0 auto' }}>
-          <div className="section-eye" style={{ color: 'var(--bv-teal-300)', display: 'inline-block' }}>
-            Recent installations
-          </div>
-          <h2 className="section-h" style={{ color: 'var(--bv-white)', margin: '0 auto 14px', maxWidth: '24ch' }}>
-            600+ Australian roofs. Every one engineered.
+        <Reveal style={{ textAlign: 'center', margin: '0 auto' }}>
+          <h2 className="section-h section-h--2line" style={{ color: 'var(--bv-white)', margin: '0 auto 14px' }}>
+            600+ Australian roofs. Every one engineered.
           </h2>
-          <p className="section-lede" style={{ color: 'rgba(255,255,255,0.72)', margin: '0 auto' }}>
-            From Sydney to Brisbane to Perth — see what we built recently.
-          </p>
         </Reveal>
 
-        <ProjectsCarousel cards={cards} />
+        <DockAlbum cards={cards} />
 
         <Reveal style={{ marginTop: 24, textAlign: 'center' }}>
           <Link className="btn btn-primary" href="/projects">
@@ -1044,85 +1142,253 @@ function ProjectsShowcase({ projects }: { projects: Project[] }) {
   )
 }
 
-function ProjectsCarousel({ cards }: { cards: Array<{ id: string; href: string; img: string; location: string; title: string; summary: string; spec?: string }> }) {
-  const [active, setActive] = useState(0)
-  const [paused, setPaused] = useState(false)
+// A 3D stacked photo deck: portrait cards overlap/layer toward the centre
+// (Mac-dock magnification + coverflow tilt), swipe/drag/arrows to browse,
+// click the front photo to load it hi-res in a lightbox.
+function DockAlbum({ cards }: { cards: DockCard[] }) {
   const total = cards.length
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [pos, setPos] = useState(0)            // continuous position; integer at rest, fractional while dragging
+  const [stageW, setStageW] = useState(0)
+  const [dragging, setDragging] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [lightbox, setLightbox] = useState<number | null>(null)
+  const reduce = usePrefersReducedMotion()
 
-  // Auto-advance
+  // Position is unbounded so the deck loops seamlessly; the active index wraps.
+  const wrap = (i: number) => ((i % total) + total) % total
+  const active = wrap(Math.round(pos))
+  // Step is tighter than a card's width, so neighbours overlap into a stacked deck.
+  const step = Math.max(96, Math.min((stageW || 900) * 0.19, 190))
+  // Never render a card past the wrap midpoint, so none appears on both sides at once.
+  const cullDist = Math.min(4.2, total / 2 - 0.01)
+
+  // Measure the stage so the spread scales with the viewport.
   useEffect(() => {
-    if (paused || total <= 1) return
-    const id = setInterval(() => setActive(a => (a + 1) % total), 5500)
-    return () => clearInterval(id)
-  }, [paused, total])
+    const el = stageRef.current
+    if (!el) return
+    const sync = () => setStageW(el.clientWidth)
+    sync()
+    const ro = new ResizeObserver(sync)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
-  const prev = () => setActive(a => (a - 1 + total) % total)
-  const next = () => setActive(a => (a + 1) % total)
+  // Gentle auto-advance; paused on hover/focus/drag, while the lightbox is open, or reduced motion.
+  useEffect(() => {
+    if (paused || dragging || reduce || lightbox !== null || total <= 1) return
+    const id = setInterval(() => setPos(p => Math.round(p) + 1), 4600)
+    return () => clearInterval(id)
+  }, [paused, dragging, reduce, lightbox, total])
+
+  // Move to card i by the shortest wrapped path (dots / side cards never sweep the long way).
+  const go = (i: number) => setPos(p => {
+    let diff = i - wrap(Math.round(p))
+    diff -= total * Math.round(diff / total)
+    return Math.round(p) + diff
+  })
+  const prev = () => setPos(p => Math.round(p) - 1)
+  const next = () => setPos(p => Math.round(p) + 1)
+
+  // Trackpad / horizontal wheel browsing — ONE step per gesture. A trackpad swipe
+  // fires a long momentum stream of wheel events; advance once, then stay locked
+  // until the stream goes quiet, so one swipe = one card (not a sprint to the end).
+  const wheelLock = useRef(false)
+  const wheelIdle = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    const el = stageRef.current
+    if (!el) return
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return   // let vertical page scroll pass through
+      e.preventDefault()
+      // keep pushing the unlock back while momentum events keep arriving
+      if (wheelIdle.current) clearTimeout(wheelIdle.current)
+      wheelIdle.current = setTimeout(() => { wheelLock.current = false }, 140)
+      if (wheelLock.current) return
+      wheelLock.current = true
+      setPos(p => Math.round(p) + (e.deltaX > 0 ? 1 : -1))
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      el.removeEventListener('wheel', onWheel)
+      if (wheelIdle.current) clearTimeout(wheelIdle.current)
+    }
+  }, [total])
+
+  // Pointer drag to fling through the deck. We deliberately DON'T setPointerCapture:
+  // capturing the pointer retargets the follow-up `click` to the stage and swallows
+  // the card's onClick (which opens the lightbox). We track the drag manually and use
+  // a suppress flag so a real drag doesn't also fire a click.
+  const drag = useRef<{ x: number; start: number; moved: boolean } | null>(null)
+  const suppressClick = useRef(false)
+  const onPointerDown = (e: React.PointerEvent) => {
+    drag.current = { x: e.clientX, start: pos, moved: false }
+    setDragging(true)
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!drag.current) return
+    const dx = e.clientX - drag.current.x
+    if (Math.abs(dx) > 4) drag.current.moved = true
+    setPos(drag.current.start - dx / step)
+  }
+  const endDrag = () => {
+    if (!drag.current) return
+    suppressClick.current = drag.current.moved   // a real drag → swallow the trailing click
+    drag.current = null
+    setDragging(false)
+    setPos(p => Math.round(p))
+  }
+
+  // Click: after a drag, swallow it; otherwise a side card centres itself and the
+  // front (active) card opens the enlarged photo.
+  const onCardClick = (i: number) => {
+    if (suppressClick.current) { suppressClick.current = false; return }
+    if (i === active) setLightbox(i)
+    else go(i)
+  }
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev() }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); next() }
+    else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightbox(active) }
+  }
 
   return (
-    <div
-      className="pc-shell"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <button className="pc-arrow pc-prev" onClick={prev} aria-label="Previous project">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
+    <div className="dock" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <button className="dock-arrow dock-arrow-prev" onClick={prev} aria-label="Previous installation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <button className="pc-arrow pc-next" onClick={next} aria-label="Next project">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 18l6-6-6-6"/>
-        </svg>
+      <button className="dock-arrow dock-arrow-next" onClick={next} aria-label="Next installation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </button>
 
-      <div className="pc-viewport">
-        <div className="pc-track" style={{ transform: `translateX(-${active * 100}%)` }}>
-          {cards.map(c => (
-            <div className="pc-slide" key={c.id}>
-              <Link href={c.href} className="pc-card">
-                <div className="pc-img" style={{ backgroundImage: `url("${c.img}")` }} />
-                <div className="pc-photo" style={{ backgroundImage: `url("${c.img}")` }} />
-                <div className="pc-overlay" />
-                <div className="pc-body">
-                  {c.spec && <span className="pc-tag">{c.spec}</span>}
-                  <div className="pc-loc">{c.location}</div>
-                  <h3 className="pc-title">{c.title}</h3>
-                  <p className="pc-sum">{c.summary}</p>
-                  <span className="pc-cta">
-                    View case study <span className="arrow">→</span>
-                  </span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="pc-controls">
-        <div className="pc-counter">
-          <span>{String(active + 1).padStart(2, '0')}</span>
-          <span className="pc-counter-divider">/</span>
-          <span>{String(total).padStart(2, '0')}</span>
-        </div>
-        <div className="pc-dots">
-          {cards.map((_, i) => (
+      <div
+        className={`dock-stage ${dragging ? 'is-dragging' : ''}`}
+        ref={stageRef}
+        role="group"
+        aria-roledescription="carousel"
+        aria-label="Recent installation photos"
+        tabIndex={0}
+        onKeyDown={onKeyDown}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onPointerLeave={endDrag}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+      >
+        {cards.map((c, i) => {
+          let d = i - pos
+          if (total > 1) d -= total * Math.round(d / total)     // shortest wrapped distance → seamless loop
+          const ad = Math.abs(d)
+          if (ad > cullDist) return null                        // cull far / avoid a card on both sides
+          const rot = reduce ? 0 : Math.max(-48, Math.min(48, -d * 24))
+          const sc = reduce ? (ad < 0.5 ? 1 : 0.86) : Math.max(0.5, 1 - ad * 0.12)
+          const tz = reduce ? 0 : -Math.min(ad, 4) * 70
+          const op = Math.max(0, 1 - ad * 0.16)
+          const isActive = i === active
+          return (
             <button
-              key={i}
-              className={`pc-dot ${i === active ? 'active' : ''}`}
-              onClick={() => setActive(i)}
-              aria-label={`Go to project ${i + 1}`}
-            />
-          ))}
-        </div>
-        <div className="pc-progress" aria-hidden>
-          <span
-            key={active /* restart animation per slide */}
-            className={`pc-progress-fill ${paused ? 'paused' : ''}`}
-          />
-        </div>
+              key={c.id}
+              type="button"
+              className={`dock-card ${isActive ? 'is-active' : ''}`}
+              onClick={() => onCardClick(i)}
+              tabIndex={-1}
+              aria-label={isActive ? `Enlarge photo: ${c.title}` : `Show ${c.title}`}
+              style={{
+                aspectRatio: String(c.ratio ?? 0.75),
+                zIndex: 100 - Math.round(ad * 10),
+                opacity: op,
+                pointerEvents: op < 0.12 ? 'none' : 'auto',
+                filter: `brightness(${Math.max(0.45, 1 - ad * 0.14)})`,
+                transform: `translate(calc(-50% + ${d * step}px), -50%) translateZ(${tz}px) rotateY(${rot}deg) scale(${sc})`,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={c.img} alt={c.title} draggable={false} />
+              {c.spec && <span className="dock-card-tag">{c.spec}</span>}
+              {isActive && (
+                <span className="dock-card-zoom" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+                </span>
+              )}
+            </button>
+          )
+        })}
       </div>
+
+      <div className="dock-dots" role="tablist" aria-label="Choose an installation">
+        {cards.map((c, i) => (
+          <button
+            key={c.id}
+            type="button"
+            className={`dock-dot ${i === active ? 'active' : ''}`}
+            onClick={() => go(i)}
+            role="tab"
+            aria-selected={i === active}
+            aria-label={`Installation ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {lightbox !== null && (
+        <DockLightbox
+          cards={cards}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onIndex={(i) => { setLightbox(i); go(i) }}
+        />
+      )}
     </div>
+  )
+}
+
+// Click-to-enlarge lightbox: loads the hi-res photo, keyboard + arrow browsing.
+function DockLightbox({ cards, index, onClose, onIndex }: {
+  cards: DockCard[]; index: number; onClose: () => void; onIndex: (i: number) => void
+}) {
+  const total = cards.length
+  const c = cards[index]
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      else if (e.key === 'ArrowLeft') onIndex((index - 1 + total) % total)
+      else if (e.key === 'ArrowRight') onIndex((index + 1) % total)
+    }
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'          // lock page scroll while open
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [index, total, onClose, onIndex])
+
+  if (!c) return null
+  return createPortal(
+    <div className="dock-lb" role="dialog" aria-modal="true" aria-label={c.title} onClick={onClose}>
+      <button className="dock-lb-close" onClick={onClose} aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <button className="dock-lb-arrow dock-lb-prev" onClick={(e) => { e.stopPropagation(); onIndex((index - 1 + total) % total) }} aria-label="Previous photo">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <figure className="dock-lb-figure" onClick={(e) => e.stopPropagation()}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={c.full || c.img} alt={c.title} />
+        <figcaption className="dock-lb-cap">
+          <span className="dock-lb-loc">{c.location}</span>
+          <span className="dock-lb-title">{c.title}</span>
+          <span className="dock-lb-count">{index + 1} / {total}</span>
+        </figcaption>
+      </figure>
+      <button className="dock-lb-arrow dock-lb-next" onClick={(e) => { e.stopPropagation(); onIndex((index + 1) % total) }} aria-label="Next photo">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>,
+    document.body,
   )
 }
 
