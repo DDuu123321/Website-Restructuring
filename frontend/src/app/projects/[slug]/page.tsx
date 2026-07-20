@@ -62,12 +62,14 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               {p.specs?.solarKw && <span>· {p.specs.solarKw} kW solar</span>}
               {p.specs?.batteryKwh && <span>· {p.specs.batteryKwh} kWh battery</span>}
             </div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 700, lineHeight: 1.15, margin: '0 0 24px' }}>
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 900, lineHeight: 1.15, margin: '0 0 24px' }}>
               {p.title}
             </h1>
             <p style={{ fontSize: 19, color: 'var(--bv-gray-700)', lineHeight: 1.55, marginBottom: 40, maxWidth: 720 }}>{p.summary}</p>
 
-            <img src={api.imgUrl(p.coverImage, 'hero')} alt={p.coverImage.alt || p.title} width={p.coverImage?.sizes?.hero?.width} height={p.coverImage?.sizes?.hero?.height} fetchPriority="high" style={{ display: 'block', width: 'auto', maxWidth: '100%', maxHeight: '80vh', margin: '0 auto 40px', borderRadius: 'var(--radius-2xl)' }} />
+            {p.coverImage && (
+              <img src={api.imgUrl(p.coverImage, 'hero')} alt={p.coverImage.alt || p.title} width={p.coverImage?.sizes?.hero?.width} height={p.coverImage?.sizes?.hero?.height} fetchPriority="high" style={{ display: 'block', width: 'auto', maxWidth: '100%', maxHeight: '80vh', margin: '0 auto 40px', borderRadius: 'var(--radius-2xl)' }} />
+            )}
 
             {p.specs && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 24, padding: '32px 0', borderTop: '1px solid var(--bv-gray-100)', borderBottom: '1px solid var(--bv-gray-100)', marginBottom: 40 }}>

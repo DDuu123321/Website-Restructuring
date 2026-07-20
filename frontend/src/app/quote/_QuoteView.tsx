@@ -16,14 +16,10 @@ export function QuoteView() {
 
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState<Partial<QuoteRequest> & { hearAbout?: string; journeyStage?: string }>({
-    // Engineering defaults — engineer will refine on call
-    propertyType: 'House',
-    roofType: 'Tin / Klip-Lok',
-    usagePattern: 'mixed',
-    components: ['Solar', 'Battery'],
-    systemKw: 10,
-    batteryKwh: 10,
-    // User-facing fields
+    // Only fields the visitor actually sees/controls are pre-filled. System specs
+    // (propertyType/roofType/systemKw/batteryKwh/components/usagePattern) are NOT
+    // defaulted — a lead should only record what the customer really told us.
+    // They're still set when the visitor arrives via a package preset (?pack=).
     monthlyBill: 350,
     state: 'NSW',
     timeline: 'asap',

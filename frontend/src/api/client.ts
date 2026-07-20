@@ -129,6 +129,13 @@ export const api = {
     })
   },
 
+  // Newsletter signup (Subscribers collection)
+  subscribe(email: string) {
+    return request<{ doc: { id: string | number; email: string } }>('/subscribers', {
+      method: 'POST', body: JSON.stringify({ email, source: 'news-page' }),
+    })
+  },
+
   // Assessment submission (Free Assessment quiz)
   submitAssessment(data: AssessmentRequest) {
     return request<{ doc: AssessmentRequest }>('/assessments', {

@@ -68,7 +68,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
               {article.readTime && <span>· {article.readTime} min read</span>}
               {article.publishedAt && <span>· {new Date(article.publishedAt).toLocaleDateString()}</span>}
             </div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 700, lineHeight: 1.15, margin: '0 0 20px' }}>
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 900, lineHeight: 1.15, margin: '0 0 20px' }}>
               {article.title}
             </h1>
             <p style={{ fontSize: 19, color: 'var(--bv-gray-700)', lineHeight: 1.55, marginBottom: 32 }}>

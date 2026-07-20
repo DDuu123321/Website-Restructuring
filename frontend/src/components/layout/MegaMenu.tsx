@@ -22,7 +22,7 @@ export function MegaMenu({ active, onClose }: Props) {
             </Link>
           </div>
           <div className="bv-mm-grid">
-            <Link className="bv-mm-card" href="/products#starter" onClick={onClose}>
+            <Link className="bv-mm-card" href="/products#solar" onClick={onClose}>
               <div className="bv-mm-ico" style={{ background: 'linear-gradient(135deg,#FFE9A8,#F5B742)' }}>
                 <Sun />
               </div>
@@ -31,7 +31,7 @@ export function MegaMenu({ active, onClose }: Props) {
                 <p>{t('mm.products.solar.s')}</p>
               </div>
             </Link>
-            <Link className="bv-mm-card" href="/products#essential" onClick={onClose}>
+            <Link className="bv-mm-card" href="/products#battery" onClick={onClose}>
               <div className="bv-mm-ico" style={{ background: 'linear-gradient(135deg,#BFE6F8,#5DA9F5)' }}>
                 <Battery />
               </div>
@@ -40,7 +40,7 @@ export function MegaMenu({ active, onClose }: Props) {
                 <p>{t('mm.products.battery.s')}</p>
               </div>
             </Link>
-            <Link className="bv-mm-card" href="/products#premium" onClick={onClose}>
+            <Link className="bv-mm-card" href="/products#ev" onClick={onClose}>
               <div className="bv-mm-ico" style={{ background: 'linear-gradient(135deg,#C7F0D2,#4FB678)' }}>
                 <Car />
               </div>
@@ -91,8 +91,8 @@ export function MegaMenu({ active, onClose }: Props) {
           <div className="bv-mm-grid">
             <CompanyCard href="/faq" t={t('mm.support.faq')} s={t('mm.support.faq.s')} icon={<QuestionIcon />} bg="linear-gradient(135deg,#C9E4FB,#5DA9F5)" onClose={onClose} />
             <CompanyCard href="/contact" t={t('mm.support.contact')} s={t('mm.support.contact.s')} icon={<ChatIcon />} bg="linear-gradient(135deg,#C7F0D2,#4FB678)" onClose={onClose} />
-            <CompanyCard href="/quote" t={t('nav.quote')} s="Live estimate in 30 seconds" icon={<CheckIcon />} bg="linear-gradient(135deg,#FFE9A8,#F5B742)" onClose={onClose} />
-            <CompanyCard href="/admin" t={t('mm.support.admin')} s={t('mm.support.admin.s')} icon={<LockIcon />} bg="linear-gradient(135deg,#DCE2EC,#8C9BB5)" onClose={onClose} />
+            <CompanyCard href="/quote" t={t('nav.quote')} s="Free quote — engineer reply" icon={<CheckIcon />} bg="linear-gradient(135deg,#FFE9A8,#F5B742)" onClose={onClose} />
+            <CompanyCard href={`${process.env.NEXT_PUBLIC_CMS_URL || ''}/admin`} t={t('mm.support.admin')} s={t('mm.support.admin.s')} icon={<LockIcon />} bg="linear-gradient(135deg,#DCE2EC,#8C9BB5)" onClose={onClose} />
           </div>
         </div>
       )}

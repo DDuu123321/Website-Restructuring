@@ -21,6 +21,14 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
   }, [messages, open])
 
+  // Allow any page to open the chat (e.g. the contact page's "Live chat" card)
+  // via window.dispatchEvent(new Event('bv:open-chat')).
+  useEffect(() => {
+    const openChat = () => setOpen(true)
+    window.addEventListener('bv:open-chat', openChat)
+    return () => window.removeEventListener('bv:open-chat', openChat)
+  }, [])
+
   async function send(content: string) {
     const text = content.trim()
     if (!text || busy) return
@@ -36,7 +44,7 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
         ...next,
         {
           role: 'assistant',
-          content: "Sorry, I can't connect right now. Try again in a moment or call 1300 BLUVEN.",
+          content: "Sorry, I can't connect right now. Try again in a moment or call 1300 258 836.",
         },
       ])
     } finally {

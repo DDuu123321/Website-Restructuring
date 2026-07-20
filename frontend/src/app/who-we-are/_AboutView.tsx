@@ -19,12 +19,14 @@ const Icons = {
 }
 
 export function AboutView() {
+  // Real accreditation certificates (same artwork as the homepage cert marquee,
+  // /public/accreditations/) — replaces the old text+icon badges.
   const accreditations = [
-    { label: 'SAA Accreditation', icon: Icons.award },
-    { label: 'CPEng Certified', icon: Icons.medal },
-    { label: 'AlphaESS Partner', icon: Icons.shield },
-    { label: 'SEC Member', icon: Icons.leaf },
-    { label: 'CEC Member', icon: Icons.sun },
+    { label: 'Solar Accreditation Australia — Accredited Installer', img: '/accreditations/saa-accredited.png' },
+    { label: 'Engineers Australia', img: '/accreditations/engineers-australia.jpg' },
+    { label: 'AlphaESS Approved Installer', img: '/accreditations/alphaess-installer.jpg' },
+    { label: 'Smart Energy Council — Small Business Member', img: '/accreditations/sec-member.jpg' },
+    { label: 'Clean Energy Council Member', img: '/accreditations/cec-member.png' },
   ]
 
   const values = [
@@ -83,14 +85,14 @@ export function AboutView() {
         </div>
       </header>
 
-      {/* Accreditations strip — yellow band with lucide icons */}
+      {/* Accreditations strip — real certificate badges */}
       <section className="accred-strip">
         <div className="container">
           <div className="accred-row">
             {accreditations.map((a, i) => (
-              <div className="accred-item" key={i}>
-                {a.icon}
-                <span>{a.label}</span>
+              <div className="accred-item accred-item--img" key={i}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={a.img} alt={a.label} title={a.label} draggable={false} />
               </div>
             ))}
           </div>

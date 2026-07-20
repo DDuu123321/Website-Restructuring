@@ -76,7 +76,7 @@ export function Nav() {
                 onMouseEnter={() => openPane('company')}
                 onClick={() => setActivePane(activePane === 'company' ? null : 'company')}
               >
-                <span>{t('mm.about.eye')}</span>
+                <span>{t('nav.company')}</span>
                 <Caret />
               </button>
             </li>
@@ -87,7 +87,7 @@ export function Nav() {
                 onMouseEnter={() => openPane('support')}
                 onClick={() => setActivePane(activePane === 'support' ? null : 'support')}
               >
-                <span>{t('mm.support.eye')}</span>
+                <span>{t('nav.support')}</span>
                 <Caret />
               </button>
             </li>

@@ -4,7 +4,7 @@
 
 .page-head {
   position: relative;
-  padding: clamp(120px, 14vw, 150px) 0 clamp(50px, 7vw, 70px);
+  padding: clamp(76px, 7vw, 88px) 0 clamp(24px, 3vw, 36px);
   overflow: hidden;
 }
 /* Dot pattern — colors swap for dark vs light */
@@ -37,7 +37,7 @@
   opacity: 0.85;
 }
 .page-head-inner { position: relative; z-index: 1; max-width: 820px; }
-.page-head h1 { margin: 14px 0 14px; font-size: clamp(32px, 4.6vw, 56px); line-height: 1.12; }
+.page-head h1 { margin: 14px 0 14px; font-size: clamp(32px, 4.6vw, 56px); line-height: 1.12; font-weight: 900; }
 .page-head .lede { font-size: clamp(15px, 1.1vw, 17px); line-height: 1.6; }
 
 /* Category blocks (used by Products page combos) */
@@ -52,7 +52,7 @@
 .cat-grid.reverse { grid-template-columns: 1.1fr 1fr; }
 .cat-grid.reverse .cat-media { order: -1; }
 .cat-copy .text-eyebrow { display: inline-block; margin-bottom: 16px; }
-.cat-copy h2 { margin: 0 0 18px; font-size: clamp(28px, 3.6vw, 44px); }
+.cat-copy h2 { margin: 0 0 18px; font-size: clamp(28px, 3.6vw, 44px); font-weight: 900; }
 .cat-copy > p { font-size: 17px; line-height: 1.65; color: var(--bv-ink-500); margin-bottom: 26px; max-width: 56ch; }
 .cat-spec {
   display: grid;
@@ -68,6 +68,11 @@
    ~140px cells; drop to one column. */
 @media (max-width: 480px) { .cat-spec { grid-template-columns: 1fr; } }
 .product-cat.alt .cat-spec { background: var(--bv-white); }
+/* On dark sections the spec chip goes translucent so the white values read cleanly. */
+.product-cat.is-dark .cat-spec {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
 .cat-spec > div { display: flex; flex-direction: column; gap: 3px; }
 .cat-spec span { font-size: 11px; color: var(--bv-ink-500); text-transform: uppercase; letter-spacing: 0.10em; font-weight: 600; }
 .cat-spec b { font-size: 17px; font-weight: 700; color: var(--bv-ink-900); letter-spacing: -0.01em; }
@@ -1439,6 +1444,43 @@
 .map-au { position: relative; height: 100%; padding: 18px 0; box-sizing: border-box; }
 .map-au-img { height: 100%; width: auto; display: block; }
 .map-pin { position: absolute; transform: translate(-50%, -50%); z-index: 2; }
+.map-pin.is-open { z-index: 6; }
+/* The pin is a 34px click/hover button — the visible dot is only 13px, so the
+   larger transparent target makes it easy to hit without shifting the dot. */
+.map-pin-btn {
+  display: grid; place-items: center;
+  width: 34px; height: 34px; padding: 0;
+  border-radius: 50%; cursor: pointer;
+}
+/* Click popup — shows the office address only (no photos). Opens on the same
+   side as the hover label (lab-l → left of pin, lab-r → right) to stay inside
+   the map card. */
+.map-popup {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  left: calc(100% + 12px);
+  width: 232px; padding: 14px 16px;
+  background: var(--bv-white); color: var(--bv-ink-900);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  text-align: left; z-index: 7;
+}
+.map-pin.lab-l .map-popup { left: auto; right: calc(100% + 12px); }
+.map-popup-tag {
+  display: block; font-size: 10px; letter-spacing: 0.14em;
+  color: var(--bv-amber-600, #b98900); font-weight: 700; margin-bottom: 4px;
+}
+.map-popup-city {
+  font-family: var(--font-heading); font-weight: 800; font-size: 16px;
+  margin-bottom: 6px;
+}
+.map-popup-addr { font-size: 13.5px; line-height: 1.5; color: var(--bv-ink-500); margin: 0; }
+.map-popup-x {
+  position: absolute; top: 6px; right: 10px;
+  font-size: 16px; line-height: 1; color: var(--bv-ink-400, #94a3b8);
+  cursor: pointer; padding: 2px;
+}
+.map-popup-x:hover { color: var(--bv-ink-900); }
+/* While a popup is open its hover label would duplicate the city — hide it. */
+.map-pin.is-open .map-pin-label { opacity: 0; visibility: hidden; }
 .map-pin-dot {
   display: block; width: 13px; height: 13px; border-radius: 50%;
   background: var(--bv-teal-500);
@@ -1454,7 +1496,12 @@
   white-space: nowrap; color: #fff; font-family: var(--font-display);
   font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
   text-shadow: 0 1px 5px rgba(0,0,0,0.7);
+  /* Hidden by default — the city name appears only while its pin is hovered/focused. */
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
 }
+.map-pin:hover .map-pin-label,
+.map-pin:focus-within .map-pin-label { opacity: 1; visibility: visible; }
 .map-pin.lab-l .map-pin-label { left: auto; right: calc(100% + 9px); }
 .map-pin.is-hq .map-pin-label { font-size: 14px; font-weight: 800; }
 .map-legend {
@@ -2164,6 +2211,15 @@
   letter-spacing: 0.05em;
 }
 .accred-item svg { width: 20px; height: 20px; flex: 0 0 20px; }
+/* Certificate-image variant — white card so colour badge artwork reads cleanly
+   on the yellow band. */
+.accred-item--img {
+  background: var(--bv-white);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  box-shadow: 0 2px 8px rgba(4, 39, 68, 0.12);
+}
+.accred-item--img img { display: block; height: 40px; width: auto; max-width: 170px; object-fit: contain; }
 @media (max-width: 720px) {
   .accred-row { justify-content: center; }
 }

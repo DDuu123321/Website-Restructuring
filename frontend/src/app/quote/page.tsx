@@ -4,8 +4,8 @@ import { JsonLd } from '@/components/ui/JsonLd'
 import { QuoteView } from './_QuoteView'
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Get a free quote — 60 seconds',
-  description: 'Designed by an engineer, priced before you finish your coffee. Answer 5 quick questions for an instant estimate with rebates calculated.',
+  title: 'Get a free quote',
+  description: 'Tell us about your home and energy usage — a Bluven engineer designs your system and replies with a tailored quote, rebates included.',
   path: '/quote',
 })
 

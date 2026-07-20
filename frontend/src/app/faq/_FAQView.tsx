@@ -7,48 +7,27 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import { RichText } from '@/components/ui/RichText'
 import type { FAQItem } from '@/types/cms'
 
-// 24 fallback FAQs — full content from the original site (when CMS is empty)
-type FallbackFaq = {
-  id: string
-  c: 'general' | 'pricing' | 'installation' | 'products' | 'support' | 'grid'
-  q: string
-  a: string
-}
-
-const FALLBACK_FAQS: FallbackFaq[] = [
-
-]
-
+// Four sections matching the live-site FAQ (CMS `faq` category values)
 const CATEGORIES = [
-  { id: '',             label: 'All' },
-  { id: 'general',      label: 'Getting started' },
-  { id: 'pricing',      label: 'Rebates & pricing' },
-  { id: 'installation', label: 'Installation' },
-  { id: 'products',     label: 'Battery / EV' },
-  { id: 'support',      label: 'Warranty & support' },
+  { id: '',        label: 'All' },
+  { id: 'general', label: 'General & Installation' },
+  { id: 'solar',   label: 'Solar Panels & Inverters' },
+  { id: 'battery', label: 'Battery Storage' },
+  { id: 'support', label: 'Warranty & Support' },
 ]
 
 export function FAQView({ items }: { items: FAQItem[] }) {
-  const useCMS = items.length > 0
   const [category, setCategory] = useState('')
   const [search, setSearch] = useState('')
   const [openIds, setOpenIds] = useState<Set<string>>(new Set())
 
   const filtered = useMemo(() => {
-    if (useCMS) {
-      let list = items
-      if (category) list = list.filter(it => it.category === category)
-      const s = search.trim().toLowerCase()
-      if (s) list = list.filter(it => it.question.toLowerCase().includes(s))
-      return list
-    } else {
-      let list = FALLBACK_FAQS
-      if (category) list = list.filter(f => f.c === category)
-      const s = search.trim().toLowerCase()
-      if (s) list = list.filter(f => f.q.toLowerCase().includes(s) || f.a.toLowerCase().includes(s))
-      return list
-    }
-  }, [useCMS, items, category, search])
+    let list = items
+    if (category) list = list.filter(it => it.category === category)
+    const s = search.trim().toLowerCase()
+    if (s) list = list.filter(it => it.question.toLowerCase().includes(s))
+    return list
+  }, [items, category, search])
 
   const toggle = (id: string) => {
     setOpenIds(prev => {
@@ -75,7 +54,7 @@ export function FAQView({ items }: { items: FAQItem[] }) {
               </svg>
               <input
                 type="search"
-                placeholder="Search 24+ FAQs…"
+                placeholder="Search FAQs…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -91,30 +70,26 @@ export function FAQView({ items }: { items: FAQItem[] }) {
 
           {filtered.length === 0 && (
             <p style={{ textAlign: 'center', padding: 60, color: 'var(--bv-ink-500)' }}>
-              No matches. Try a different search.
+              {items.length === 0
+                ? 'FAQs are being loaded — please try again shortly.'
+                : 'No matches. Try a different search.'}
             </p>
           )}
 
           <div style={{ marginTop: 32 }}>
             {filtered.map((item, i) => {
-              const id = useCMS ? (item as FAQItem).id : (item as FallbackFaq).id
-              const isOpen = openIds.has(id)
-              const q = useCMS
-                ? (item as FAQItem).question
-                : (item as FallbackFaq).q
+              const isOpen = openIds.has(item.id)
               return (
-                <Reveal key={id} delay={Math.min(i * 20, 200)}>
+                <Reveal key={item.id} delay={Math.min(i * 20, 200)}>
                   <div className={`faq-item ${isOpen ? 'open' : ''}`}>
-                    <button onClick={() => toggle(id)} className="faq-q">
-                      <span>{q}</span>
+                    <button onClick={() => toggle(item.id)} className="faq-q">
+                      <span>{item.question}</span>
                       <span className="faq-icon">+</span>
                     </button>
                     {isOpen && (
                       <div className="faq-a">
                         <div className="faq-a-inner">
-                          {useCMS
-                            ? <RichText data={(item as FAQItem).answer} />
-                            : <p>{(item as FallbackFaq).a}</p>}
+                          <RichText data={item.answer} />
                         </div>
                       </div>
                     )}
@@ -141,7 +116,7 @@ export function FAQView({ items }: { items: FAQItem[] }) {
               <Link className="btn btn-ghost" href="/contact">
                 <span>Contact us</span>
               </Link>
-              <a className="btn btn-ghost" href="tel:1300258836">📞 1300 BLUVEN</a>
+              <a className="btn btn-ghost" href="tel:1300258836">📞 1300 258 836</a>
             </div>
           </Reveal>
         </div>

@@ -13,8 +13,7 @@ import Projects from './collections/Projects'
 import FAQ from './collections/FAQ'
 import Quotes from './collections/Quotes'
 import Assessments from './collections/Assessments'
-import Brands from './collections/Brands'
-import TeamMembers from './collections/TeamMembers'
+import Subscribers from './collections/Subscribers'
 import SiteSettings from './globals/SiteSettings'
 import { r2Enabled } from './lib/storage'
 
@@ -45,13 +44,12 @@ export default buildConfig({
     // ── Leads ──
     Quotes,
     Assessments,
+    Subscribers,
 
     // ── Content ──
     News,
     Projects,
     FAQ,
-    Brands,
-    TeamMembers,
 
     // ── System ──
     Users,

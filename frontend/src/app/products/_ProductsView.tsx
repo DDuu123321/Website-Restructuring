@@ -9,73 +9,61 @@ export function ProductsView() {
   const components = [
     {
       id: 'solar',
-      eyebrow: 'Solar generation',
-      title:   'Tier-1 panels, 3D-modelled.',
-      body:    "We use Trina, Jinko, REC and LONGi Hi-MO panels — chosen panel-by-panel for your roof's pitch, shade and azimuth. Every layout is rendered in 3D before a single bracket is drilled.",
+      eyebrow: 'Solar Panels',
+      title:   'High-performance solar. Designed for your home.',
+      body:    'Premium Tier-1 solar panels professionally engineered to maximise energy production, reduce electricity bills, and deliver reliable performance for years.',
       specs: [
-        { l: 'Panel range',          v: '410 W – 460 W' },
-        { l: 'System sizes',         v: '6.6 kW – 200 kW' },
-        { l: 'Product warranty',     v: '25 years' },
-        { l: 'Performance warranty', v: '30 years' },
+        { l: 'Panel Power',          v: '410 – 795 W' },
+        { l: 'System Size',          v: '6.6 kW – 200 kW' },
+        { l: 'Product Warranty',     v: '25 Years' },
+        { l: 'Performance Warranty', v: '30 Years' },
       ],
-      img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1400&q=85&auto=format',
+      img: '/picture1.png',
       reverse: false,
+      dark: false,
     },
     {
       id: 'battery',
-      eyebrow: 'Battery storage',
-      title:   'Use the sun. After sunset.',
-      body:    'Tesla Powerwall, SiGenergy SigenStor, Sungrow SBR and Alpha SMILE batteries. Federal Battery Rebate eligible, with whole-home or essential-circuit backup options.',
+      eyebrow: 'Battery Storage',
+      title:   'Store solar today. Power your home tonight.',
+      body:    'Smart battery systems designed to maximise self-consumption, reduce electricity costs, and provide reliable backup when you need it.',
       specs: [
-        { l: 'Capacity',          v: '10 – 40 kWh' },
-        { l: 'Backup modes',      v: 'Whole-home / Essential' },
-        { l: 'Battery warranty',  v: '10+ years' },
-        { l: 'VPP ready',         v: 'Yes' },
+        { l: 'Battery Capacity', v: '10 – 100 kWh' },
+        { l: 'Backup Options',   v: 'Essential / Whole Home' },
+        { l: 'Battery Warranty', v: '10 Years' },
+        { l: 'VPP Ready',        v: 'Yes' },
       ],
-      img: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=1400&q=85&auto=format',
+      img: '/picture2.png',
       reverse: true,
-      callout: {
-        title: 'Cut your electricity bills with 3 hours of free midday charging',
-        sub:   "From July 2026, AEMO's new tariff structure gives you 3 hours of free midday energy. Combined with a battery, that means cheap days and cheap nights.",
-      },
-      features: [
-        { eyebrow: 'BENEFIT 01',
-          h: 'Harvest today, power tonight',
-          d: 'Excess solar fills your battery during the day, then powers your home through evening peak.' },
-        { eyebrow: 'BENEFIT 02',
-          h: 'App control & visibility',
-          d: 'Bluven Live shows generation, battery state, household loads and EV charging in real time. Take control of every kWh.' },
-        { eyebrow: 'BENEFIT 03',
-          h: 'Blackout backup',
-          d: 'When the grid goes down, your essential circuits — or whole home — keep running. Built-in resilience for storm season.' },
-      ],
+      dark: true,
     },
     {
       id: 'ev',
-      eyebrow: 'EV charging',
-      title:   'Charge from the sun above your roof.',
-      body:    'Zappi, Ocular and Tesla wall-chargers. Optional solar-aware mode means your EV only sips solar surplus — never grid power at peak rates.',
+      eyebrow: 'EV Chargers',
+      title:   'Charge your EV with your own energy.',
+      body:    'Smart home EV charging solutions that integrate seamlessly with your solar and battery system for a cleaner, cheaper and smarter way to drive.',
       specs: [
-        { l: 'Power',       v: '7.4 / 22 kW' },
-        { l: 'Phases',      v: 'Single / 3-phase' },
-        { l: 'Smart modes', v: 'Eco / Eco+ / Fast' },
-        { l: 'App control', v: 'iOS & Android' },
+        { l: 'Charging Power', v: '7 – 22 kW' },
+        { l: 'Supply Options', v: 'Single / Three Phase' },
+        { l: 'Smart Modes',    v: 'Solar / Scheduled / Fast' },
+        { l: 'Warranty', v: 'Up to 5 Years' },
       ],
-      img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1400&q=85&auto=format',
+      img: '/picture3.png',
       reverse: false,
+      dark: false,
     },
     {
       id: 'commercial',
-      eyebrow: 'Commercial',
-      title:   'Engineering-led commercial solar.',
-      body:    'From warehouses to factories to retail — we engineer 30 – 250 kW commercial systems. Network protection studies, single-line diagrams, AS/NZS 5033 compliance and instant tax depreciation modelling included.',
+      eyebrow: 'Commercial Solutions',
+      title:   'Smarter energy solutions for your business.',
+      body:    'From commercial solar and battery systems to energy management and demand reduction, we help businesses lower operating costs and improve energy resilience.',
       specs: [
-        { l: 'System size',     v: '30 – 250 kW' },
-        { l: 'Compliance',      v: 'AS/NZS 5033' },
-        { l: 'Tax depreciation',v: 'Modelled' },
-        { l: 'Typical payback', v: '4 – 7 yr' },
+        { l: 'Project Size',         v: '30 – 500 kW+' },
+        { l: 'Peak Demand Reduction',      v: ' Available' },
+        { l: 'Applications',         v: 'Retail · Warehouse · Office · Industrial' },
+        { l: 'Engineering Services', v: 'Design · Compliance · Commissioning' },
       ],
-      img: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1400&q=85&auto=format',
+      img: '/picture4.png',
       reverse: true,
       dark: true,
     },
@@ -84,19 +72,18 @@ export function ProductsView() {
   return (
     <>
       <PageHeader
-        eyebrow="Products"
-        title="Engineered for Australian roofs."
+        title="Solutions"
         lede="Solar, batteries and EV charging — all from one team that designs, installs and supports the whole system as a single energy stack."
       />
 
-      {/* 4 component sections */}
-      {components.map((c, i) => (
+      {/* 4 component sections — white / blue alternating (solar · ev white, battery · commercial blue) */}
+      {components.map((c) => (
         <section
           key={c.id}
           id={c.id}
-          className="section product-cat"
+          className={`section product-cat ${c.dark ? 'is-dark' : ''}`}
           style={{
-            background: c.dark ? 'var(--bv-ink-800)' : (i % 2 === 0 ? 'var(--bv-white)' : 'var(--bv-paper-2)'),
+            background: c.dark ? 'var(--bv-ink-900)' : 'var(--bv-white)',
             color: c.dark ? 'var(--bv-white)' : undefined,
             scrollMarginTop: 80,
           }}
@@ -133,53 +120,26 @@ export function ProductsView() {
                     </div>
                   ))}
                 </div>
-
-                {/* Battery midday charging callout */}
-                {c.id === 'battery' && c.callout && (
-                  <div className="bat-callout">
-                    <div className="bat-callout-icon">⚡</div>
-                    <div>
-                      <h3 className="bat-callout-h">{c.callout.title}</h3>
-                      <p className="bat-callout-p">{c.callout.sub}</p>
-                    </div>
-                  </div>
-                )}
               </Reveal>
 
               <Reveal className="cat-media">
                 <div className="cat-visual" style={{ backgroundImage: `url(${c.img})` }} />
               </Reveal>
             </div>
-
-            {/* Battery 3 features */}
-            {c.id === 'battery' && c.features && (
-              <div className="bat-features">
-                {c.features.map((f, k) => (
-                  <Reveal key={k} className="bat-feature" delay={k * 100}>
-                    <div className="bat-feature-eye">{f.eyebrow}</div>
-                    <h4 className="bat-feature-h">{f.h}</h4>
-                    <p className="bat-feature-p">{f.d}</p>
-                  </Reveal>
-                ))}
-              </div>
-            )}
           </div>
         </section>
       ))}
-      {/* CTA */}
-      <section className="cta-bottom">
+      {/* CTA — white variant (cta-light), scoped so who-we-are's CTA stays blue */}
+      <section className="cta-bottom cta-light">
         <Reveal>
-          <span className="text-eyebrow" style={{ color: 'var(--bv-teal-300)' }}>
-            Not sure which one?
+          <span className="text-eyebrow" style={{ color: 'var(--bv-teal-600)' }}>
+            Not sure which solution is right for you?
           </span>
           <h2>Let an engineer help you decide.</h2>
-          <p>Free, no-obligation. Tell us your roof, your bills and your usage — we'll recommend the right combination.</p>
+          <p>Free, no-obligation. Tell us your roof, your bills and your usage — we&rsquo;ll recommend the right solution for your home or business.</p>
           <div className="btn-row">
             <Link className="btn btn-primary" href="/quote">
-              <span>Free consultation · 60 seconds</span> <span className="arrow">→</span>
-            </Link>
-            <Link className="btn btn-ghost" href="/products/configure/alphaess-g3" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.3)' }}>
-              <span>Configure AlphaESS G3</span> <span className="arrow">→</span>
+              <span>Talk to our engineers</span> <span className="arrow">→</span>
             </Link>
           </div>
         </Reveal>

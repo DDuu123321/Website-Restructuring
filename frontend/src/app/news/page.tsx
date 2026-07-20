@@ -17,7 +17,10 @@ export default async function NewsListPage({
 }: {
   searchParams: { category?: string }
 }) {
-  const data = await api.news({ limit: 12, category: searchParams.category }).catch(() => ({ docs: [] }))
+  // Always fetch ALL recent articles — category filtering happens client-side in
+  // NewsListView (tabs filter instantly, and an empty category shows an honest
+  // empty state instead of falling back to fabricated placeholder articles).
+  const data = await api.news({ limit: 24 }).catch(() => ({ docs: [] }))
 
   return (
     <>

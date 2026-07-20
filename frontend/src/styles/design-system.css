@@ -84,6 +84,10 @@
      --font-montserrat / --font-jetbrains. Fallbacks kept for the swap window. */
   --font-sans:    var(--font-roboto-slab), 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-display: var(--font-archivo), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* Section/page TITLES use Montserrat (matches the original bluven.com.au). Kept
+     separate from --font-display so decorative labels/numbers/badges/nav that opt
+     into --font-display stay on Archivo Black. */
+  --font-heading: var(--font-montserrat), 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-mono:    var(--font-jetbrains), 'SF Mono', Menlo, monospace;
 
   /* Radii — softer & more uniform */
@@ -170,15 +174,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
 
 h1, h2, h3, h4 {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   letter-spacing: -0.02em;
   line-height: 1.2;
   margin: 0;
   font-weight: 700;
   font-style: normal;
   color: var(--bv-ink-900);
-  /* Archivo Black ships one weight (400) but headings request 700/800 — allow the
-     browser to synthesise the extra weight so they read heavier ("加粗"). */
+  /* Headings use Montserrat (--font-heading), which ships real 300–900 weights,
+     so the requested 700/800 render as true weights (no faux-bold synthesis). */
   font-synthesis-weight: auto;
 }
 h1 { font-size: clamp(32px, 4.6vw, 56px); font-weight: 800; line-height: 1.12; }

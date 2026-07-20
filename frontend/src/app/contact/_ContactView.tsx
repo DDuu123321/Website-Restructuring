@@ -1,42 +1,57 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Reveal } from '@/components/ui/Reveal'
 import { PageHeader } from '@/components/ui/PageHeader'
 import type { SiteSettings } from '@/types/cms'
 
+// Office locations — shown ONLY inside the map-pin click popups (no cards, no photos).
+const MAP_PINS = [
+  {
+    city: 'Brisbane', tag: 'QLD',
+    addr: '23-25 Burchill St,', addr2: 'Loganholme QLD 4129',
+    x: 91, y: 53, hq: false, lab: 'l' as const,
+  },
+  {
+    city: 'Sydney · HQ', tag: 'NSW · HEAD OFFICE',
+    addr: '135-153 New South Head Road,', addr2: 'Edgecliff NSW 2027',
+    x: 88, y: 66, hq: true, lab: 'l' as const,
+  },
+  {
+    city: 'Perth', tag: 'WA',
+    addr: '80 Belgravia St,', addr2: 'Belmont WA 6104',
+    x: 13, y: 66, hq: false, lab: 'r' as const,
+  },
+]
+
 export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
-  const phone = settings?.phone || '1300 BLUVEN (1300 258 836)'
+  const phone = settings?.phone || '1300 258 836'
   const phoneHref = settings?.phoneHref || '+611300258836'
   const email = settings?.email || 'info@bluven.com.au'
+  const [openPin, setOpenPin] = useState<string | null>(null)
 
-  const offices = [
-    {
-      city: 'Sydney', tag: 'NSW · HEAD OFFICE',
-      addr: '135-153 New South Head Road,',
-      addr2: 'Edgecliff NSW 2027',
-      hours: 'Mon–Fri 8:30am – 5:30pm · Sat 9am – 1pm',
-    },
-    {
-      city: 'Brisbane', tag: 'QLD',
-      addr: '23-25 Burchill St,',
-      addr2: 'Loganholme QLD 4129',
-      hours: 'Mon–Fri 9am – 5pm · Sat by appointment',
-    },
-    {
-      city: 'Perth', tag: 'WA',
-      addr: '80 Belgravia St,',
-      addr2: 'Belmont WA 6104',
-      hours: 'Mon–Fri 9am – 5pm · Sat by appointment',
-    },
-  ]
+  // Close the pin popup on Escape or on any click outside a pin
+  useEffect(() => {
+    if (!openPin) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpenPin(null) }
+    const onClick = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('.map-pin')) setOpenPin(null)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('click', onClick)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('click', onClick)
+    }
+  }, [openPin])
 
   return (
     <>
       <PageHeader
         eyebrow="Get in touch"
-        title="Three offices.<br/>One promise: a real engineer answers."
-        lede="Showrooms in Sydney, Brisbane and Perth. Or call, email, or just open the chat — we usually answer within 30 minutes during business hours."
+        title="One promise: a real engineer answers."
+        lede="Call, email, or just open the chat — we usually answer within 30 minutes during business hours."
       />
 
       <section className="section" style={{ background: 'var(--bv-paper-2)', paddingTop: 60 }}>
@@ -60,7 +75,11 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
                   <p>Replies within 4 business hours</p>
                   <b>{email}</b>
                 </a>
-                <a className="channel" href="#" onClick={(e) => { e.preventDefault() }}>
+                <a
+                  className="channel"
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); window.dispatchEvent(new Event('bv:open-chat')) }}
+                >
                   <div className="channel-icon">💬</div>
                   <h4>Live chat</h4>
                   <p>AI-assisted, human-escalated</p>
@@ -68,52 +87,44 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
                 </a>
                 <Link className="channel" href="/quote">
                   <div className="channel-icon">⚡</div>
-                  <h4>Instant quote</h4>
-                  <p>60-second sizer + rebate calc</p>
-                  <b>Try it →</b>
+                  <h4>Free quote</h4>
+                  <p>Quick form — an engineer replies</p>
+                  <b>Start →</b>
                 </Link>
               </div>
 
-              {/* 3 offices */}
-              <span className="text-eyebrow" style={{ marginTop: 24, display: 'inline-block' }}>
-                Visit a showroom
-              </span>
-              <h2 style={{ fontSize: 'clamp(24px, 2.6vw, 32px)', margin: '12px 0 24px' }}>
-                Three offices, coast to coast.
-              </h2>
-
-              {offices.map((o, i) => (
-                <Reveal key={i} className="office" delay={i * 100}>
-                  <div>
-                    <span className="city-tag">{o.tag}</span>
-                    <h4>{o.city}</h4>
-                    <p>{o.addr}<br />{o.addr2}</p>
-                    <div className="hours">{o.hours}</div>
-                  </div>
-                  <div className="img-placeholder office-img">
-                    [ {o.city} showroom ]
-                  </div>
-                </Reveal>
-              ))}
-
+              {/* Office locations — no longer listed as cards; the map below reveals
+                 each city name only on hover (see .map-pin-label in inner.css). */}
               {/* Australia map */}
               <div style={{ marginTop: 48 }}>
                 <Reveal className="map-card">
                   <div className="map-au">
                     {/* Real Australia map — Wikimedia "Australia states blank.svg" (CC BY-SA 4.0), recoloured for the dark theme */}
                     <img className="map-au-img" src="/au-states.svg" alt="Australia — Bluven office locations" />
-                    {[
-                      { city: 'Brisbane', x: 91, y: 53, hq: false, lab: 'l' },
-                      { city: 'Sydney · HQ', x: 88, y: 66, hq: true, lab: 'l' },
-                      { city: 'Perth', x: 13, y: 66, hq: false, lab: 'r' },
-                    ].map((p) => (
+                    {MAP_PINS.map((p) => (
                       <span
                         key={p.city}
-                        className={`map-pin ${p.hq ? 'is-hq' : ''} lab-${p.lab}`}
+                        className={`map-pin ${p.hq ? 'is-hq' : ''} lab-${p.lab} ${openPin === p.city ? 'is-open' : ''}`}
                         style={{ left: `${p.x}%`, top: `${p.y}%` }}
                       >
-                        <span className="map-pin-dot" />
+                        <button
+                          type="button"
+                          className="map-pin-btn"
+                          aria-expanded={openPin === p.city}
+                          aria-label={`${p.city} office location`}
+                          onClick={() => setOpenPin(openPin === p.city ? null : p.city)}
+                        >
+                          <span className="map-pin-dot" />
+                        </button>
                         <span className="map-pin-label">{p.city}</span>
+                        {openPin === p.city && (
+                          <div className="map-popup" role="dialog" aria-label={`${p.city} address`}>
+                            <button type="button" className="map-popup-x" aria-label="Close" onClick={() => setOpenPin(null)}>×</button>
+                            <b className="map-popup-tag">{p.tag}</b>
+                            <div className="map-popup-city">{p.city}</div>
+                            <p className="map-popup-addr">{p.addr}<br />{p.addr2}</p>
+                          </div>
+                        )}
                       </span>
                     ))}
                   </div>

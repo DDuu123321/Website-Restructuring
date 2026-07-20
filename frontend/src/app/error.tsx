@@ -19,7 +19,7 @@ export default function Error({
       <div>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 36, marginBottom: 16 }}>Something went wrong</h1>
         <p style={{ color: 'var(--bv-gray-600)', maxWidth: 480, margin: '0 auto 24px' }}>
-          We hit an unexpected error. Try again or call 1300 BLUVEN.
+          We hit an unexpected error. Try again or call 1300 258 836.
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
           <button onClick={() => reset()} className="btn btn-primary"><span>Try again</span> →</button>

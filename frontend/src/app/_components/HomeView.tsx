@@ -30,32 +30,32 @@ export function HomeView({ featuredProjects }: Props) {
   )
 }
 
-// Brand partners — per-category infinite card marquees (categories never mix).
-// Logo files live at /public/brand-logos/<slug>.(svg|png|webp) — drop one in and the
-// card shows it; brands without a file yet fall back to a monogram + name.
-const BRAND_GROUPS: { label: string; brands: { name: string; slug: string }[] }[] = [
-  {
-    label: '',
-    brands: [
-      { name: 'Aiko', slug: 'aiko' }, { name: 'REC', slug: 'rec' }, { name: 'SunPower', slug: 'sunpower' },
-      { name: 'Jinko', slug: 'jinko' }, { name: 'Trina', slug: 'trina' }, { name: 'LONGi', slug: 'longi' },
-      { name: 'Q CELLS', slug: 'qcells' }, { name: 'JA Solar', slug: 'jasolar' }, { name: 'Canadian Solar', slug: 'canadiansolar' },
-    ],
-  },
-  {
-    label: '',
-    brands: [
-      { name: 'Fronius', slug: 'fronius' }, { name: 'Sungrow', slug: 'sungrow' }, { name: 'SMA', slug: 'sma' },
-      { name: 'GoodWe', slug: 'goodwe' }, { name: 'FoxESS', slug: 'foxess' }, { name: 'SolarEdge', slug: 'solaredge' },
-      { name: 'Enphase', slug: 'enphase' }, { name: 'Sigenergy', slug: 'sigenergy' },
-    ],
-  },
+// Row 1 — brand partners marquee. Logo files live at
+// /public/brand-logos/<slug>.(svg|png|webp) — drop one in and the card shows it;
+// brands without a file yet fall back to a monogram + name.
+const BRAND_ROW: { name: string; slug: string }[] = [
+  { name: 'FoxESS', slug: 'foxess' },   { name: 'Sungrow', slug: 'sungrow' },
+  { name: 'GoodWe', slug: 'goodwe' },   { name: 'Sigenergy', slug: 'sigenergy' },
+  { name: 'AlphaESS', slug: 'alphaess' }, { name: 'JA Solar', slug: 'jasolar' },
+  { name: 'Jinko', slug: 'jinko' },     { name: 'LONGi', slug: 'longi' },
+  { name: 'Trina', slug: 'trina' },     { name: 'Aiko', slug: 'aiko' },
+  { name: 'Tesla', slug: 'tesla' },     { name: 'Zappi', slug: 'zappi' },
+]
+
+// Row 2 — company accreditation certificates (real badges, downloaded from the
+// original site). Files live at /public/accreditations/.
+const CERT_ROW: { name: string; img: string }[] = [
+  { name: 'Clean Energy Council Member', img: '/accreditations/cec-member.png' },
+  { name: 'Solar Accreditation Australia — Accredited Installer', img: '/accreditations/saa-accredited.png' },
+  { name: 'Smart Energy Council — Small Business Member', img: '/accreditations/sec-member.jpg' },
+  { name: 'Engineers Australia', img: '/accreditations/engineers-australia.jpg' },
+  { name: 'AlphaESS Approved Installer', img: '/accreditations/alphaess-installer.jpg' },
 ]
 
 const LOGO_EXTS = ['svg', 'png', 'webp'] as const
 // Reversed logos (white artwork made for dark backgrounds) get a dark inset so they
 // stay visible on the white card. Every other logo is colour and sits on the card.
-const DARK_LOGOS = new Set(['aiko', 'sigenergy', 'enphase'])
+const DARK_LOGOS = new Set(['aiko', 'sigenergy', 'jasolar'])
 
 // One brand card. A resolved logo is shown on its own (the wordmark already carries
 // the name); a brand with no logo file yet falls back to a monogram + name. The <img>
@@ -101,33 +101,44 @@ function BrandWall() {
       </div>
 
       <div className="brandwall-rows">
-        {BRAND_GROUPS.map((g, gi) => {
-          // One marquee half must be wider than the viewport for a seamless loop,
-          // so short categories repeat their brand list until there are ≥10 cards.
-          const repeats = Math.max(1, Math.ceil(10 / g.brands.length))
-          const half = Array.from({ length: repeats }, () => g.brands).flat()
-          return (
-            <Reveal key={g.label} className="brandrow" delay={gi * 80}>
-              <div className="container">
-                <div className="brandwall-cat">
-                  <span className="brandwall-cat-label">{g.label}</span>
-                  <span className="brandwall-cat-line" aria-hidden />
-                </div>
-              </div>
-              <div className={`brandrow-marquee ${gi % 2 === 1 ? 'is-reverse' : ''}`}>
+        {/* Row 1 — brand partners */}
+        <Reveal className="brandrow">
+          <div className="brandrow-marquee">
+            <div className="brandrow-track" style={{ '--n': BRAND_ROW.length } as React.CSSProperties}>
+              {[0, 1].map(dup => (
+                <ul className="brandrow-seg" key={dup} aria-hidden={dup === 1 || undefined}>
+                  {BRAND_ROW.map((b, i) => (
+                    <BrandCard key={`${b.slug}-${i}`} name={b.name} slug={b.slug} />
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Row 2 — company accreditations (reverse scroll). The 5 certs repeat so
+           one marquee half stays wider than the viewport for a seamless loop. */}
+        <Reveal className="brandrow" delay={80}>
+          {(() => {
+            const half = [...CERT_ROW, ...CERT_ROW]
+            return (
+              <div className="brandrow-marquee is-reverse">
                 <div className="brandrow-track" style={{ '--n': half.length } as React.CSSProperties}>
                   {[0, 1].map(dup => (
                     <ul className="brandrow-seg" key={dup} aria-hidden={dup === 1 || undefined}>
-                      {half.map((b, i) => (
-                        <BrandCard key={`${b.slug}-${i}`} name={b.name} slug={b.slug} />
+                      {half.map((c, i) => (
+                        <li className="brandcard brandcard--cert" key={`${c.img}-${i}`}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img className="brandcard-cert-img" src={c.img} alt={c.name} title={c.name} draggable={false} />
+                        </li>
                       ))}
                     </ul>
                   ))}
                 </div>
               </div>
-            </Reveal>
-          )
-        })}
+            )
+          })()}
+        </Reveal>
       </div>
     </section>
   )
@@ -353,9 +364,9 @@ function StatsBleed() {
     <section className="stats-bleed">
       <div className="container">
         <div className="stats-grid">
-          <Reveal className="stat"><div className="num"><AnimatedCounter to={1800} />+</div><div className="lbl">{t('h.s1')}</div></Reveal>
-          <Reveal className="stat" delay={120}><div className="num"><AnimatedCounter to={36} />K+</div><div className="lbl">{t('h.s2')}</div></Reveal>
-          <Reveal className="stat" delay={240}><div className="num"><AnimatedCounter to={200} />+</div><div className="lbl">{t('h.s4')}</div></Reveal>
+          <Reveal className="stat"><div className="num"><AnimatedCounter to={800} />+</div><div className="lbl">{t('h.s1')}</div></Reveal>
+          <Reveal className="stat" delay={120}><div className="num"><AnimatedCounter to={21} />K+</div><div className="lbl">{t('h.s2')}</div></Reveal>
+          <Reveal className="stat" delay={240}><div className="num"><AnimatedCounter to={180} />+</div><div className="lbl">{t('h.s4')}</div></Reveal>
         </div>
       </div>
     </section>
@@ -654,13 +665,26 @@ function EnergyFlowImage({ idPrefix }: { idPrefix: string }) {
   )
 }
 
+// Step icons — the same four lucide glyphs the original site uses
+// (pen-tool / wrench / smartphone / shield), inlined as SVG.
+const PROC_ICONS = [
+  // pen-tool — design
+  <svg key="pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/><path d="m2.3 2.3 7.286 7.286"/><circle cx="11" cy="11" r="2"/></svg>,
+  // wrench — installation
+  <svg key="wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
+  // smartphone — commissioning & app monitoring
+  <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
+  // shield — long-term service & warranty
+  <svg key="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></svg>,
+]
+
 function ProcessSection() {
   const { t } = useI18n()
   const steps = [
-    { n: '01', t: t('p.s1.t'), d: t('p.s1.d'), img: '/process-1.webp' },
-    { n: '02', t: t('p.s2.t'), d: t('p.s2.d'), img: '/process-2.webp' },
-    { n: '03', t: t('p.s3.t'), d: t('p.s3.d'), img: '/process-3.webp' },
-    { n: '04', t: t('p.s4.t'), d: t('p.s4.d'), img: '/process-4.webp' },
+    { n: '01', t: t('p.s1.t'), d: t('p.s1.d'), img: '/process-1.webp', icon: PROC_ICONS[0] },
+    { n: '02', t: t('p.s2.t'), d: t('p.s2.d'), img: '/process-2.webp', icon: PROC_ICONS[1] },
+    { n: '03', t: t('p.s3.t'), d: t('p.s3.d'), img: '/process-3.webp', icon: PROC_ICONS[2] },
+    { n: '04', t: t('p.s4.t'), d: t('p.s4.d'), img: '/process-4.webp', icon: PROC_ICONS[3] },
   ]
   const [activeIdx, setActiveIdx] = useState(0)
   const sectionRef = useRef<HTMLDivElement | null>(null)
@@ -731,7 +755,7 @@ function ProcessSection() {
           <div className="proc-pin-stage">
             <div className="proc-pin-card" aria-live="polite" aria-atomic="true">
               <div className="proc-pin-card-inner" key={activeIdx}>
-                <span className="proc-pin-card-n">{steps[activeIdx].n}</span>
+                <span className="proc-pin-card-n proc-pin-card-n--icon" aria-label={`Step ${steps[activeIdx].n}`}>{steps[activeIdx].icon}</span>
                 <h3 className="proc-pin-card-t">{steps[activeIdx].t}</h3>
                 <p className="proc-pin-card-d">{steps[activeIdx].d}</p>
               </div>
@@ -761,7 +785,7 @@ function ProcessSection() {
           <ol className="proc-pin-mlist">
             {steps.map((s, i) => (
               <li key={s.n} className={`proc-pin-mitem ${i === activeIdx ? 'active' : ''}`}>
-                <span className="proc-pin-mn">{s.n}</span>
+                <span className="proc-pin-mn proc-pin-mn--icon" aria-label={`Step ${s.n}`}>{s.icon}</span>
                 <div className="proc-pin-mbody">
                   <h4>{s.t}</h4>
                   <p>{s.d}</p>
@@ -1037,62 +1061,27 @@ function usePrefersReducedMotion() {
 }
 
 function ProjectsShowcase({ projects }: { projects: Project[] }) {
-  // Use CMS projects when available; otherwise show curated placeholders
-  const cards: DockCard[] = projects.length
-    ? projects.slice(0, 12).map(p => ({
-        id: p.id,
-        href: `/projects/${p.slug}`,
-        img: api.imgUrl(p.coverImage, 'card') || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80',
-        full: api.imgUrl(p.coverImage, 'hero') || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1600&q=80',
-        // real photo aspect ratio (w/h) — portrait phone shots stay portrait, never letter-boxed
-        ratio: p.coverImage?.width && p.coverImage?.height ? p.coverImage.width / p.coverImage.height : 0.75,
-        location: p.location,
-        title: p.title,
-        summary: p.summary,
-        spec: SYSTEM_LABEL[p.systemType] || p.systemType,
-      }))
-    : [
-        {
-          id: 'p1', href: '/projects',
-          img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1400&q=80',
-          location: 'Mosman, NSW',
-          title: 'Harbour-side villa · 13 kW + Tesla Powerwall',
-          summary: 'Shingled modules with whole-home backup. 6.8-year payback.',
-          spec: 'Solar + Battery',
-        },
-        {
-          id: 'p2', href: '/projects',
-          img: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=1400&q=80',
-          location: 'Box Hill, VIC',
-          title: 'Townhouse · 10 kW + 10 kWh',
-          summary: 'Federal battery rebate applied. $4,200/yr saving.',
-          spec: 'Solar + Battery',
-        },
-        {
-          id: 'p3', href: '/projects',
-          img: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1400&q=80',
-          location: 'Newtown, NSW',
-          title: 'Commercial café · 50 kW',
-          summary: '4.2-year payback; daytime self-consumption 80%+.',
-          spec: 'Commercial',
-        },
-        {
-          id: 'p4', href: '/projects',
-          img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1400&q=80',
-          location: 'Manly, NSW',
-          title: 'EV household · 13 kW + 16 kWh + 22 kW charger',
-          summary: 'Solar-aware charging. Bills from $620 → $38.',
-          spec: 'Solar + Battery + EV',
-        },
-        {
-          id: 'p5', href: '/projects',
-          img: 'https://images.unsplash.com/photo-1545209463-e2825498edbf?w=1400&q=80',
-          location: 'Parramatta, NSW',
-          title: 'Starter home · 6.6 kW',
-          summary: 'Tier-1 panels with STC rebate handled.',
-          spec: 'Solar Only',
-        },
-      ]
+  // Real CMS projects only — a project without a cover photo is skipped rather
+  // than padded with a stock image. If the CMS returns nothing (down/empty),
+  // the whole section is hidden instead of showing fabricated placeholders.
+  const cards: DockCard[] = projects.slice(0, 12).flatMap(p => {
+    const img = api.imgUrl(p.coverImage, 'card')
+    if (!img) return []
+    return [{
+      id: p.id,
+      href: `/projects/${p.slug}`,
+      img,
+      full: api.imgUrl(p.coverImage, 'hero') || img,
+      // real photo aspect ratio (w/h) — portrait phone shots stay portrait, never letter-boxed
+      ratio: p.coverImage?.width && p.coverImage?.height ? p.coverImage.width / p.coverImage.height : 0.75,
+      location: p.location,
+      title: p.title,
+      summary: p.summary,
+      spec: SYSTEM_LABEL[p.systemType] || p.systemType,
+    }]
+  })
+
+  if (cards.length === 0) return null
 
   return (
     <section className="section showcase">

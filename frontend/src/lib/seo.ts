@@ -5,9 +5,8 @@ export const SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   defaultTitle: "Bluven Energy — Australia's smartest solar, battery & EV charging",
   defaultDescription:
-    "Australian-engineered solar, battery and EV charging systems. Designed by senior engineers, installed and serviced by 137+ local service partners across Australia.",
+    "Australian-engineered solar, battery and EV charging systems. Designed by senior engineers, installed and serviced by 180+ local service partners across Australia.",
   locale: 'en_AU',
-  twitter: '@bluvenenergy',
 }
 
 interface BuildMetaArgs {
@@ -50,7 +49,6 @@ export function buildMetadata(args: BuildMetaArgs = {}): Metadata {
       title: fullTitle,
       description: desc,
       images: [ogImage],
-      site: SITE.twitter,
     },
   }
 }
@@ -67,7 +65,7 @@ export function organizationLd() {
     logo: SITE.url + '/bluven-logo.png',
     description: SITE.defaultDescription,
     telephone: '+611300258836',
-    email: 'hello@bluven.com.au',
+    email: 'info@bluven.com.au',
     taxID: '38 692 264 412',
     address: {
       '@type': 'PostalAddress',
@@ -81,12 +79,10 @@ export function organizationLd() {
       { '@type': 'AdministrativeArea', name: 'New South Wales' },
       { '@type': 'AdministrativeArea', name: 'Queensland' },
       { '@type': 'AdministrativeArea', name: 'Western Australia' },
+      { '@type': 'AdministrativeArea', name: 'Victoria' },
+      { '@type': 'AdministrativeArea', name: 'South Australia' },
     ],
-    sameAs: [
-      'https://www.facebook.com/bluvenenergy',
-      'https://www.linkedin.com/company/bluven-energy',
-      'https://www.instagram.com/bluvenenergy',
-    ],
+    // Social profiles removed per business decision (2026-07) — no sameAs links.
   }
 }
 

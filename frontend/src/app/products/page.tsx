@@ -5,7 +5,7 @@ import { ProductsView } from './_ProductsView'
 
 export const metadata: Metadata = buildMetadata({
   title: 'Products — Solar, Battery, EV Charging',
-  description: 'Four engineered packages: Starter, Essential, Premium, Commercial. Tier-1 panels, BYD/Tesla/Sungrow batteries, EV chargers, installed by 137+ local service partners across Australia.',
+  description: 'Solar panels, battery storage, EV charging and commercial energy solutions — Tier-1 components, engineered and installed by 180+ local service partners across Australia.',
   path: '/products',
 })
 

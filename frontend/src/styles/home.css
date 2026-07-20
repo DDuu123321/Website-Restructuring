@@ -235,9 +235,9 @@
 }
 
 .section-h {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(24px, 3vw, 40px);
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0 0 16px;
@@ -538,11 +538,14 @@
   100% { box-shadow: 0 0 0 0 rgba(13, 31, 60, 0); }
 }
 .hero-h1 {
-  font-family: var(--font-display);
+  /* Match the original bluven.com.au hero title: Montserrat Black (900),
+     tight tracking (-0.05em) and tight leading (0.9). No shadow/stroke —
+     the "厚重紧凑" look comes purely from weight + tracking + line-height. */
+  font-family: var(--font-montserrat), 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(40px, 9.2cqi, 84px);
-  font-weight: 800;
-  line-height: 1.06;
-  letter-spacing: -0.028em;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
   color: var(--bv-white);
   margin: 0 0 26px;
 }
@@ -790,7 +793,7 @@
 }
 .tier-h {
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 900;
   color: #042744;
   line-height: 1.1;
   margin: 0 0 18px;
@@ -1107,9 +1110,9 @@
 /* .section-eye is the SHARED class (do not modify it); it's centered by the
    text-align:center parent. Its yellow color is set inline in the JSX. */
 .proc-pin-h {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(26px, 3vw, 44px);
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1.55;              /* looser: ~20px more air between the two lines */
   letter-spacing: -0.02em;
   color: var(--bv-white);
@@ -1444,6 +1447,7 @@ section.section.showcase {
 .cta-bottom .section-eye { color: var(--bv-teal-300) !important; }
 .cta-bottom h2 {
   color: var(--bv-white);
+  font-weight: 900;
   font-size: clamp(26px, 3.4vw, 42px);
   max-width: 24ch;
   margin: 0 auto 16px;
@@ -1460,6 +1464,15 @@ section.section.showcase {
   display: flex; gap: 14px; justify-content: center;
   flex-wrap: wrap;
 }
+.cta-bottom .btn-ghost { color: var(--bv-white); border-color: rgba(255,255,255,0.4); }
+.cta-bottom .btn-ghost:hover { background: var(--bv-white); color: var(--bv-ink-900); border-color: var(--bv-white); }
+
+/* Light (white) variant — used on the products page CTA only */
+.cta-bottom.cta-light { background: var(--bv-white); color: var(--bv-ink-900); }
+.cta-bottom.cta-light h2 { color: var(--bv-ink-900); }
+.cta-bottom.cta-light p { color: var(--bv-ink-500); }
+.cta-bottom.cta-light .btn-ghost { color: var(--bv-ink-900); border-color: var(--bv-ink-200); }
+.cta-bottom.cta-light .btn-ghost:hover { background: var(--bv-ink-900); color: var(--bv-white); border-color: var(--bv-ink-900); }
 
 /* =========================================================
    PROJECTS SHOWCASE — bottom of homepage
@@ -1850,6 +1863,23 @@ button:hover > .arrow {
   height: 32px;
   width: auto;
   max-width: 150px;
+  object-fit: contain;
+}
+/* Process-step badges render the original site's lucide icons instead of the
+   step number (the number stays in the top stepper + aria-labels). */
+.proc-pin-card-n--icon,
+.proc-pin-mn--icon { display: inline-grid; place-items: center; }
+.proc-pin-card-n--icon svg { width: 20px; height: 20px; display: block; }
+.proc-pin-mn--icon svg { width: 16px; height: 16px; display: block; }
+
+/* Row 2 — accreditation certificate cards: real badge artwork, slightly taller
+   than brand logos so the certificate text stays legible. */
+.brandcard--cert { padding: 0 22px; }
+.brandcard-cert-img {
+  display: block;
+  height: 44px;
+  width: auto;
+  max-width: 190px;
   object-fit: contain;
 }
 /* reversed (white) logos need a dark backing to read on the white card */
