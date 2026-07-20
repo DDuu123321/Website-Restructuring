@@ -667,6 +667,24 @@ function EnergyFlowImage({ idPrefix }: { idPrefix: string }) {
   )
 }
 
+// The '&' glyph in the card-title font falls back to a serif face, so render
+// just that character in the heading font (Montserrat) — everything else in
+// the string stays untouched.
+function AmpFix({ text }: { text: string }) {
+  const parts = text.split('&')
+  if (parts.length === 1) return <>{text}</>
+  return (
+    <>
+      {parts.map((p, i) => (
+        <span key={i}>
+          {i > 0 && <span style={{ fontFamily: 'var(--font-heading)' }}>&amp;</span>}
+          {p}
+        </span>
+      ))}
+    </>
+  )
+}
+
 // Step icons — the same four lucide glyphs the original site uses
 // (pen-tool / wrench / smartphone / shield), inlined as SVG.
 const PROC_ICONS = [
@@ -758,7 +776,7 @@ function ProcessSection() {
             <div className="proc-pin-card" aria-live="polite" aria-atomic="true">
               <div className="proc-pin-card-inner" key={activeIdx}>
                 <span className="proc-pin-card-n proc-pin-card-n--icon" aria-label={`Step ${steps[activeIdx].n}`}>{steps[activeIdx].icon}</span>
-                <h3 className="proc-pin-card-t">{steps[activeIdx].t}</h3>
+                <h3 className="proc-pin-card-t"><AmpFix text={steps[activeIdx].t} /></h3>
                 <p className="proc-pin-card-d">{steps[activeIdx].d}</p>
               </div>
             </div>
@@ -789,7 +807,7 @@ function ProcessSection() {
               <li key={s.n} className={`proc-pin-mitem ${i === activeIdx ? 'active' : ''}`}>
                 <span className="proc-pin-mn proc-pin-mn--icon" aria-label={`Step ${s.n}`}>{s.icon}</span>
                 <div className="proc-pin-mbody">
-                  <h4>{s.t}</h4>
+                  <h4><AmpFix text={s.t} /></h4>
                   <p>{s.d}</p>
                 </div>
               </li>
