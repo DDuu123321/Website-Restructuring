@@ -145,10 +145,12 @@ function BrandWall() {
 }
 
 // Hero background video: play a slow single pass from VIDEO_START and freeze on
-// VIDEO_REST (a hand-picked frame). The natural end (~12.3s) fades to black, so
-// we stop short — the scrim then sits over this frame so it shows through faintly.
+// VIDEO_REST (a hand-picked frame). The video fades to black from ~9.9s (pure
+// black by 11.13s), so we stop just before the fade — the scrim then sits over
+// this frame so it shows through faintly. Re-measure VIDEO_REST (ffmpeg
+// blackdetect) whenever hero-video.mp4 is replaced.
 const VIDEO_START = 1.5
-const VIDEO_REST = 11.5
+const VIDEO_REST = 9.8
 
 function Hero() {
   const { t } = useI18n()
