@@ -2156,9 +2156,21 @@
    #042744 / blue #0a4d89 / yellow #ffc61f.
    ========================================================= */
 .about-hero {
-  background: #042744;
-  padding: clamp(140px, 16vw, 180px) 0 clamp(90px, 10vw, 128px);
-  text-align: center;
+  position: relative;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  /* Team photo in front of the Bluven office/warehouse. A lighter left→right navy
+     gradient lets the photo read behind the frosted-glass copy card while the
+     team/vehicles stay visible on the right. */
+  background:
+    linear-gradient(90deg,
+      rgba(4, 39, 68, 0.72) 0%,
+      rgba(4, 39, 68, 0.30) 52%,
+      rgba(4, 39, 68, 0) 80%),
+    #042744 url('/who-we-are-team.jpg') right center / cover no-repeat;
+  padding: clamp(40px, 5vw, 60px) 0;
+  text-align: left;
 }
 .about-hero h1 {
   font-family: var(--font-montserrat), sans-serif;
@@ -2167,23 +2179,58 @@
   letter-spacing: -0.05em;
   line-height: 1.25;
   color: var(--bv-white);
-  margin: 0 0 40px;
+  /* Centered across the full hero width, above (not inside) the glass card.
+     Soft shadow keeps it readable where it floats over the brighter photo. */
+  margin: 0 0 24px;
+  text-align: center;
+  text-shadow: 0 2px 24px rgba(4, 39, 68, 0.65);
 }
 .about-hero-lede {
-  max-width: 896px;
-  margin: 0 auto;
+  max-width: 540px;
+  /* Frosted-glass copy card, nudged 50px right of the container edge. */
+  margin: 0 0 0 50px;
+  padding: 26px 34px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(6, 26, 48, 0.42);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
+}
+.about-hero-lede::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ffc61f, #ff9d00);
 }
 .about-hero-lede p {
   margin: 0;
   font-family: var(--font-montserrat), sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 1.625;
+  line-height: 1.55;
   color: #dbeafe;
+}
+@media (max-width: 768px) {
+  /* Narrow screens: no left dark column to hide in, so darken the whole photo
+     evenly and let the copy run full width. */
+  .about-hero {
+    min-height: 0;
+    background:
+      linear-gradient(180deg, rgba(4, 39, 68, 0.9) 0%, rgba(4, 39, 68, 0.78) 45%, rgba(4, 39, 68, 0.92) 100%),
+      #042744 url('/who-we-are-team.jpg') center 65% / cover no-repeat;
+  }
+  .about-hero h1 { max-width: none; margin-left: 0; }
+  .about-hero-lede { max-width: none; margin-left: 0; }
 }
 
 .accred-strip {
