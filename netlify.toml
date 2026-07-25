@@ -1,0 +1,22 @@
+# Netlify build config for the Next.js frontend.
+#
+# This is a monorepo: `frontend/` and `cms/` are separate npm packages and there
+# is no root package.json, so `base` has to point Netlify at frontend/ before it
+# installs or builds anything. `publish` is resolved relative to `base`.
+#
+# Only the frontend is deployed here. The Payload CMS is an Express server that
+# needs a long-running process and PostgreSQL, which Netlify cannot host — it is
+# deployed separately and reached over NEXT_PUBLIC_CMS_URL / CMS_URL.
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Next 14.2 requires >= 18.17; pin so a Netlify default bump can't change the
+  # build out from under us.
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

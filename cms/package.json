@@ -12,7 +12,8 @@
     "build": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload build && tsc",
     "start": "node dist/server.js",
     "migrate": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload migrate",
-    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload"
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
+    "migrate:prod": "PAYLOAD_CONFIG_PATH=dist/payload.config.js payload migrate"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",
@@ -23,6 +24,7 @@
     "@payloadcms/richtext-lexical": "0.11.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "drizzle-orm": "0.32.1",
     "express": "^4.18.3",
     "express-rate-limit": "^7.3.1",
     "graphql": "16.8.1",

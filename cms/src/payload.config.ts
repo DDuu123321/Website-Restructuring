@@ -64,6 +64,12 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/bluven',
     },
+    // Schema changes reach production ONLY through migrations: db-postgres
+    // hard-disables its dev push when NODE_ENV=production, so a fresh database
+    // stays EMPTY until `npm run migrate:prod` runs (Railway predeploy).
+    // __dirname resolves to src/ under ts-node and dist/ once compiled, so the
+    // right variant of the migrations folder is picked in both worlds.
+    migrationDir: path.resolve(__dirname, 'migrations'),
     // Optional: set ssl behaviour for managed Postgres providers (Railway/Neon/Supabase)
     // pool: { connectionString: ..., ssl: { rejectUnauthorized: false } },
   }),
