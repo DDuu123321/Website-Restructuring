@@ -1426,23 +1426,23 @@
 }
 
 /* Map card */
+.map-wrap { position: relative; }
 .map-card {
   border-radius: var(--radius-2xl);
   overflow: hidden;
   background: var(--bv-ink-900);
-  /* Was a fixed 460px (ate the whole viewport on short phones). Scale the
-     HEIGHT with viewport width, floored + capped. No aspect-ratio here — it
-     fought min-height and forced the card ~420px wide on a 320px screen. */
-  height: clamp(260px, 60vw, 460px);
+  /* The network map ships its own background and fills the card edge to edge, so
+     the card just tracks the artwork's 1700×1250 ratio. Driven by WIDTH, which is
+     what makes the whole thing shrink proportionally on a phone — every marker
+     keeps its relative position instead of bunching together. */
+  width: 100%;
+  aspect-ratio: 1700 / 1250;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-/* Real Australia map fitted to the card HEIGHT (squarish), centred — navy panel
-   either side, like a coverage map. Pins are % of the map image box. */
-.map-au { position: relative; height: 100%; padding: 18px 0; box-sizing: border-box; }
-.map-au-img { height: 100%; width: auto; display: block; }
+/* Pins are positioned as % of this box, which is exactly the SVG viewBox. */
+.map-au { position: relative; width: 100%; height: 100%; }
+.map-au picture { display: block; width: 100%; height: 100%; }
+.map-au-img { width: 100%; height: 100%; display: block; }
 .map-pin { position: absolute; transform: translate(-50%, -50%); z-index: 2; }
 .map-pin.is-open { z-index: 6; }
 /* The pin is a 34px click/hover button — the visible dot is only 13px, so the
@@ -1481,15 +1481,24 @@
 .map-popup-x:hover { color: var(--bv-ink-900); }
 /* While a popup is open its hover label would duplicate the city — hide it. */
 .map-pin.is-open .map-pin-label { opacity: 0; visibility: hidden; }
+/* The yellow office icon is drawn INSIDE the map SVG underneath this pin, so the
+   pin must not paint a marker of its own — it only supplies the hit target and a
+   ring that confirms the hover/focus target. #5DA9F5 matches the SVG's blue
+   office house, so the ring reads as part of the same marker. */
 .map-pin-dot {
-  display: block; width: 13px; height: 13px; border-radius: 50%;
-  background: var(--bv-teal-500);
-  box-shadow: 0 0 0 5px rgba(251,199,7,0.20), 0 0 14px rgba(251,199,7,0.55);
+  display: block; width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid #5DA9F5;
+  opacity: 0; transform: scale(0.7);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
-.map-pin.is-hq .map-pin-dot {
-  width: 17px; height: 17px;
-  box-shadow: 0 0 0 7px rgba(251,199,7,0.24), 0 0 22px rgba(251,199,7,0.7);
-  animation: pulseDot 2s infinite;
+.map-pin:hover .map-pin-dot,
+.map-pin:focus-within .map-pin-dot,
+.map-pin.is-open .map-pin-dot { opacity: 1; transform: scale(1); }
+.map-pin.is-hq .map-pin-dot { width: 32px; height: 32px; }
+/* Under ~600px the map is small enough that a 26px ring swamps the icon. */
+@media (max-width: 600px) {
+  .map-pin-dot { width: 18px; height: 18px; border-width: 1.5px; }
+  .map-pin.is-hq .map-pin-dot { width: 22px; height: 22px; }
 }
 .map-pin-label {
   position: absolute; top: 50%; left: calc(100% + 9px); transform: translateY(-50%);
@@ -1519,11 +1528,41 @@
 }
 .map-legend b {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   font-size: 11.5px;
   letter-spacing: 0.12em;
   color: var(--bv-teal-700);
   font-weight: 700;
+}
+.map-legend-keys { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.map-legend-keys li { display: flex; align-items: center; gap: 9px; }
+/* Swatches must track the SVG palette exactly: the office marker is a blue
+   outlined house (hence the ring, not a solid disc), coverage dots are solid
+   brand gold. Sizes mirror the map's own hierarchy. */
+.map-key { border-radius: 50%; flex: none; }
+.map-key--office {
+  width: 14px; height: 14px;
+  background: #0A1424; border: 2.5px solid #5DA9F5; box-sizing: border-box;
+}
+.map-key--partner { width: 9px; height: 9px; background: #FBC707; margin: 0 2.5px; }
+/* On a phone the card is short and a floating panel would cover a third of the
+   map — drop the legend out of the overlay and let it sit under the map instead. */
+@media (max-width: 600px) {
+  .map-legend {
+    position: static;
+    max-width: none;
+    margin-top: 14px;
+    padding: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    color: var(--bv-ink-500);
+  }
+  .map-legend-keys {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 6px 14px;
+  }
 }
 
 /* =========================================================

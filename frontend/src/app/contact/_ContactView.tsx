@@ -7,21 +7,23 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import type { SiteSettings } from '@/types/cms'
 
 // Office locations — shown ONLY inside the map-pin click popups (no cards, no photos).
+// x/y are percentages of the network-map SVG's 1700×1250 viewBox, taken straight
+// from the generator so each hit area sits exactly on its yellow office icon.
 const MAP_PINS = [
   {
     city: 'Brisbane', tag: 'QLD',
     addr: '23-25 Burchill St,', addr2: 'Loganholme QLD 4129',
-    x: 91, y: 53, hq: false, lab: 'l' as const,
+    x: 86.54, y: 47.36, hq: false, lab: 'l' as const,
   },
   {
-    city: 'Sydney · HQ', tag: 'NSW · HEAD OFFICE',
+    city: 'Sydney', tag: 'NSW · HEAD OFFICE',
     addr: '135-153 New South Head Road,', addr2: 'Edgecliff NSW 2027',
-    x: 88, y: 66, hq: true, lab: 'l' as const,
+    x: 83.77, y: 65.06, hq: true, lab: 'l' as const,
   },
   {
     city: 'Perth', tag: 'WA',
     addr: '80 Belgravia St,', addr2: 'Belmont WA 6104',
-    x: 13, y: 66, hq: false, lab: 'r' as const,
+    x: 23.75, y: 59.62, hq: false, lab: 'r' as const,
   },
 ]
 
@@ -97,43 +99,56 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
                  each city name only on hover (see .map-pin-label in inner.css). */}
               {/* Australia map */}
               <div style={{ marginTop: 48 }}>
-                <Reveal className="map-card">
-                  <div className="map-au">
-                    {/* Real Australia map — Wikimedia "Australia states blank.svg" (CC BY-SA 4.0), recoloured for the dark theme */}
-                    <img className="map-au-img" src="/au-states.svg" alt="Australia — Bluven office locations" />
-                    {MAP_PINS.map((p) => (
-                      <span
-                        key={p.city}
-                        className={`map-pin ${p.hq ? 'is-hq' : ''} lab-${p.lab} ${openPin === p.city ? 'is-open' : ''}`}
-                        style={{ left: `${p.x}%`, top: `${p.y}%` }}
-                      >
-                        <button
-                          type="button"
-                          className="map-pin-btn"
-                          aria-expanded={openPin === p.city}
-                          aria-label={`${p.city} office location`}
-                          onClick={() => setOpenPin(openPin === p.city ? null : p.city)}
+                <Reveal className="map-wrap">
+                  <div className="map-card">
+                    <div className="map-au">
+                      {/* Nationwide network map. Office labels and the legend are NOT baked
+                         into the SVG — the pins below supply them as hover labels, and the
+                         HTML legend stays legible at any width. One file serves every width:
+                         the map carries no baked-in text, so nothing shrinks into mush. */}
+                      <img
+                        className="map-au-img"
+                        src="/bluven-network-map-web.svg"
+                        alt="Bluven's Australia-wide service coverage — offices in Brisbane, Sydney and Perth, with coverage across the populated coastline"
+                        width={1700}
+                        height={1250}
+                      />
+                      {MAP_PINS.map((p) => (
+                        <span
+                          key={p.city}
+                          className={`map-pin ${p.hq ? 'is-hq' : ''} lab-${p.lab} ${openPin === p.city ? 'is-open' : ''}`}
+                          style={{ left: `${p.x}%`, top: `${p.y}%` }}
                         >
-                          <span className="map-pin-dot" />
-                        </button>
-                        <span className="map-pin-label">{p.city}</span>
-                        {openPin === p.city && (
-                          <div className="map-popup" role="dialog" aria-label={`${p.city} address`}>
-                            <button type="button" className="map-popup-x" aria-label="Close" onClick={() => setOpenPin(null)}>×</button>
-                            <b className="map-popup-tag">{p.tag}</b>
-                            <div className="map-popup-city">{p.city}</div>
-                            <p className="map-popup-addr">{p.addr}<br />{p.addr2}</p>
-                          </div>
-                        )}
-                      </span>
-                    ))}
+                          <button
+                            type="button"
+                            className="map-pin-btn"
+                            aria-expanded={openPin === p.city}
+                            aria-label={`${p.city} office location`}
+                            onClick={() => setOpenPin(openPin === p.city ? null : p.city)}
+                          >
+                            <span className="map-pin-dot" />
+                          </button>
+                          <span className="map-pin-label">{p.city}</span>
+                          {openPin === p.city && (
+                            <div className="map-popup" role="dialog" aria-label={`${p.city} address`}>
+                              <button type="button" className="map-popup-x" aria-label="Close" onClick={() => setOpenPin(null)}>×</button>
+                              <b className="map-popup-tag">{p.tag}</b>
+                              <div className="map-popup-city">{p.city}</div>
+                              <p className="map-popup-addr">{p.addr}<br />{p.addr2}</p>
+                            </div>
+                          )}
+                        </span>
+                      ))}
+                    </div>
                   </div>
+                  {/* Legend lives in HTML, not in the SVG: it has to stay readable when
+                     the map scales down, and it wraps to two rows on narrow screens. */}
                   <div className="map-legend">
-                    <b>SERVICE COVERAGE</b>
-                    Greater Sydney · SE Queensland · Greater Perth
-                    <span style={{ color: 'var(--bv-ink-400)' }}>
-                      {' · Regional NSW/QLD/WA by appointment'}
-                    </span>
+                    <b>OUR NETWORK</b>
+                    <ul className="map-legend-keys">
+                      <li><i className="map-key map-key--office" />Bluven office</li>
+                      <li><i className="map-key map-key--partner" />Service coverage area</li>
+                    </ul>
                   </div>
                 </Reveal>
               </div>
