@@ -29,6 +29,11 @@ export function Nav() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
+    // Sync with the CURRENT position, not just future scroll events. Browsers
+    // restore the scroll offset on reload without firing a scroll event, so
+    // without this the bar stays in its transparent "at the top" state over
+    // light content until the user happens to scroll.
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
