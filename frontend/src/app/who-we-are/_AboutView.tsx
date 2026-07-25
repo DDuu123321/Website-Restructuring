@@ -24,7 +24,6 @@ export function AboutView() {
   const accreditations = [
     { label: 'Solar Accreditation Australia — Accredited Installer', img: '/accreditations/saa-accredited.png' },
     { label: 'Engineers Australia', img: '/accreditations/engineers-australia.jpg' },
-    { label: 'AlphaESS Approved Installer', img: '/accreditations/alphaess-installer.jpg' },
     { label: 'Smart Energy Council — Small Business Member', img: '/accreditations/sec-member.jpg' },
     { label: 'Clean Energy Council Member', img: '/accreditations/cec-member.png' },
   ]

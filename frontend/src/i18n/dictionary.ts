@@ -62,7 +62,7 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'mm.products.eye': 'BUILD YOUR SYSTEM',
     'mm.products.lede': 'Four engineered packages — from a 6.6 kW starter to a 250 kW commercial roof.',
     'mm.products.solar': 'Solar panels', 'mm.products.solar.s': 'Tier-1 modules · 25-yr warranty',
-    'mm.products.battery': 'Battery storage', 'mm.products.battery.s': 'BYD · Tesla · Sungrow',
+    'mm.products.battery': 'Battery storage', 'mm.products.battery.s': 'AlphaESS · Sigenergy · FoxESS · Tesla',
     'mm.products.ev': 'EV charging', 'mm.products.ev.s': 'Solar-aware · 22 kW',
     'mm.products.commercial': 'Commercial', 'mm.products.commercial.s': '30 – 250 kW · Engineered',
     'mm.about.eye': 'COMPANY',
