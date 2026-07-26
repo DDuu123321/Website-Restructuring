@@ -71,6 +71,28 @@ export interface SendMailOptions {
 export async function sendMail(opts: SendMailOptions): Promise<void> {
   const from = process.env.EMAIL_FROM || process.env.SMTP_USER || 'noreply@bluven.com.au'
 
+  // HTTPS relay mode: Railway blackholes outbound SMTP at the account level
+  // (verified: the same Zoho credentials connect fine from anywhere else), so
+  // when MAIL_RELAY_URL is set the mail is handed to our own Next.js API route
+  // on Netlify — whose AWS egress can reach Zoho — instead of dialling SMTP
+  // from here. Unset the variable to go back to direct SMTP.
+  const relayUrl = process.env.MAIL_RELAY_URL
+  if (relayUrl) {
+    const res = await fetch(relayUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-relay-key': process.env.MAIL_RELAY_KEY || '',
+      },
+      body: JSON.stringify({ to: opts.to, subject: opts.subject, html: opts.html, replyTo: opts.replyTo, from }),
+      signal: AbortSignal.timeout(25_000),
+    })
+    if (!res.ok) {
+      throw new Error(`mail relay responded ${res.status}: ${(await res.text().catch(() => '')).slice(0, 200)}`)
+    }
+    return
+  }
+
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.warn('[mailer] SMTP_USER / SMTP_PASS not set — skipping email send.')
     return
