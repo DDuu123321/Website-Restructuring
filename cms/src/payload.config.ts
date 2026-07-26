@@ -127,19 +127,22 @@ export default buildConfig({
       ]
     : [],
 
-  // CORS — allow frontend origin
+  // CORS — allow frontend origin(s). FRONTEND_URL accepts a comma-separated
+  // list: production answers on both the www and apex hosts, and a browser on
+  // whichever one is missing from this list sees its form POSTs die in the
+  // CORS preflight (live incident: apex visitors got "Submission failed").
   cors: [
     'http://localhost:3001',
     'http://localhost:5173',
     'http://127.0.0.1:5500',
     process.env.SERVER_URL || '',
-    process.env.FRONTEND_URL || '',
+    ...(process.env.FRONTEND_URL || '').split(',').map((s) => s.trim()),
   ].filter(Boolean),
 
   csrf: [
     'http://localhost:3001',
     process.env.SERVER_URL || '',
-    process.env.FRONTEND_URL || '',
+    ...(process.env.FRONTEND_URL || '').split(',').map((s) => s.trim()),
   ].filter(Boolean),
 
   // Payload's built-in rate limiter applies to ALL /api requests (GET too).
