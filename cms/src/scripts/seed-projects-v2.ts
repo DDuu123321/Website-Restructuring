@@ -1,9 +1,10 @@
 /**
  * Seed v2: real installation photos named `STATE-INVERTERKW-BATTERYKWH[...].jpg`
  * (e.g. "WA_10KW_53.2KWH_2.jpg") become Media + Project entries with honest,
- * filename-derived specs. Files that differ only by a trailing `_2`/`(2)`
- * counter are treated as extra photos of the SAME install: first file becomes
- * the cover, the rest go into the project's gallery.
+ * filename-derived specs. EVERY photo is a separate customer install (client
+ * confirmed) — trailing `_2`/`(2)` counters are different jobs that share a
+ * package size, so they parse to the same specs but each file gets its own
+ * project. No galleries.
  *
  * Photo source is NOT the repo (43MB of originals stay out of git) — pass it:
  *   SEED_DIR=<folder of .jpg> plus the production env (NODE_ENV=production,
@@ -93,25 +94,33 @@ function parseGroup(key: string, files: string[]): Parsed {
 
 function buildPlan(): Parsed[] {
   const files = fs.readdirSync(SRC).filter((f) => /\.(jpe?g|png|webp)$/i.test(f)).sort()
-  const groups = new Map<string, string[]>()
-  for (const f of files) {
-    const k = groupKey(f)
-    groups.set(k, [...(groups.get(k) || []), f])
-  }
-  const plan = [...groups.entries()].map(([k, fl]) => parseGroup(k, fl))
+  // One FILE = one project (every photo is a separate customer). The stripped
+  // spec key is used only to parse metadata and to match the FEATURED list.
+  const plan = files.map((f) => {
+    const specKey = groupKey(f)
+    const p = parseGroup(specKey, [f])
+    const fileBase = f.replace(/\.(jpe?g|png|webp)$/i, '').trim()
+    p.slug = fileBase.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    // Several files can share a featured spec — only the un-suffixed shot
+    // carries the homepage flag, so exactly six projects are featured.
+    p.featured = FEATURED.includes(specKey) && fileBase === specKey
+    return p
+  })
   // Featured first (in FEATURED order), then the rest alphabetically.
   plan.sort((a, b) => {
     const ai = a.featured ? FEATURED.indexOf(a.key) : 999
     const bi = b.featured ? FEATURED.indexOf(b.key) : 999
     return ai - bi || a.key.localeCompare(b.key)
   })
-  // "-" and "_" filenames are DIFFERENT installs of the same package, but they
-  // slugify identically — /projects/[slug] would collide. Suffix later ones.
-  const seen = new Map<string, number>()
+  // Filenames like "X (2)" and "X_2" slugify to the same string, and a naive
+  // per-key counter can mint a suffix that collides with a slug another file
+  // already produced — so claim slugs from a shared set and bump until free.
+  const used = new Set<string>()
   for (const p of plan) {
-    const n = (seen.get(p.slug) || 0) + 1
-    seen.set(p.slug, n)
-    if (n > 1) p.slug = `${p.slug}-${n}`
+    let s = p.slug
+    for (let n = 2; used.has(s); n++) s = `${p.slug}-${n}`
+    p.slug = s
+    used.add(s)
   }
   return plan
 }
@@ -136,22 +145,17 @@ async function run() {
 
   let i = 0
   for (const p of plan) {
-    const mediaIds: number[] = []
-    for (let n = 0; n < p.files.length; n++) {
-      const media = await payload.create({
-        collection: 'media',
-        filePath: path.join(SRC, p.files[n]),
-        data: { alt: p.files.length > 1 ? `${p.title} — photo ${n + 1}` : p.title },
-      })
-      mediaIds.push((media as any).id)
-    }
+    const media = await payload.create({
+      collection: 'media',
+      filePath: path.join(SRC, p.files[0]),
+      data: { alt: p.title },
+    })
     await payload.create({
       collection: 'projects',
       data: {
         title: p.title,
         slug: p.slug,
-        coverImage: mediaIds[0],
-        gallery: mediaIds.slice(1).map((id) => ({ image: id })),
+        coverImage: (media as any).id,
         location: p.location,
         systemType: p.systemType,
         summary: p.summary,
@@ -161,7 +165,7 @@ async function run() {
       } as any,
     })
     i++
-    console.log(`  ${i}/${plan.length}  ${p.title}  (${p.files.length} photo${p.files.length > 1 ? 's' : ''})${p.featured ? '  FEATURED' : ''}`)
+    console.log(`  ${i}/${plan.length}  ${p.title}${p.featured ? '  FEATURED' : ''}`)
   }
   console.log('Seed v2 complete.')
   process.exit(0)
