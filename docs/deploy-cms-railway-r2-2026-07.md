@@ -125,6 +125,7 @@ NODE_ENV=production
 PORT=8080
 PAYLOAD_SECRET=<用下面 2.6 的命令生成；生成后只贴 Railway，不要写进这份文档 —— 本文档会提交到公开仓库>
 SERVER_URL=<先填 Railway 域名，见 2.7；绑定正式域名后改成 https://cms.bluven.com.au>
+PAYLOAD_PUBLIC_SERVER_URL=<和 SERVER_URL 保持完全一致；改其中一个必须同时改另一个>
 FRONTEND_URL=https://www.bluven.com.au
 
 R2_BUCKET=bluven-media
@@ -247,4 +248,5 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | /admin 打开是 404 | 用浏览器打开（不是 curl）；还不行就看构建日志里 `payload build` 是否成功 |
 | 上传图片后 R2 桶里没东西 | R2 四个变量有缺失或拼错——缺一个就整体静默禁用 |
 | 后台登录不上 / 一直跳回登录页 | `SERVER_URL` 和你实际访问的域名不一致（CSRF 拦截）。用哪个域名访问，`SERVER_URL` 就填哪个 |
+| 后台卡 LOADING，红条 "Fetching user failed: Failed to fetch" | `PAYLOAD_PUBLIC_SERVER_URL` 没设或和 `SERVER_URL` 不一致——admin 前端包在**构建时**烘焙这个值，Payload 只内联 `PAYLOAD_PUBLIC_` 前缀的变量。补上后必须触发一次**重新构建**（改变量即触发） |
 | 邮件收不到 | SMTP 六个值和本地 `.env` 逐个核对；Zoho 可能要在邮箱后台允许 SMTP |

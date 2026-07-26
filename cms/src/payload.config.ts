@@ -18,7 +18,12 @@ import SiteSettings from './globals/SiteSettings'
 import { r2Enabled } from './lib/storage'
 
 export default buildConfig({
-  serverURL: process.env.SERVER_URL || 'http://localhost:3001',
+  // The admin SPA bakes this value in at BUILD time, and Payload's webpack only
+  // inlines env vars prefixed PAYLOAD_PUBLIC_ — a bare SERVER_URL is undefined
+  // in the browser bundle, so the admin fell back to localhost:3001 in
+  // production ("Fetching user failed: Failed to fetch" on the create-first-user
+  // screen). Keep BOTH variables set to the same value in deploy environments.
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || process.env.SERVER_URL || 'http://localhost:3001',
 
   editor: lexicalEditor({}),
 
