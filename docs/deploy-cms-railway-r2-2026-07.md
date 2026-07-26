@@ -56,6 +56,7 @@ R2 是 Cloudflare 的对象存储（类似 AWS S3），用来放 CMS 上传的�
 4. 点 **Create API Token**。
 5. 现在屏幕上会显示一批值。**这个页面只出现一次**，把下面三个立刻复制到本地记事本：
 
+
    | 屏幕上的名字 | 对应的环境变量 |
    |---|---|
    | Access Key ID | `R2_ACCESS_KEY_ID` |
@@ -121,7 +122,8 @@ R2 是 Cloudflare 的对象存储（类似 AWS S3），用来放 CMS 上传的�
 ```env
 DATABASE_URL=${{Postgres.DATABASE_URL}}
 NODE_ENV=production
-PAYLOAD_SECRET=<用下面 2.6 的命令生成>
+PORT=8080
+PAYLOAD_SECRET=<用下面 2.6 的命令生成；生成后只贴 Railway，不要写进这份文档 —— 本文档会提交到公开仓库>
 SERVER_URL=<先填 Railway 域名，见 2.7；绑定正式域名后改成 https://cms.bluven.com.au>
 FRONTEND_URL=https://www.bluven.com.au
 
@@ -145,7 +147,8 @@ CRM_SYNC_KEY=<从本地 cms/.env 抄；不用 CRM 同步可先不填>
 - `DATABASE_URL=${{Postgres.DATABASE_URL}}` **原样粘贴**，双花括号是 Railway 的
   变量引用语法，它会自动解析成数据库真实连接串。
 - SMTP 六个值在本地 `cms/.env` 文件里都有（Zoho 邮箱那套），直接照抄。
-- `PORT` **不要设**，Railway 自动注入。
+- `PORT=8080` 必须和 Generate Domain 时填的端口一致（都用 8080）——
+  应用监听的端口和域名路由到的端口对不上会 502。
 - ⚠️ R2 四个值**一个都不能少**。少任何一个，代码会静默退回本地磁盘模式，
   上传的图片在下一次部署时全部消失，而且没有任何报错。
 
