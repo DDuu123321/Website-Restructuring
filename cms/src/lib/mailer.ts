@@ -49,6 +49,13 @@ function getTransporter(): Transporter {
     port,
     secure: port === 465,     // 465 → implicit TLS; 587 → STARTTLS upgrade
     auth: user && pass ? { user, pass } : undefined,
+    // Without these, nodemailer waits ~2 minutes on a blackholed connection
+    // (e.g. Railway's trial plan drops SMTP egress silently). Callers no longer
+    // block API responses on mail, but a dead SMTP host still shouldn't pin
+    // sockets and promises for minutes at a time.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   })
 
   return _transporter!

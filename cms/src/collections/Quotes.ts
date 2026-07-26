@@ -48,7 +48,15 @@ const Quotes: CollectionConfig = {
           emailOn = settings?.notifications?.emailOnQuote !== false
           notifyTo = settings?.quoteEmail || undefined
         } catch { /* default on */ }
-        if (emailOn) await sendQuoteEmails(doc, notifyTo)
+        // Fire-and-forget: the lead is already saved, and awaiting SMTP here
+        // holds the API response hostage — with no reachable mail host (Railway
+        // trial blackholes SMTP egress) the form spun for minutes and then
+        // reported failure for a submission that had actually been created.
+        if (emailOn) {
+          void sendQuoteEmails(doc, notifyTo).catch((err) =>
+            req.payload.logger.error(`quote notification email failed: ${err?.message || err}`),
+          )
+        }
       },
     ],
   },

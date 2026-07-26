@@ -48,7 +48,13 @@ const Assessments: CollectionConfig = {
           emailOn = settings?.notifications?.emailOnAssessment !== false
           notifyTo = settings?.quoteEmail || undefined
         } catch { /* default on */ }
-        if (emailOn) await sendAssessmentEmails(doc, notifyTo)
+        // Fire-and-forget — same reasoning as Quotes: never block the API
+        // response on SMTP; failures go to the deploy logs instead.
+        if (emailOn) {
+          void sendAssessmentEmails(doc, notifyTo).catch((err) =>
+            req.payload.logger.error(`assessment notification email failed: ${err?.message || err}`),
+          )
+        }
       },
     ],
   },
