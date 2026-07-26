@@ -97,6 +97,10 @@ When (and ONLY when) you have the visitor's name, mobile, postcode and interest 
 ##LEAD##{"name":"Dave","phone":"0400123456","postcode":"2065","interest":"battery","bill":"","timeline":""}
 "interest" must be one of: solar, battery, ev, multiple. Include "bill"/"timeline" only if the visitor gave them. Never reveal or explain the ##LEAD## marker to the visitor, never output it without explicit consent, and output it at most once per conversation. If the visitor declines to share details, don't push — keep helping.`
 
+// Remembers the last Gemini model id that answered successfully so the
+// fallback chain doesn't pay a failed round-trip on every request.
+let workingGeminiModel: string | null = null
+
 const LEAD_MARKER = '##LEAD##'
 const INTEREST_MAP: Record<string, string[]> = {
   solar: ['Solar'], battery: ['Battery'], ev: ['EV'], multiple: ['Solar', 'Battery'],
@@ -161,24 +165,48 @@ app.post('/api/chat', chatLimiter, express.json({ limit: '16kb' }), async (req, 
     return res.status(503).json({ error: 'Chat service unavailable' })
   }
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SUNNY_SYSTEM_PROMPT }] },
-          contents: messages.map((m: any) => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: m.content }],
-          })),
-          generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
-        }),
+    // Model fallback chain: GEMINI_MODEL env override first, then current
+    // stable models in order. Google retires model ids on a schedule
+    // (gemini-2.0-flash is on the way out), so a single hardcoded id is a
+    // time bomb — on a model-related 4xx we try the next id and remember
+    // the one that worked for subsequent requests.
+    const models = [
+      ...(process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []),
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+    ].filter((m, i, a) => a.indexOf(m) === i)
+    const startIdx = Math.max(0, models.indexOf(workingGeminiModel || models[0]))
+
+    let response: Awaited<ReturnType<typeof fetch>> | null = null
+    for (let i = startIdx; i < models.length; i++) {
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${models[i]}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: SUNNY_SYSTEM_PROMPT }] },
+            contents: messages.map((m: any) => ({
+              role: m.role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: m.content }],
+            })),
+            generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
+          }),
+        }
+      )
+      if (response.ok) {
+        workingGeminiModel = models[i]
+        break
       }
-    )
-    if (!response.ok) {
       const err = await response.text()
-      console.error('[chat] Gemini error:', err)
+      console.error(`[chat] Gemini error (model ${models[i]}):`, err)
+      // Only a missing/retired model id is worth retrying with the next id;
+      // key/quota/safety errors will fail identically on every model.
+      const modelGone = response.status === 404 || /not found|is not supported|unknown model/i.test(err)
+      if (!modelGone) break
+      response = null
+    }
+    if (!response || !response.ok) {
       return res.status(502).json({ error: 'AI service error' })
     }
     const data: any = await response.json()
