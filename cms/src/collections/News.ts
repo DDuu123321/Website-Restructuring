@@ -5,7 +5,7 @@ const News: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     group: '📰 Content',
-    description: 'Industry insights, news articles, and company updates.',
+    description: 'Articles shown on the News page (/news). Each article gets its own page at /news/<slug>.',
     defaultColumns: ['title', 'category', 'featured', 'publishedAt'],
     listSearchableFields: ['title', 'summary'],
   },
@@ -42,9 +42,12 @@ const News: CollectionConfig = {
     {
       name: 'featured',
       type: 'checkbox',
-      label: 'Feature on homepage',
+      label: 'Feature at top of News page',
       defaultValue: false,
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        description: 'Shows as the big lead story at the top of /news. If none is ticked, the newest article takes that spot.',
+      },
     },
 
     // ── Main fields ──

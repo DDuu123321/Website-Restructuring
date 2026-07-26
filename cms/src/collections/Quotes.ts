@@ -11,7 +11,7 @@ const Quotes: CollectionConfig = {
     useAsTitle: 'fullName',
     group: '📥 Leads',
     description: 'Quote requests submitted via the website form.',
-    defaultColumns: ['fullName', 'email', 'phone', 'systemType', 'state', 'status', 'createdAt'],
+    defaultColumns: ['fullName', 'phone', 'email', 'components', 'state', 'status', 'createdAt'],
     listSearchableFields: ['firstName', 'lastName', 'email', 'phone', 'suburb'],
     components: {
       BeforeListTable: [ExportCsvButton, ImportCsvButton],
@@ -181,7 +181,7 @@ const Quotes: CollectionConfig = {
       name: 'source',
       type: 'group',
       label: 'Source',
-      admin: { description: 'Where the lead came from.' },
+      admin: { description: 'Where the lead came from. Referrer "ai-chat" = captured by Sunny, the AI chat assistant.' },
       fields: [
         { name: 'referrer',      type: 'text', label: 'Referrer URL' },
         { name: 'utm_source',    type: 'text', label: 'UTM Source' },

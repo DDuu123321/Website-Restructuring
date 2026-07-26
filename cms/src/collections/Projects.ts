@@ -5,7 +5,7 @@ const Projects: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     group: '📰 Content',
-    description: 'Real installation case studies shown on the Projects page.',
+    description: 'Installation case studies shown on the Projects page (/projects). Ticking "Feature on homepage" also puts a project into the homepage photo album.',
     defaultColumns: ['title', 'location', 'systemType', 'featured', 'sortOrder'],
   },
   // Public-read everything — draft state removed at user request.
@@ -18,7 +18,10 @@ const Projects: CollectionConfig = {
       type: 'checkbox',
       label: 'Feature on homepage',
       defaultValue: false,
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        description: 'Puts this project into the homepage "600+ Australian roofs" photo album. If none are ticked, the album falls back to the latest projects.',
+      },
     },
     {
       name: 'sortOrder',

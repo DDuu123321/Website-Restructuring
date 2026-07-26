@@ -5,7 +5,7 @@ const FAQ: CollectionConfig = {
   admin: {
     useAsTitle: 'question',
     group: '📰 Content',
-    description: 'Frequently asked questions. Drag to reorder.',
+    description: 'FAQ page (/faq). The page shows four category tabs: General & Installation, Solar Panels & Inverters, Battery Storage, Warranty & Support — file questions under one of those so they appear in a tab.',
     defaultColumns: ['question', 'category', 'sortOrder', 'published'],
   },
   access: {
@@ -43,11 +43,11 @@ const FAQ: CollectionConfig = {
         // first, new values appended at the END (drizzle diffs enums by order,
         // and Postgres can only append enum labels).
         { label: 'General & Installation',   value: 'general' },
-        { label: 'Pricing & Rebates',        value: 'pricing' },
-        { label: 'Installation',             value: 'installation' },
-        { label: 'Products',                 value: 'products' },
+        { label: 'Pricing & Rebates (no tab — shows under "All" only)', value: 'pricing' },
+        { label: 'Installation (no tab — shows under "All" only)',      value: 'installation' },
+        { label: 'Products (no tab — shows under "All" only)',          value: 'products' },
         { label: 'Warranty & Support',       value: 'support' },
-        { label: 'Net Metering & Grid',      value: 'grid' },
+        { label: 'Net Metering & Grid (no tab — shows under "All" only)', value: 'grid' },
         { label: 'Solar Panels & Inverters', value: 'solar' },
         { label: 'Battery Storage',          value: 'battery' },
       ],

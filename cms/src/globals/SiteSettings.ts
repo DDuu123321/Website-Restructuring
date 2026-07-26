@@ -84,9 +84,12 @@ const SiteSettings: GlobalConfig = {
       name: 'chat',
       type: 'group',
       label: 'AI Chat Settings',
+      admin: {
+        description: 'Sunny, the AI assistant bubble shown on every page. Turning it off hides the widget and disables the chat API. Leads Sunny captures appear under Quotes with source "ai-chat".',
+      },
       fields: [
         { name: 'enabled', type: 'checkbox', label: 'Enable AI chat widget', defaultValue: true },
-        { name: 'greeting', type: 'textarea', label: 'Welcome message' },
+        { name: 'greeting', type: 'textarea', label: 'Welcome message', admin: { description: 'First bubble visitors see. Leave blank for the built-in default.' } },
       ],
     },
 
