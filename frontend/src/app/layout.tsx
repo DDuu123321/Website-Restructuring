@@ -79,6 +79,12 @@ export const metadata: Metadata = {
   // Favicon + apple-touch-icon are auto-served by Next.js file convention
   // from app/icon.png and app/apple-icon.jpg (real Bluven logo).
   manifest: '/manifest.webmanifest',
+  // Google Search Console ownership proof — set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+  // on the host to the token from the "HTML tag" verification method; the meta
+  // tag is omitted entirely while the env var is unset.
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
 }
 
 export const viewport: Viewport = {

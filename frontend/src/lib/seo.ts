@@ -30,7 +30,9 @@ export function buildMetadata(args: BuildMetaArgs = {}): Metadata {
     : SITE.url + '/og-default.jpg'
 
   return {
-    title: fullTitle,
+    // absolute: the root layout's title.template would otherwise append
+    // "— Bluven Energy" a second time (fullTitle already carries it).
+    title: { absolute: fullTitle },
     description: desc,
     alternates: { canonical: url },
     robots: noindex ? { index: false, follow: false } : { index: true, follow: true },
