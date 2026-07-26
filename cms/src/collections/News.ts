@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types'
+import { layoutField } from '../blocks/layoutBlocks'
 
 const News: CollectionConfig = {
   slug: 'news',
@@ -103,6 +104,7 @@ const News: CollectionConfig = {
       label: 'Article Body',
       required: true,
     },
+    layoutField,
     {
       name: 'author',
       type: 'text',

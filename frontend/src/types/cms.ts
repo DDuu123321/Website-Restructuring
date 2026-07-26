@@ -19,6 +19,16 @@ export interface Media {
   }
 }
 
+/** Page-builder sections — mirrors cms/src/blocks/layoutBlocks.ts. */
+export type LayoutBlock =
+  | { blockType: 'richText'; id?: string; heading?: string; body: any }
+  | { blockType: 'imageText'; id?: string; image: Media; imageSide?: 'left' | 'right'; heading?: string; body: any }
+  | { blockType: 'gallery'; id?: string; columns?: '2' | '3'; images: { image: Media; caption?: string }[] }
+  | { blockType: 'stats'; id?: string; items: { value: string; label: string }[] }
+  | { blockType: 'pullQuote'; id?: string; text: string; name?: string; detail?: string }
+  | { blockType: 'callToAction'; id?: string; heading: string; text?: string; buttonLabel?: string; buttonHref?: string }
+  | { blockType: 'video'; id?: string; url: string; caption?: string }
+
 export interface News {
   id: string
   title: string
@@ -28,6 +38,7 @@ export interface News {
   coverImage?: Media
   summary: string
   content: any  // Lexical/Slate richtext JSON
+  layout?: LayoutBlock[]
   author?: string
   readTime?: number
   publishedAt?: string
@@ -56,6 +67,7 @@ export interface Project {
   }
   summary: string
   description?: any
+  layout?: LayoutBlock[]
   testimonial?: {
     quote?: string
     customerName?: string
