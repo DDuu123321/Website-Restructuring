@@ -196,7 +196,18 @@ function Hero() {
     v.addEventListener('pause', onPause)
     v.addEventListener('ended', reveal)
     v.addEventListener('error', reveal)
-    // Safety net for blocked autoplay (e.g. data-saver, no user gesture).
+    // Kick playback explicitly. React never renders the `muted` attribute into
+    // server HTML (long-standing React quirk), so mobile browsers parse this as
+    // an UNMUTED autoplay video and refuse to start it — on phones the hero sat
+    // on its blue background with nothing playing. Set muted imperatively, ask
+    // for playback, and if the browser still refuses (Low Power Mode, data
+    // saver) reveal the copy over the poster right away instead of blue-screen.
+    v.muted = true
+    v.defaultMuted = true
+    v.setAttribute('muted', '')
+    const playAttempt = v.play()
+    if (playAttempt) playAttempt.catch(() => reveal())
+    // Safety net for the remaining edge: playback granted but stalled forever.
     const fallback = setTimeout(reveal, 15000)
     return () => {
       v.removeEventListener('loadedmetadata', init)
@@ -231,6 +242,10 @@ function Hero() {
         muted
         playsInline
         preload="auto"
+        // Real frame to stand behind the copy whenever playback never starts
+        // (autoplay denied / still buffering) — without it the hero shows the
+        // bare blue section background.
+        poster="/hero-poster.jpg"
       >
         <source src="/hero-video.mp4" type="video/mp4" />
       </video>
