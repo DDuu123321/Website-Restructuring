@@ -66,3 +66,4 @@ desktop.ini
 
 # tsc output from `npm run build` in cms/
 cms/build/
+frontend/public/examples/
