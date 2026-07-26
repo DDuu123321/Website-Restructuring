@@ -156,6 +156,7 @@ function Hero() {
   const { t } = useI18n()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [videoResting, setVideoResting] = useState(false)
+  const [noVideo, setNoVideo] = useState(false)
   const [showVideoModal, setShowVideoModal] = useState(false)
 
   // The scrim and hero copy stay hidden while the background video plays; they
@@ -164,6 +165,20 @@ function Hero() {
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
+    // Phones don't get the background video at all — autoplay kept breaking
+    // (power saver / data saver / network) and the user call is: flat brand
+    // navy instead. Abort the in-flight download, unmount the element, and
+    // reveal the copy immediately. 760px matches the CSS hero breakpoints.
+    if (window.matchMedia('(max-width: 760px)').matches) {
+      try {
+        v.pause()
+        while (v.firstChild) v.removeChild(v.firstChild)
+        v.load()
+      } catch {}
+      setNoVideo(true)
+      setVideoResting(true)
+      return
+    }
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       // No playback: jump straight to the resting frame and hold.
       const settle = () => { try { v.currentTime = VIDEO_REST } catch {} ; v.pause(); setVideoResting(true) }
@@ -231,29 +246,35 @@ function Hero() {
 
   return (
     <section
-      className={`hero ${videoResting ? 'hero--video-rest' : ''}`}
+      className={`hero ${videoResting ? 'hero--video-rest' : ''} ${noVideo ? 'hero--no-video' : ''}`}
       data-screen-label="Home Hero"
     >
-      {/* Real homepage video background — plays once, then freezes on last frame */}
-      <video
-        ref={videoRef}
-        className="hero-video"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        // Real frame to stand behind the copy whenever playback never starts
-        // (autoplay denied / still buffering) — without it the hero shows the
-        // bare blue section background.
-        poster="/hero-poster.jpg"
-      >
-        <source src="/hero-video.mp4" type="video/mp4" />
-      </video>
+      {/* Real homepage video background — plays once, then freezes on last
+          frame. Unmounted entirely on phones (see the mobile branch in the
+          effect); CSS also hides it pre-hydration at ≤760px. */}
+      {!noVideo && (
+        <video
+          ref={videoRef}
+          className="hero-video"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          // Real frame to stand behind the copy whenever playback never starts
+          // (autoplay denied / still buffering) — without it the hero shows the
+          // bare blue section background.
+          poster="/hero-poster.jpg"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+      )}
 
-      <button type="button" className="hero-skip" onClick={skipVideo}>
-        <span>Skip video</span>
-        <span className="hero-skip-arrow" aria-hidden="true">→</span>
-      </button>
+      {!noVideo && (
+        <button type="button" className="hero-skip" onClick={skipVideo}>
+          <span>Skip video</span>
+          <span className="hero-skip-arrow" aria-hidden="true">→</span>
+        </button>
+      )}
 
       <div className="hero-content">
         <div className="hero-copy">

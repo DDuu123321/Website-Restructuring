@@ -28,13 +28,39 @@ const IET_HTML = `<style>
 @keyframes iet-corepulse { 0%,100%{ transform:scale(1); opacity:.92 } 50%{ transform:scale(1.06); opacity:1 } }
 @keyframes iet-dash-slow { to{ stroke-dashoffset:-360 } }
 .iet[data-rm="true"] *{ animation:none !important; }
+/* ≤900px: the fixed 1200×770 canvas scaled below ~0.75 becomes unreadable
+   (≈5px type at phone widths — effectively invisible). Restack it instead:
+   hub orb first, then the three team cards full-width. Desktop untouched. */
+@media (max-width: 900px){
+  .iet{ padding:40px 16px 48px !important; }
+  .iet .iet-head{ padding:24px 8px 0 !important; }
+  .iet .iet-head h2{ font-size:clamp(26px, 8vw, 34px) !important; line-height:1.15 !important; letter-spacing:-0.5px !important; }
+  .iet [data-iet-stage]{ height:auto !important; }
+  .iet .iet-canvas{
+    position:static !important; width:100% !important; height:auto !important;
+    transform:none !important; margin:26px auto 0 !important;
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+  }
+  .iet .iet-canvas > svg, .iet .iet-dot{ display:none !important; }
+  .iet .iet-card{
+    position:static !important; width:min(100%, 380px) !important;
+    animation:none !important;
+  }
+  .iet .iet-hub{
+    position:static !important; width:150px !important; height:150px !important;
+    order:-1; margin-bottom:8px;
+  }
+  .iet .iet-card--eng{ order:1; }
+  .iet .iet-card--delivery{ order:2; }
+  .iet .iet-card--support{ order:3; }
+}
 </style>
 <section class="iet" data-rm="false" style="font-family:Montserrat,sans-serif; background:linear-gradient(180deg,#04243f,#03162a); padding:52px 28px 64px; display:flex; flex-direction:column; align-items:center; --accent: #ffc61f;">
 
   <div data-screen-label="Interconnected Expert Teams" style="position:relative; width:1240px; max-width:100%; overflow:hidden;">
 
     <!-- HEADER -->
-    <div style="position:relative; z-index:2; text-align:center; padding:52px 40px 6px;">
+    <div class="iet-head" style="position:relative; z-index:2; text-align:center; padding:52px 40px 6px;">
       <div style="font:700 13px Montserrat; letter-spacing:5px; color:var(--accent);">CLOSED-LOOP BLUVEN</div>
       <h2 style="font:800 46px Montserrat; letter-spacing:-1px; color:#eef4ff; margin:12px 0 0;">Interconnected Expert Teams</h2>
       <p style="font:500 17px/1.55 Montserrat; color:#a9c2e2; max-width:620px; margin:16px auto 0;">Our three core teams operate as one continuous system — working together to design, deliver, and support every project with precision and long-term performance in mind.</p>
@@ -42,7 +68,7 @@ const IET_HTML = `<style>
 
     <!-- DIAGRAM -->
     <div data-iet-stage="" style="position:relative; width:100%; height:calc(770px * var(--s, 1));">
-      <div style="position:absolute; left:0; right:0; top:0; margin:0 auto; width:1200px; height:770px; transform-origin:top center; transform:scale(var(--s, 1));">
+      <div class="iet-canvas" style="position:absolute; left:0; right:0; top:0; margin:0 auto; width:1200px; height:770px; transform-origin:top center; transform:scale(var(--s, 1));">
       <svg viewBox="0 0 1200 770" width="100%" height="100%" style="position:absolute; inset:0; overflow:visible; z-index:1;">
         <g fill="none" stroke="#7fb0e6" stroke-width="1.3" opacity="0.35">
           <path d="M600,150 L323,630 L877,630 Z"></path>
@@ -56,12 +82,12 @@ const IET_HTML = `<style>
           <line x1="600" y1="470" x2="877" y2="630"></line>
         </g>
       </svg>
-      <div style="position:absolute; left:0; top:0; width:8px; height:8px; border-radius:50%; z-index:2; offset-path:path('M600,470 L600,150'); background:#fff; box-shadow:0 0 9px 3px var(--accent-line); animation:iet-travel 6.5s ease-in-out infinite;"></div>
-      <div style="position:absolute; left:0; top:0; width:8px; height:8px; border-radius:50%; z-index:2; offset-path:path('M600,470 L323,630'); background:#fff; box-shadow:0 0 9px 3px var(--accent-line); animation:iet-travel 7.4s ease-in-out infinite -2.4s;"></div>
-      <div style="position:absolute; left:0; top:0; width:8px; height:8px; border-radius:50%; z-index:2; offset-path:path('M600,470 L877,630'); background:var(--accent); box-shadow:0 0 9px 3px var(--accent-line); animation:iet-travel 8s ease-in-out infinite -5s;"></div>
+      <div class="iet-dot" style="position:absolute; left:0; top:0; width:8px; height:8px; border-radius:50%; z-index:2; offset-path:path('M600,470 L600,150'); background:#fff; box-shadow:0 0 9px 3px var(--accent-line); animation:iet-travel 6.5s ease-in-out infinite;"></div>
+      <div class="iet-dot" style="position:absolute; left:0; top:0; width:8px; height:8px; border-radius:50%; z-index:2; offset-path:path('M600,470 L323,630'); background:#fff; box-shadow:0 0 9px 3px var(--accent-line); animation:iet-travel 7.4s ease-in-out infinite -2.4s;"></div>
+      <div class="iet-dot" style="position:absolute; left:0; top:0; width:8px; height:8px; border-radius:50%; z-index:2; offset-path:path('M600,470 L877,630'); background:var(--accent); box-shadow:0 0 9px 3px var(--accent-line); animation:iet-travel 8s ease-in-out infinite -5s;"></div>
 
       <!-- TOP CARD -->
-      <div style="position:absolute; left:450px; top:22px; width:300px; z-index:3; animation:iet-floatA 8s ease-in-out infinite; background:rgba(10,64,137,.40); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(130,180,235,.34); border-radius:16px; padding:22px; box-shadow:0 16px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.10);">
+      <div class="iet-card iet-card--eng" style="position:absolute; left:450px; top:22px; width:300px; z-index:3; animation:iet-floatA 8s ease-in-out infinite; background:rgba(10,64,137,.40); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(130,180,235,.34); border-radius:16px; padding:22px; box-shadow:0 16px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.10);">
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:44px; height:44px; flex:none; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 40% 28%, #1568b0, #0a4089 50%, #042032 100%); border:1px solid var(--accent-bd-soft); display:flex; align-items:center; justify-content:center; color:var(--accent); box-shadow:0 4px 10px rgba(0,0,0,.4), inset 0 2px 4px rgba(255,255,255,.22), inset 0 -6px 12px rgba(0,0,0,.35);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1em; height:1em; font-size:20px;"><path d="m12 19 7-7 3 3-7 7-3-3z"></path><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="m2 2 7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
@@ -78,7 +104,7 @@ const IET_HTML = `<style>
       </div>
 
       <!-- BOTTOM-LEFT CARD -->
-      <div style="position:absolute; left:173px; top:500px; width:300px; z-index:3; animation:iet-floatB 9s ease-in-out infinite .6s; background:rgba(10,64,137,.40); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(130,180,235,.34); border-radius:16px; padding:22px; box-shadow:0 16px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.10);">
+      <div class="iet-card iet-card--support" style="position:absolute; left:173px; top:500px; width:300px; z-index:3; animation:iet-floatB 9s ease-in-out infinite .6s; background:rgba(10,64,137,.40); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(130,180,235,.34); border-radius:16px; padding:22px; box-shadow:0 16px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.10);">
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:44px; height:44px; flex:none; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 40% 28%, #1568b0, #0a4089 50%, #042032 100%); border:1px solid var(--accent-bd-soft); display:flex; align-items:center; justify-content:center; color:var(--accent); box-shadow:0 4px 10px rgba(0,0,0,.4), inset 0 2px 4px rgba(255,255,255,.22), inset 0 -6px 12px rgba(0,0,0,.35);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1em; height:1em; font-size:20px;"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1v-4a9 9 0 0 1 18 0v4a1 1 0 0 1-1 1h-2a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"></path><path d="M21 16v2a4 4 0 0 1-4 4h-5"></path></svg>
@@ -95,7 +121,7 @@ const IET_HTML = `<style>
       </div>
 
       <!-- BOTTOM-RIGHT CARD -->
-      <div style="position:absolute; left:727px; top:500px; width:300px; z-index:3; animation:iet-floatC 8.5s ease-in-out infinite .3s; background:rgba(10,64,137,.40); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(130,180,235,.34); border-radius:16px; padding:22px; box-shadow:0 16px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.10);">
+      <div class="iet-card iet-card--delivery" style="position:absolute; left:727px; top:500px; width:300px; z-index:3; animation:iet-floatC 8.5s ease-in-out infinite .3s; background:rgba(10,64,137,.40); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(130,180,235,.34); border-radius:16px; padding:22px; box-shadow:0 16px 36px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.10);">
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:44px; height:44px; flex:none; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 40% 28%, #1568b0, #0a4089 50%, #042032 100%); border:1px solid var(--accent-bd-soft); display:flex; align-items:center; justify-content:center; color:var(--accent); box-shadow:0 4px 10px rgba(0,0,0,.4), inset 0 2px 4px rgba(255,255,255,.22), inset 0 -6px 12px rgba(0,0,0,.35);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1em; height:1em; font-size:20px;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
@@ -112,7 +138,7 @@ const IET_HTML = `<style>
       </div>
 
       <!-- HUB · 4b glossy orb -->
-      <div style="position:absolute; left:510px; top:380px; width:180px; height:180px; z-index:4; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 40% 28%, #1568b0, #0a4089 44%, #042032 100%); border:1px solid var(--accent-bd); box-shadow:0 18px 36px rgba(0,0,0,.5), 0 0 30px var(--accent-glow), inset 0 3px 8px rgba(255,255,255,.25), inset 0 -16px 28px rgba(0,0,0,.4); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; animation:iet-corepulse 6s ease-in-out infinite;">
+      <div class="iet-hub" style="position:absolute; left:510px; top:380px; width:180px; height:180px; z-index:4; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 40% 28%, #1568b0, #0a4089 44%, #042032 100%); border:1px solid var(--accent-bd); box-shadow:0 18px 36px rgba(0,0,0,.5), 0 0 30px var(--accent-glow), inset 0 3px 8px rgba(255,255,255,.25), inset 0 -16px 28px rgba(0,0,0,.4); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; animation:iet-corepulse 6s ease-in-out infinite;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1em; height:1em; font-size:36px; color:var(--accent);"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
         <div style="font:800 16px Montserrat; letter-spacing:4px; color:#f3f8ff;">BLUVEN</div>
       </div>

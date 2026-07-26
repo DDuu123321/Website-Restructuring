@@ -55,6 +55,16 @@
 .features-carousel-tab.is-active .features-carousel-tab-n {
   color: var(--bv-teal-700);
 }
+/* Phones: compress the three tabs so all of them stay on screen at once. */
+@media (max-width: 720px) {
+  .features-carousel-tabs { gap: 0; }
+  .features-carousel-tab { flex: 1 1 auto; justify-content: center; padding: 13px 8px; font-size: 13.5px; gap: 7px; }
+  .features-carousel-tab-n { font-size: 10.5px; }
+}
+@media (max-width: 400px) {
+  .features-carousel-tab { font-size: 12.5px; padding: 12px 4px; }
+  .features-carousel-tab-n { display: none; }
+}
 .features-carousel-track {
   display: flex;
   overflow-x: auto;
@@ -82,8 +92,6 @@
 }
 .feature-panel-media {
   position: relative;
-  /* Nudged 70px toward the text so the photo sits closer to the copy. */
-  transform: translateX(70px);
   border-radius: var(--radius-2xl);
   overflow: hidden;
   aspect-ratio: 4 / 5;
@@ -103,8 +111,15 @@
 }
 .feature-panel-content {
   min-width: 0;
-  /* Nudged 55px toward the photo. */
-  transform: translateX(-55px);
+}
+/* The toward-each-other nudges (photo +70px / copy -55px) only have room on
+   wide desktops: the media box is width-capped at 464px (4/5 ratio × 580px
+   max-height), which leaves slack beside it from ~1440px up. Below that the
+   nudges ate the grid gap and the copy overlapped the photo — so they stay
+   off entirely on narrower viewports. */
+@media (min-width: 1440px) {
+  .feature-panel-media { transform: translateX(70px); }
+  .feature-panel-content { transform: translateX(-55px); }
 }
 .feature-panel-content .section-eye {
   display: inline-block;
@@ -173,10 +188,10 @@
 
 @media (max-width: 900px) {
   .feature-panel { grid-template-columns: 1fr; gap: 32px; }
-  .feature-panel-media { max-width: 480px; margin: 0 auto; }
-  /* Stacked + centred on mobile — drop the desktop toward-centre nudges. */
-  .feature-panel-media,
-  .feature-panel-content { transform: none; }
+  /* Explicit width, not max-width: the auto margins opt this grid item out of
+     stretch alignment, and with only absolutely-positioned children inside its
+     auto width resolved to 0 — the photo vanished on phones. */
+  .feature-panel-media { width: min(100%, 480px); margin: 0 auto; }
 }
 
 /* Prev/next arrow buttons on either side of the carousel
@@ -215,9 +230,10 @@
 .features-nav svg { width: 26px; height: 26px; }
 .features-nav-prev { left: clamp(16px, 2.4vw, 40px); }
 .features-nav-next { right: clamp(16px, 2.4vw, 40px); }
-@media (max-width: 720px) {
-  .features-nav { width: 48px; height: 48px; }
-  .features-nav svg { width: 22px; height: 22px; }
+/* Stacked mobile layout (≤900px): the floating arrows would sit on top of the
+   full-width copy — swipe, tabs and auto-rotate cover navigation instead. */
+@media (max-width: 900px) {
+  .features-nav { display: none; }
 }
 
 
@@ -423,6 +439,16 @@
       rgba(10, 24, 40, 0.74) 100%);
   }
 }
+/* Phones: no background video at all (mobile autoplay kept breaking — power
+   saver / data saver / network). The hero sits on the flat brand navy instead.
+   The <video> is also unmounted in JS; this rule kills the SSR flash before
+   hydration. The scrim is skipped too — it was designed to sit over a video
+   frame, not a flat colour. */
+@media (max-width: 760px) {
+  .hero { background-color: var(--bv-ink-800); }
+  .hero-video, .hero-skip { display: none; }
+}
+.hero--no-video::after { display: none; }
 
 /* Once the video freezes: copy slides in from the left (staggered), the energy
    diagram slides in from the right — both hidden (opacity 0) during playback. */
