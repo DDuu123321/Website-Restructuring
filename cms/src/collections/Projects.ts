@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types'
+import { layoutField } from '../blocks/layoutBlocks'
 
 const Projects: CollectionConfig = {
   slug: 'projects',
@@ -122,6 +123,7 @@ const Projects: CollectionConfig = {
       type: 'richText',
       label: 'Full Description',
     },
+    layoutField,
     {
       name: 'testimonial',
       type: 'group',

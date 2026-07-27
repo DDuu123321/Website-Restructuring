@@ -12,6 +12,7 @@ import '@/styles/design-system.css'
 import '@/styles/chrome.css'
 import '@/styles/home.css'
 import '@/styles/inner.css'
+import '@/styles/blocks.css'
 
 // Self-hosted at build time (no render-blocking Google Fonts request).
 // Cormorant Garamond was dropped — it was loaded but never referenced in any CSS.

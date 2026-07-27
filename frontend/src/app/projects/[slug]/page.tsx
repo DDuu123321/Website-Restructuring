@@ -6,6 +6,7 @@ import { buildMetadata, projectLd, breadcrumbLd } from '@/lib/seo'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { Reveal } from '@/components/ui/Reveal'
 import { RichText } from '@/components/ui/RichText'
+import { BlockRenderer } from '@/components/blocks/BlockRenderer'
 
 export const revalidate = 60
 
@@ -82,6 +83,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             )}
 
             {p.description && <RichText data={p.description} />}
+
+            <BlockRenderer blocks={p.layout} />
 
             {p.gallery && p.gallery.length > 0 && (
               <div className="proj-gallery" style={{ marginTop: 40 }}>

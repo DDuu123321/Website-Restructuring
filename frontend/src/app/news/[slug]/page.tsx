@@ -6,6 +6,7 @@ import { buildMetadata, articleLd, breadcrumbLd } from '@/lib/seo'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { Reveal } from '@/components/ui/Reveal'
 import { RichText, richTextToPlain } from '@/components/ui/RichText'
+import { BlockRenderer } from '@/components/blocks/BlockRenderer'
 
 export const revalidate = 60
 
@@ -82,6 +83,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
               />
             )}
             <RichText data={article.content} className="prose" />
+            <BlockRenderer blocks={article.layout} />
           </Reveal>
         </div>
       </article>
