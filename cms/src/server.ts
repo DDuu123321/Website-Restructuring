@@ -165,15 +165,17 @@ app.post('/api/chat', chatLimiter, express.json({ limit: '16kb' }), async (req, 
     return res.status(503).json({ error: 'Chat service unavailable' })
   }
   try {
-    // Model fallback chain: GEMINI_MODEL env override first, then current
-    // stable models in order. Google retires model ids on a schedule
-    // (gemini-2.0-flash is on the way out), so a single hardcoded id is a
-    // time bomb — on a model-related 4xx we try the next id and remember
-    // the one that worked for subsequent requests.
+    // Model fallback chain: GEMINI_MODEL env override first, then the rolling
+    // alias, then pinned current ids. Google retires model ids on a schedule —
+    // in July 2026 BOTH 2.0-flash and (for new keys) 2.5-flash were gone, which
+    // killed chat in prod. `gemini-flash-latest` is Google's own moving alias
+    // for the current flash model, so it survives retirements; the pinned ids
+    // behind it only matter if the alias itself ever misbehaves.
     const models = [
       ...(process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []),
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
+      'gemini-flash-latest',
+      'gemini-3.6-flash',
+      'gemini-3.5-flash',
     ].filter((m, i, a) => a.indexOf(m) === i)
     const startIdx = Math.max(0, models.indexOf(workingGeminiModel || models[0]))
 
@@ -190,7 +192,11 @@ app.post('/api/chat', chatLimiter, express.json({ limit: '16kb' }), async (req, 
               role: m.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: m.content }],
             })),
-            generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
+            // Gemini 3.x are thinking models: reasoning tokens count against
+          // maxOutputTokens (measured ~800+ per reply) and the old 400 budget
+          // truncated every answer mid-sentence. Visible length is still
+          // capped by the prompt's "under 150 words" rule.
+          generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
           }),
         }
       )
