@@ -21,10 +21,11 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Security response headers. Netlify applies these to every response it serves.
-# No CSP yet: the app uses inline styles and Next's inline bootstrap scripts, so
-# a policy strict enough to be worth having needs nonce plumbing — tracked as a
-# separate piece of work rather than shipped as a permissive placeholder.
+# Security response headers for anything Netlify serves directly (static files
+# in /public, redirects). SSR/ISR pages bypass this block entirely — Netlify's
+# Next.js runtime answers those from its own function — so the same headers are
+# also declared in frontend/next.config.mjs, which is what actually covers the
+# pages. Keep the two lists in sync.
 [[headers]]
   for = "/*"
   [headers.values]
