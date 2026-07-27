@@ -228,3 +228,10 @@ select:focus {
   color: var(--bv-navy-900) !important;
   font-size: clamp(28px, 3.5vw, 40px) !important;
 }
+
+/* ── Native bulk Edit is HIDDEN on purpose ─────────────────────
+   Payload 2.x bulk update silently loses 1-2 docs per operation on
+   Postgres (payloadcms/payload#14247, reproduced locally). The custom
+   BulkEditButton above each list applies changes one-by-one instead.
+   Bulk Delete is left available — verify results after using it. */
+.edit-many { display: none !important; }

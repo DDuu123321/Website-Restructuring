@@ -4,6 +4,7 @@ import { auEmail, auPhone, auPostcode } from '../lib/validators'
 import { honeypotField, assertNotBot } from '../lib/honeypot'
 import ExportCsvButton from '../admin/ExportCsvButton'
 import ImportCsvButton from '../admin/ImportCsvButton'
+import BulkEditButton from '../admin/BulkEditButton'
 
 const Quotes: CollectionConfig = {
   slug: 'quotes',
@@ -14,7 +15,7 @@ const Quotes: CollectionConfig = {
     defaultColumns: ['fullName', 'phone', 'email', 'components', 'state', 'status', 'createdAt'],
     listSearchableFields: ['firstName', 'lastName', 'email', 'phone', 'suburb'],
     components: {
-      BeforeListTable: [ExportCsvButton, ImportCsvButton],
+      BeforeListTable: [BulkEditButton, ExportCsvButton, ImportCsvButton],
     },
   },
   access: {

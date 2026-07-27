@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types'
 import { layoutField } from '../blocks/layoutBlocks'
+import BulkEditButton from '../admin/BulkEditButton'
 
 const News: CollectionConfig = {
   slug: 'news',
@@ -9,6 +10,9 @@ const News: CollectionConfig = {
     description: 'Articles shown on the News page (/news). Each article gets its own page at /news/<slug>.',
     defaultColumns: ['title', 'category', 'featured', 'publishedAt'],
     listSearchableFields: ['title', 'summary'],
+    components: {
+      BeforeListTable: [BulkEditButton],
+    },
   },
   // Public-read everything — draft state removed at user request.
   // Hide an article by deleting or temporarily clearing its slug.

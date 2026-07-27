@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types'
 import { layoutField } from '../blocks/layoutBlocks'
+import BulkEditButton from '../admin/BulkEditButton'
 
 const Projects: CollectionConfig = {
   slug: 'projects',
@@ -8,6 +9,9 @@ const Projects: CollectionConfig = {
     group: '📰 Content',
     description: 'Installation case studies shown on the Projects page (/projects). Ticking "Feature on homepage" also puts a project into the homepage photo album.',
     defaultColumns: ['title', 'location', 'systemType', 'featured', 'sortOrder'],
+    components: {
+      BeforeListTable: [BulkEditButton],
+    },
   },
   // Public-read everything — draft state removed at user request.
   access: {
