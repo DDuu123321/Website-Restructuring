@@ -7,6 +7,7 @@ import UnreadBadges from './admin/UnreadBadges'
 import DashboardLeadStats from './admin/DashboardLeadStats'
 
 import { bulkImportEndpoint } from './endpoints/bulkImport'
+import { subscribeEndpoint } from './endpoints/subscribe'
 import Users from './collections/Users'
 import Media from './collections/Media'
 import News from './collections/News'
@@ -68,7 +69,7 @@ export default buildConfig({
 
   // Root-level custom endpoints (mounted at /api/<path>, outside the
   // per-collection paths — see endpoints/bulkImport.ts for why that matters).
-  endpoints: [bulkImportEndpoint],
+  endpoints: [bulkImportEndpoint, subscribeEndpoint],
 
   db: postgresAdapter({
     pool: {
@@ -161,8 +162,11 @@ export default buildConfig({
     max: 10000,
   },
 
+  // GraphQL is OFF: the frontend uses the REST API exclusively, so the
+  // /api/graphql endpoint was pure attack surface — anonymously reachable,
+  // introspectable, and a cheap way to build expensive nested queries.
   graphQL: {
-    disable: false,
+    disable: true,
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },
 

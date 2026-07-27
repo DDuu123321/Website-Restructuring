@@ -5,7 +5,7 @@
 技术栈：
 - 前端 `frontend/`：Next.js 14.2（App Router）+ React 18 + TypeScript 5 + TanStack Query，部署在 Vercel。
 - 后端 `cms/`：Payload CMS 2.32 + PostgreSQL（@payloadcms/db-postgres）+ Express + Nodemailer（Zoho SMTP）+ webpack bundler。
-- 结构：monorepo 风格，`frontend/` 与 `cms/` 是两个独立 npm 包，**根目录没有 package.json**；另有 `legacy/`（旧站存档）、`uploads/`（CMS 运行时上传，不入 git）。
+- 结构：monorepo 风格，`frontend/` 与 `cms/` 是两个独立 npm 包，**根目录没有 package.json**；另有 `uploads/`（CMS 运行时上传，不入 git）。旧站存档已于 2026-07-27 从 HEAD 删除，需要时从 tag 取回：`git checkout legacy-archive-2026-07-27 -- legacy/`。
 
 跑测试：项目无自动化测试框架。改动后用以下命令自检——
 - 前端：`cd frontend && npm run type-check`（tsc --noEmit）+ `npm run lint`，必要时 `npm run build`

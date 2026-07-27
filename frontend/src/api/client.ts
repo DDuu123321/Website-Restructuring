@@ -129,9 +129,12 @@ export const api = {
     })
   },
 
-  // Newsletter signup (Subscribers collection)
+  // Newsletter signup — goes to the dedicated /subscribe endpoint, which
+  // answers identically whether or not the address was already on the list
+  // (posting to the collection directly would leak that via a unique-key
+  // error, letting anyone test who is subscribed).
   subscribe(email: string) {
-    return request<{ doc: { id: string | number; email: string } }>('/subscribers', {
+    return request<{ ok: true }>('/subscribe', {
       method: 'POST', body: JSON.stringify({ email, source: 'news-page' }),
     })
   },

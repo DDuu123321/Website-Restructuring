@@ -26,7 +26,12 @@ const Media: CollectionConfig = {
       { name: 'hero', width: 1600 },
     ],
     adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/*'],
+    // Explicit raster whitelist — NOT 'image/*'. An SVG is a script-bearing
+    // document: uploaded to the CMS and opened at /uploads/<file>.svg it runs
+    // JavaScript on the CMS's own origin, i.e. stored XSS against an admin
+    // session. Brand logos that need to be SVG live in the frontend's
+    // /public folder (static, not user-uploadable), so nothing here needs it.
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'],
   },
   fields: [
     {

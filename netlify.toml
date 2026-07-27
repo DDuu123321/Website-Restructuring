@@ -20,3 +20,23 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Security response headers. Netlify applies these to every response it serves.
+# No CSP yet: the app uses inline styles and Next's inline bootstrap scripts, so
+# a policy strict enough to be worth having needs nonce plumbing — tracked as a
+# separate piece of work rather than shipped as a permissive placeholder.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # 1 year, subdomains included — the site is HTTPS-only behind Netlify.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # No framing: kills clickjacking of the quote form.
+    X-Frame-Options = "DENY"
+    # Don't let a browser second-guess a declared Content-Type.
+    X-Content-Type-Options = "nosniff"
+    # Send the origin (not the full path) to third parties.
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # We ask for none of these — deny by default.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    # Legacy Flash/PDF cross-domain policy files are never valid here.
+    X-Permitted-Cross-Domain-Policies = "none"

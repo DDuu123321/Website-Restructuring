@@ -54,6 +54,8 @@ const submitLimiter = rateLimit({
 })
 app.use('/api/quotes',       submitLimiter)
 app.use('/api/assessments',  submitLimiter)
+app.use('/api/subscribers',  submitLimiter)
+app.use('/api/subscribe',    submitLimiter)   // public newsletter endpoint
 
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
 // Rate-limited and size-capped: each call costs real money on the Gemini

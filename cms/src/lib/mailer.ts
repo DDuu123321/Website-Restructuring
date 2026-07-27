@@ -84,7 +84,9 @@ export async function sendMail(opts: SendMailOptions): Promise<void> {
         'Content-Type': 'application/json',
         'x-relay-key': process.env.MAIL_RELAY_KEY || '',
       },
-      body: JSON.stringify({ to: opts.to, subject: opts.subject, html: opts.html, replyTo: opts.replyTo, from }),
+      // No `from`: the relay fixes the sender identity server-side so a
+      // caller can never choose who the mail claims to be from.
+      body: JSON.stringify({ to: opts.to, subject: opts.subject, html: opts.html, replyTo: opts.replyTo }),
       signal: AbortSignal.timeout(25_000),
     })
     if (!res.ok) {

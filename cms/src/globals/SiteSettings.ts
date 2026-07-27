@@ -24,7 +24,17 @@ const SiteSettings: GlobalConfig = {
       type: 'row',
       fields: [
         { name: 'email', type: 'email', label: 'Contact Email', defaultValue: 'info@bluven.com.au' },
-        { name: 'quoteEmail', type: 'email', label: 'Lead Notification Email', admin: { description: 'Optional — internal new-lead emails (quotes, assessments) are sent here. Leave blank to use the NOTIFY_EMAIL env var.' } },
+        {
+          name: 'quoteEmail',
+          type: 'email',
+          label: 'Lead Notification Email',
+          admin: { description: 'Optional — internal new-lead emails (quotes, assessments) are sent here. Leave blank to use the NOTIFY_EMAIL env var. Not published on the website.' },
+          // This global is public-read (the site needs phone/address/social),
+          // which was handing this internal inbox to any scraper that called
+          // /api/globals/site-settings. Server-side reads (the notification
+          // hooks) use overrideAccess and are unaffected.
+          access: { read: ({ req }) => Boolean(req.user) },
+        },
       ],
     },
     {

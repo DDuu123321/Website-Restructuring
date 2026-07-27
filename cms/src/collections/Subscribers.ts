@@ -14,7 +14,10 @@ const Subscribers: CollectionConfig = {
     defaultColumns: ['email', 'createdAt'],
   },
   access: {
-    create: () => true,
+    // Public signups go through POST /api/subscribe (endpoints/subscribe.ts),
+    // which is idempotent so a duplicate can't be used to test whether an
+    // address is already on the list. Direct creates stay admin-only.
+    create: ({ req }) => Boolean(req.user),
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
