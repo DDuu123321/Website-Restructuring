@@ -4,7 +4,9 @@
  * Workflow:
  *   1. User clicks "Import CSV" → file picker opens.
  *   2. CSV is parsed (papaparse, header row required).
- *   3. Each row is POSTed individually to /api/{slug} with credentials.
+ *   3. Rows are sent in chunks to the admin-only /api/bulk-import endpoint
+ *      (the public per-collection POST route carries a 10-requests/min
+ *      anti-spam limiter that used to eat every row past the tenth).
  *   4. Per-row results are shown in a summary panel.
  *
  * Notes:
@@ -12,8 +14,8 @@
  *     split on ';' in the CSV cell. See `multiValueFields` map.
  *   - Dot-paths in the header re-nest into objects ("source.referrer"
  *     becomes { source: { referrer: ... } }).
- *   - The endpoint runs its own Payload validation; rows with missing
- *     required fields surface as per-row errors.
+ *   - The endpoint runs full Payload validation per row; failures surface
+ *     as per-row errors without affecting the other rows.
  *
  * Registered via `admin.components.BeforeListTable`.
  */
@@ -58,34 +60,39 @@ const ImportCsvButton: React.FC = () => {
       const arrFields = multiValueFields[slug] ?? []
       const out: RowResult[] = []
 
-      // Sequential POSTs — easier to surface per-row errors and avoids
-      // overwhelming the rate limiter.
-      for (let i = 0; i < rows.length; i++) {
-        const payload = rowToPayload(rows[i], arrFields)
+      // Chunked requests to the admin-only bulk endpoint. 200 rows per call
+      // keeps each request small; the server creates rows sequentially and
+      // reports success/failure per row.
+      const CHUNK = 200
+      for (let start = 0; start < rows.length; start += CHUNK) {
+        const chunk = rows.slice(start, start + CHUNK).map((r) => rowToPayload(r, arrFields))
         try {
-          const res = await fetch(`/api/${slug}`, {
+          const res = await fetch('/api/bulk-import', {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({ collection: slug, rows: chunk }),
           })
           if (res.ok) {
-            const body = (await res.json()) as { doc?: { id?: string } }
-            out.push({ row: i + 2, ok: true, id: body.doc?.id })  // +2: header row + 1-based
-          } else {
-            const body = (await res.json().catch(() => ({}))) as {
-              errors?: { message?: string }[]
-              message?: string
+            const body = (await res.json()) as {
+              results?: { index: number; ok: boolean; id?: string; error?: string }[]
             }
-            const msg = body.errors?.[0]?.message || body.message || `HTTP ${res.status}`
-            out.push({ row: i + 2, ok: false, error: msg })
+            for (const r of body.results || []) {
+              // +2: header row + 1-based row numbering in the CSV
+              out.push({ row: start + r.index + 2, ok: r.ok, id: r.id, error: r.error })
+            }
+          } else {
+            const body = (await res.json().catch(() => ({}))) as { error?: string; message?: string }
+            const msg = body.error || body.message || `HTTP ${res.status}`
+            for (let i = 0; i < chunk.length; i++) {
+              out.push({ row: start + i + 2, ok: false, error: msg })
+            }
           }
-        } catch (rowErr) {
-          out.push({
-            row: i + 2,
-            ok: false,
-            error: rowErr instanceof Error ? rowErr.message : 'Request failed',
-          })
+        } catch (chunkErr) {
+          const msg = chunkErr instanceof Error ? chunkErr.message : 'Request failed'
+          for (let i = 0; i < chunk.length; i++) {
+            out.push({ row: start + i + 2, ok: false, error: msg })
+          }
         }
       }
 

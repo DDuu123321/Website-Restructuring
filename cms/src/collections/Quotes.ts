@@ -42,6 +42,9 @@ const Quotes: CollectionConfig = {
     afterChange: [
       async ({ doc, operation, req }) => {
         if (operation !== 'create') return
+        // Bulk CSV imports set this via /api/bulk-import — without it a
+        // 50-row import would fire 50 internal notification emails.
+        if ((req as { context?: { skipNotifications?: boolean } }).context?.skipNotifications) return
         let emailOn = true
         let notifyTo: string | undefined
         try {

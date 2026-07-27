@@ -6,6 +6,7 @@ import path from 'path'
 import UnreadBadges from './admin/UnreadBadges'
 import DashboardLeadStats from './admin/DashboardLeadStats'
 
+import { bulkImportEndpoint } from './endpoints/bulkImport'
 import Users from './collections/Users'
 import Media from './collections/Media'
 import News from './collections/News'
@@ -64,6 +65,10 @@ export default buildConfig({
   globals: [
     SiteSettings,
   ],
+
+  // Root-level custom endpoints (mounted at /api/<path>, outside the
+  // per-collection paths — see endpoints/bulkImport.ts for why that matters).
+  endpoints: [bulkImportEndpoint],
 
   db: postgresAdapter({
     pool: {
