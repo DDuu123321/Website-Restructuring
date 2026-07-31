@@ -16,10 +16,25 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
   const bodyRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
   }, [messages, open])
+
+  // Escape closes the panel. Third way out, after the header × and the
+  // launcher toggle — a chat you cannot dismiss traps the visitor on the page.
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
+  // Move focus into the panel on open so keyboard users land inside it.
+  useEffect(() => {
+    if (open) inputRef.current?.focus()
+  }, [open])
 
   // Allow any page to open the chat (e.g. the contact page's "Live chat" card)
   // via window.dispatchEvent(new Event('bv:open-chat')).
@@ -59,16 +74,33 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
 
   return (
     <div className={`bv-chat ${open ? 'open' : ''}`}>
-      {!open && (
-        <button className="bv-chat-fab" aria-label="Chat with us" onClick={() => setOpen(true)}>
+      {/* The launcher stays mounted while the panel is open and doubles as a
+          toggle. It used to unmount, which left the header × as the ONLY way
+          out — and that button is the one that can end up under the nav. */}
+      <button
+        className="bv-chat-fab"
+        aria-label={open ? 'Close chat' : 'Chat with us'}
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
+        {open ? (
+          <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        ) : (
           <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={2}>
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
-          <span className="bv-chat-badge">AI</span>
-        </button>
-      )}
+        )}
+        {!open && <span className="bv-chat-badge">AI</span>}
+      </button>
 
-      <div className={`bv-chat-panel ${open ? 'open' : ''}`} aria-hidden={!open}>
+      <div
+        className={`bv-chat-panel ${open ? 'open' : ''}`}
+        aria-hidden={!open}
+        role="dialog"
+        aria-label={t('chat.title')}
+      >
         <div className="bv-chat-head">
           <div className="bv-chat-head-l">
             <div className="bv-chat-avatar">
@@ -116,6 +148,7 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
 
         <form className="bv-chat-form" onSubmit={onSubmit}>
           <input
+            ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t('chat.placeholder')}

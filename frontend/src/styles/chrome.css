@@ -558,11 +558,16 @@
 }
 
 /* ---------- AI Chat ---------- */
+/* The panel is a dialog: it MUST outrank the fixed nav (z-index 100).
+   It used to sit at 90, so on any viewport shorter than ~719px the panel grew
+   up far enough for its header — and with it the only close button — to end up
+   underneath the nav, which swallowed the click. The chat then could not be
+   closed at all (the launcher unmounts while open and Escape was not handled). */
 .bv-chat {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 90;
+  z-index: 120;
 }
 .bv-chat-fab {
   width: 60px; height: 60px;
@@ -599,8 +604,12 @@
   width: 380px;
   max-width: calc(100vw - 32px);
   height: 540px;
-  max-height: calc(100vh - 110px);
-  max-height: calc(100dvh - 110px);
+  /* Headroom = 24 (widget offset) + 76 (panel offset) + 78 (nav) + 12 (gap).
+     Keeps the panel clear of the nav instead of tucking under it; the z-index
+     above is the safety net for the cases this can't cover (short viewports,
+     a taller nav after a font change). */
+  max-height: calc(100vh - 190px);
+  max-height: calc(100dvh - 190px);
   background: var(--bv-white);
   border-radius: 20px;
   box-shadow: 0 30px 80px rgba(10,18,40,0.25);
@@ -774,6 +783,11 @@
     width: calc(100vw - 16px);
     height: calc(100vh - 100px);
     height: calc(100dvh - 100px);
+    /* Phones get a full-height sheet that deliberately covers the nav (the
+       z-index above puts it on top, so its header stays tappable). The desktop
+       nav-headroom reserve would leave a useless sliver here. */
+    max-height: calc(100vh - 100px);
+    max-height: calc(100dvh - 100px);
   }
   .bv-chat { right: 12px; bottom: 12px; }
 }
