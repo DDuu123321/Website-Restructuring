@@ -1,6 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { layoutField } from '../blocks/layoutBlocks'
 import BulkEditButton from '../admin/BulkEditButton'
+import ArticleImportPanel from '../admin/ArticleImportPanel'
 
 const News: CollectionConfig = {
   slug: 'news',
@@ -56,6 +57,20 @@ const News: CollectionConfig = {
     },
 
     // ── Main fields ──
+    {
+      // Paste an AI-written article and have it fill the fields below.
+      // `admin` must be present: the Edit view reads field.admin.position
+      // without optional chaining and would throw on a bare ui field.
+      name: 'articleImport',
+      type: 'ui',
+      admin: {
+        components: { Field: ArticleImportPanel },
+        // It is an editing aid, not data — keep it out of the list columns
+        // and out of the bulk-edit field picker.
+        disableListColumn: true,
+        disableBulkEdit: true,
+      },
+    },
     {
       name: 'title',
       type: 'text',
