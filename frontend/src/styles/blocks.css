@@ -173,3 +173,70 @@
   color: var(--bv-ink-500);
   margin-top: 10px;
 }
+
+/* ============================================================
+   ARTICLE PROSE — the CMS rich-text body (.prose) and any image
+   placed inside it. Until now `.prose` had no rules at all, so a
+   news article rendered as undifferentiated text: headings sat at
+   body size and paragraphs had no rhythm.
+   ============================================================ */
+.prose {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--bv-ink-700, #334155);
+}
+.prose > * + * { margin-top: 1.1em; }
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--bv-ink-900);
+}
+.prose h2 { font-size: clamp(22px, 2.4vw, 30px); margin-top: 1.8em; }
+.prose h3 { font-size: clamp(19px, 1.9vw, 23px); margin-top: 1.6em; }
+.prose h4 { font-size: 18px; margin-top: 1.4em; }
+.prose p { margin: 0; }
+.prose ul,
+.prose ol { padding-left: 1.4em; margin-top: 1em; }
+.prose li { margin-top: 0.45em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose a {
+  color: var(--bv-navy-700, #0a4d89);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose a:hover { color: var(--bv-ink-900); }
+.prose blockquote {
+  margin: 1.6em 0;
+  padding: 4px 0 4px 20px;
+  border-left: 4px solid var(--bv-teal-500);
+  font-size: 1.05em;
+  color: var(--bv-ink-900);
+}
+.prose strong { font-weight: 700; color: var(--bv-ink-900); }
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--bv-paper-2, #f1f5f9);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Image inserted through the rich-text editor's upload button. */
+.rt-figure { margin: 1.8em 0; }
+.rt-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+}
+.rt-figure figcaption {
+  margin-top: 10px;
+  font-size: 13.5px;
+  color: var(--bv-ink-500);
+  text-align: center;
+}

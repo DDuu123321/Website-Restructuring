@@ -75,7 +75,7 @@ function inlineChildren(el: Element, format: number, warnings: string[]): Node[]
     if (tag === 'BR') { out.push({ type: 'linebreak', version: 1 }); return }
     if (tag === 'IMG') {
       const src = child.getAttribute('src') || '(no src)'
-      warnings.push(`Dropped an inline image (${src.slice(0, 60)}) — add pictures with the Page Builder below.`)
+      warnings.push(`Dropped an inline image (${src.slice(0, 60)}) — add pictures with the image button in the editor below, or a Page Builder block.`)
       return
     }
     if (tag === 'A') {
@@ -147,7 +147,7 @@ function blockNodes(el: Element, warnings: string[]): Node[] {
 
   if (tag === 'IMG') {
     const src = el.getAttribute('src') || '(no src)'
-    warnings.push(`Dropped an image (${src.slice(0, 60)}) — add pictures with the Page Builder below.`)
+    warnings.push(`Dropped an image (${src.slice(0, 60)}) — add pictures with the image button in the editor below, or a Page Builder block.`)
     return []
   }
 
