@@ -33,6 +33,9 @@ export interface ParsedArticle {
   summary: string
   category?: string
   author?: string
+  /** SEO overrides for the News `seo` group; the site falls back to title & summary when absent. */
+  metaTitle?: string
+  metaDescription?: string
   content: Node
   /** Non-fatal things the editor should know about, e.g. dropped images. */
   warnings: string[]
@@ -223,10 +226,12 @@ export function parseArticleHtml(input: string): ParsedArticle {
   // ── Metadata ──
   const attrOf = (name: string): string => {
     const holder = doc.querySelector(`[data-${name}]`)
-    const fromAttr = holder?.getAttribute(`data-${name}`)?.trim()
+    // squash: attribute values written across several source lines keep their
+    // newlines, and they must not reach a single-line form field.
+    const fromAttr = squash(holder?.getAttribute(`data-${name}`) || '').trim()
     if (fromAttr) return fromAttr
     const meta = doc.querySelector(`meta[name="${name}"]`)
-    return meta?.getAttribute('content')?.trim() || ''
+    return squash(meta?.getAttribute('content') || '').trim()
   }
 
   const title =
@@ -245,6 +250,8 @@ export function parseArticleHtml(input: string): ParsedArticle {
     warnings.push(`Unknown category "${rawCategory}" — pick one in the sidebar.`)
   }
   const author = attrOf('author') || undefined
+  const metaTitle = attrOf('meta-title') || undefined
+  const metaDescription = attrOf('meta-description') || undefined
 
   // ── Body: drop whatever was already consumed as the title or summary ──
   const working = scope.cloneNode(true) as Element
@@ -265,6 +272,8 @@ export function parseArticleHtml(input: string): ParsedArticle {
     summary,
     category,
     author,
+    metaTitle,
+    metaDescription,
     content: { root: block('root', children.length ? children : [block('paragraph', [])]) },
     warnings: Array.from(new Set(warnings)),
   }

@@ -38,12 +38,16 @@ const CATEGORY_LABELS: Record<string, string> = {
  *  so a template that included them would duplicate the site chrome inside the
  *  article body. */
 const AI_TEMPLATE = `Write a news article for Bluven Energy (Australian solar, battery and
-EV-charging installer) and return ONLY HTML in exactly this shape — no markdown
-fence, no <html>/<head>/<body>, no site header or footer:
+EV-charging installer, www.bluven.com.au) and return ONLY HTML in exactly this
+shape — no markdown fence, no <html>/<head>/<body>, no site header or footer:
 
 <article
   data-category="industry"
-  data-author="Bluven Energy Team">
+  data-author="Bluven Energy Team"
+  data-keywords="primary keyword, secondary keyword, secondary keyword"
+  data-meta-title="Search-result headline, 45-55 characters, no brand name"
+  data-meta-description="Search-result snippet, 120-155 characters: what the
+  article covers and why it matters to an Australian reader.">
   <h1>The headline goes here</h1>
   <p data-summary>One or two sentences that work as the article's teaser on the
   news listing page.</p>
@@ -63,13 +67,64 @@ fence, no <html>/<head>/<body>, no site header or footer:
   <blockquote>A pull quote, if one fits.</blockquote>
 </article>
 
-RULES
+FORMAT
 - data-category must be one of: industry | policy | knowledge | company | case-study
 - Allowed tags only: h1 h2 h3 p ul ol li strong em a blockquote br
 - No images, tables, inline styles, classes or scripts — images are added
   separately in the CMS.
-- Australian English. Never invent prices, savings figures, customer numbers,
-  ratings or rebate dollar amounts.`
+
+SEO
+- Before writing, pick ONE primary keyword (what an Australian would type into
+  Google) and 2-3 secondary keywords; record them in data-keywords.
+- Work the primary keyword naturally into the h1, data-meta-title,
+  data-meta-description and the opening paragraph. Natural beats repeated —
+  no keyword stuffing.
+- data-meta-title: 45-55 characters, primary keyword near the front, specific,
+  no clickbait. Do NOT append "Bluven Energy" — the site adds the brand itself.
+- data-meta-description: 120-155 characters, active voice, says what the reader
+  gets and why it matters.
+- The first body paragraph answers the headline's core question in 2-3 plain
+  sentences (Google lifts this as a snippet); the detail comes after.
+- Phrase h2 headings the way people search when it reads naturally, e.g.
+  "How do solar feed-in tariffs work in NSW?".
+- 700-1,200 words. Evergreen wording — no "as of 2025"-style datestamps unless
+  I gave you the date.
+- Where it genuinely helps the reader, link ONE of these real pages (always the
+  full https://www.bluven.com.au URL): /quote (free quote), /products,
+  /projects (installs we have done), /faq, /who-we-are, /contact.
+
+E-E-A-T
+- Write from Bluven's first-hand perspective as a working Australian installer
+  ("on the systems we install across NSW…"), not as a detached blogger.
+- Show expertise: explain the "why" behind every claim, and define jargon on
+  first use (kW vs kWh, feed-in tariff, VPP, STC).
+- Attribute rules, rebates and standards to the real authority by name — Clean
+  Energy Regulator, Clean Energy Council, AEMO, state programs such as Solar
+  Victoria — and tell readers to check the official source for current figures.
+- Be balanced: include caveats and limits (roof orientation, shading, export
+  limits, network approval), not only the upside. Measured and trustworthy
+  beats promotional.
+
+FACTS — NEVER INVENT
+- Never invent prices, rebate or subsidy dollar amounts, savings figures,
+  payback periods, tariff or interest rates, customer numbers, ratings,
+  statistics, policy dates, or quotes from named people.
+- Use ONLY figures I give you below. If you lack a number, describe it
+  qualitatively ("varies with system size and state") and name the official
+  source that publishes it.
+- Never fabricate URLs. Link only the bluven.com.au pages listed above; name
+  external authorities in plain text without a link.
+
+AUSTRALIAN STYLE
+- Australian English spelling and vocabulary (organise, colour, metre).
+- Australian context: states and territories, the NEM, export limits, feed-in
+  tariffs, STCs, southern-hemisphere seasons. Units in kW, kWh and AUD.
+- Plain, confident, practical tone — a knowledgeable local tradesperson, not
+  marketing hype.
+
+TOPIC
+Replace this line with the topic, the angle to take, and any real figures or
+sources you want used. No figures supplied = keep the article qualitative.`
 
 type Status = { kind: 'idle' | 'busy' | 'ok' | 'warn' | 'error'; message?: string; details?: string[] }
 
@@ -160,6 +215,8 @@ const ArticleImportPanel: React.FC = () => {
 
     if (parsed.category) set('category', parsed.category)
     if (parsed.author) set('author', parsed.author)
+    if (parsed.metaTitle) set('seo.metaTitle', parsed.metaTitle)
+    if (parsed.metaDescription) set('seo.metaDescription', parsed.metaDescription)
 
     // Both value and initialValue: the second is what makes the Lexical editor
     // actually re-render with the imported body (see the note at the top).
@@ -174,6 +231,8 @@ const ArticleImportPanel: React.FC = () => {
       parsed.summary && 'summary',
       parsed.category && `category (${CATEGORY_LABELS[parsed.category]})`,
       parsed.author && 'author',
+      parsed.metaTitle && 'meta title',
+      parsed.metaDescription && 'meta description',
       'body',
       'read time',
       coverFile && 'cover image',
@@ -202,8 +261,9 @@ const ArticleImportPanel: React.FC = () => {
         </button>
       </div>
       <p style={hint}>
-        Paste the template into ChatGPT or Claude, ask for the article, then paste the HTML it returns below.
-        The site adds its own header, footer and styling — the template is content only.
+        Copy the template, replace its TOPIC line with what the article should cover (plus any real
+        figures), paste it into ChatGPT or Claude, then paste the HTML it returns below. The site adds
+        its own header, footer and styling — the template is content only, including the SEO fields.
       </p>
 
       {open && <pre style={pre}>{AI_TEMPLATE}</pre>}
