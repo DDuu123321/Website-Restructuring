@@ -13,7 +13,12 @@ export const metadata: Metadata = buildMetadata({
 })
 
 export default async function ProjectsPage() {
-  const data = await api.projects({ limit: 24 }).catch(() => null)
+  // Fetch the whole catalogue: the list is sorted by sortOrder, so a small
+  // limit silently hid every project past the cut — including the NSW and VIC
+  // installs, which then never even produced a state filter button. The client
+  // still renders 9 at a time behind "Load more", so this costs page weight,
+  // not render time.
+  const data = await api.projects({ limit: 100 }).catch(() => null)
   const projects = data?.docs ?? []
   return (
     <>
