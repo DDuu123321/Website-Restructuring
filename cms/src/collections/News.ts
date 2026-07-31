@@ -65,10 +65,13 @@ const News: CollectionConfig = {
       type: 'ui',
       admin: {
         components: { Field: ArticleImportPanel },
-        // It is an editing aid, not data — keep it out of the list columns
-        // and out of the bulk-edit field picker.
+        // Editing aid, not data — keep it out of the list columns. NOTE: only
+        // components/condition/disableListColumn/position/width pass Payload's
+        // joi schema for a ui field. `disableBulkEdit` exists in the
+        // TypeScript type but is rejected at runtime, and because fields are
+        // validated with alternatives().try(...) the failure is reported
+        // against an unrelated field name.
         disableListColumn: true,
-        disableBulkEdit: true,
       },
     },
     {
