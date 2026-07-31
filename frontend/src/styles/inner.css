@@ -427,6 +427,21 @@
 }
 .newsletter button:hover { background: var(--bv-teal-600); }
 
+/* Horizontal banner variant — sits above the article list (the sidebar card
+   floated alone whenever the list was short). Wraps to a stack on phones. */
+.newsletter--banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 40px;
+  padding: 24px 28px;
+  margin-bottom: 36px;
+}
+.newsletter--banner .banner-copy { flex: 1 1 300px; }
+.newsletter--banner .banner-copy h5 { margin-bottom: 6px; }
+.newsletter--banner .banner-copy p { margin: 0; }
+.newsletter--banner form { flex: 1 1 300px; }
+
 .insights-tabs {
   display: flex;
   gap: 8px;

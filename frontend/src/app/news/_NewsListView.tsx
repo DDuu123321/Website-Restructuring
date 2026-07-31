@@ -66,6 +66,45 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
 
       <section className="section" style={{ background: 'var(--bv-paper-2)', paddingTop: 60 }}>
         <div className="container">
+          {/* Tabs — first, so the filter visibly governs everything below it,
+              including which article gets the featured slot. */}
+          <Reveal className="insights-tabs">
+            {CATEGORIES.map(c => (
+              <button key={c.id} className={category === c.id ? 'active' : ''} onClick={() => filterCategory(c.id)}>
+                {c.label}
+              </button>
+            ))}
+          </Reveal>
+
+          {/* Newsletter — a banner above the articles instead of a sidebar
+              card, which floated alone whenever the article list was short. */}
+          <Reveal>
+            <div className="newsletter newsletter--banner">
+              <div className="banner-copy">
+                <h5>Bluven monthly</h5>
+                <p>One email a month. Rebate changes, real install numbers, no fluff.</p>
+              </div>
+              <form onSubmit={onSubscribe}>
+                <input
+                  type="email"
+                  placeholder="you@email.com"
+                  required
+                  value={subEmail}
+                  onChange={(e) => { setSubEmail(e.target.value); if (subState === 'error') setSubState('idle') }}
+                  disabled={subState === 'done'}
+                />
+                <button type="submit" disabled={subState === 'busy' || subState === 'done'}>
+                  {subState === 'done' ? '✓ Subscribed' : subState === 'busy' ? '…' : 'Subscribe'}
+                </button>
+              </form>
+              {subState === 'error' && (
+                <p style={{ color: 'var(--bv-danger)', fontSize: 13, margin: 0, width: '100%' }}>
+                  Couldn&rsquo;t subscribe — check the address or try again.
+                </p>
+              )}
+            </div>
+          </Reveal>
+
           {/* Featured */}
           {featured && (
             <Reveal>
@@ -97,15 +136,6 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
             </Reveal>
           )}
 
-          {/* Tabs */}
-          <Reveal className="insights-tabs" style={{ marginTop: featured ? 48 : 0 }}>
-            {CATEGORIES.map(c => (
-              <button key={c.id} className={category === c.id ? 'active' : ''} onClick={() => filterCategory(c.id)}>
-                {c.label}
-              </button>
-            ))}
-          </Reveal>
-
           {/* Empty state — honest, no fabricated placeholder articles */}
           {visible.length === 0 && (
             <p style={{ textAlign: 'center', padding: 60, color: 'var(--bv-ink-500)' }}>
@@ -115,8 +145,11 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
             </p>
           )}
 
-          {/* 2-col main + sidebar */}
-          <div className="news-side" style={{ marginTop: 32 }}>
+          {/* Article list — the sidebar column only exists once "Most read"
+              has enough articles; a fixed 2-col grid would otherwise leave a
+              dead 320px gutter (or an orphaned sidebar) on a short list. */}
+          {others.length > 0 && (
+          <div className={mostRead.length >= 3 ? 'news-side' : undefined} style={{ marginTop: 32 }}>
             <div className="article-list">
               {others.map((a, i) => (
                 <Reveal key={a.id} delay={Math.min(i * 60, 300)}>
@@ -140,8 +173,8 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
               ))}
             </div>
 
-            <aside>
-              {mostRead.length >= 3 && (
+            {mostRead.length >= 3 && (
+              <aside>
                 <div className="side-card">
                   <h5>Most read this month</h5>
                   {mostRead.map((a, i) => (
@@ -151,31 +184,10 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
                     </Link>
                   ))}
                 </div>
-              )}
-              <div className="newsletter">
-                <h5>Bluven monthly</h5>
-                <p>One email a month. Rebate changes, real install numbers, no fluff.</p>
-                <form onSubmit={onSubscribe}>
-                  <input
-                    type="email"
-                    placeholder="you@email.com"
-                    required
-                    value={subEmail}
-                    onChange={(e) => { setSubEmail(e.target.value); if (subState === 'error') setSubState('idle') }}
-                    disabled={subState === 'done'}
-                  />
-                  <button type="submit" disabled={subState === 'busy' || subState === 'done'}>
-                    {subState === 'done' ? '✓ Subscribed' : subState === 'busy' ? '…' : 'Subscribe'}
-                  </button>
-                </form>
-                {subState === 'error' && (
-                  <p style={{ color: 'var(--bv-danger)', fontSize: 13, marginTop: 8 }}>
-                    Couldn&rsquo;t subscribe — check the address or try again.
-                  </p>
-                )}
-              </div>
-            </aside>
+              </aside>
+            )}
           </div>
+          )}
         </div>
       </section>
     </>
