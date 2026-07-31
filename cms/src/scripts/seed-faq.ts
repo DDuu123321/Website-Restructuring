@@ -6,11 +6,13 @@
  * breaks down?" are intentionally NOT migrated; one new question about
  * single-phase inverters on three-phase homes is added.
  *
- * Run from cms/:
- *   PAYLOAD_CONFIG_PATH=src/payload.config.ts npx ts-node --transpile-only src/scripts/seed-faq.ts
+ * Talks to the CMS over REST, so it runs against any environment without direct
+ * database access, and skips questions that already exist (safe to re-run):
+ *
+ *   CMS_URL=https://cms.example  CMS_TOKEN=<admin jwt>  DRY_RUN=1 \
+ *     npx ts-node --transpile-only src/scripts/seed-faq.ts
  */
 import 'dotenv/config'
-import payload from 'payload'
 
 // ── Lexical helpers ──
 const text = (t: string) => ({ type: 'text', text: t, format: 0, style: '', mode: 'normal', detail: 0, version: 1 })
@@ -99,32 +101,58 @@ const FAQS = [
   },
 ]
 
-async function run() {
-  await payload.init({ secret: process.env.PAYLOAD_SECRET as string, local: true })
+const CMS_URL = (process.env.CMS_URL || 'http://localhost:3001').replace(/\/$/, '')
+const TOKEN = process.env.CMS_TOKEN || ''
 
-  const existing = await payload.find({ collection: 'faq', limit: 1, depth: 0 })
-  if (existing.totalDocs > 0) {
-    console.log(`faq collection already has ${existing.totalDocs} docs — skipping seed.`)
-    process.exit(0)
+async function api<T>(pathname: string, init: RequestInit = {}): Promise<T> {
+  const res = await fetch(`${CMS_URL}${pathname}`, {
+    ...init,
+    headers: { ...(init.headers || {}), ...(TOKEN ? { Authorization: `JWT ${TOKEN}` } : {}) },
+  })
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`${init.method || 'GET'} ${pathname} -> ${res.status} ${body.slice(0, 300)}`)
   }
+  return res.json() as Promise<T>
+}
+
+async function run() {
+  // Question-by-question rather than all-or-nothing: a half-finished run, or a
+  // later addition to FAQS, can be re-applied without duplicating what is
+  // already live and without touching answers edited in the admin.
+  const existing = await api<{ docs: { question: string }[]; totalDocs: number }>(
+    '/api/faq?limit=500&depth=0',
+  )
+  const have = new Set(existing.docs.map((d) => d.question.trim().toLowerCase()))
+  const missing = FAQS.filter((f) => !have.has(f.question.trim().toLowerCase()))
+
+  console.log(`CMS      : ${CMS_URL}`)
+  console.log(`In CMS   : ${existing.totalDocs}`)
+  console.log(`To create: ${missing.length} of ${FAQS.length}\n`)
+  missing.forEach((f) => console.log(`  [${f.category}] ${f.question}`))
+
+  if (process.env.DRY_RUN) { console.log('\nDRY_RUN — nothing written.'); return }
+  if (!missing.length) { console.log('\nNothing to do.'); return }
+  if (!TOKEN) throw new Error('CMS_TOKEN is required to write.')
 
   let n = 0
-  for (const f of FAQS) {
-    await payload.create({
-      collection: 'faq',
-      data: {
+  for (const f of missing) {
+    await api('/api/faq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         question: f.question,
         answer: f.answer,
         category: f.category,
         published: true,
-        sortOrder: (n + 1) * 10,
-      },
+        // Keep the authored order stable regardless of how many already exist.
+        sortOrder: (FAQS.indexOf(f) + 1) * 10,
+      }),
     })
     n++
     console.log(`  created [${f.category}] ${f.question}`)
   }
-  console.log(`\nDone: ${n} FAQs seeded.`)
-  process.exit(0)
+  console.log(`\nDone: ${n} FAQ(s) created.`)
 }
 
-run().catch((e) => { console.error(e); process.exit(1) })
+run().catch((e) => { console.error(e.message || e); process.exit(1) })
