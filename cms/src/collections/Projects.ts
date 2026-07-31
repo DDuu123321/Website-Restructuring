@@ -52,6 +52,11 @@ const Projects: CollectionConfig = {
       type: 'text',
       label: 'URL Slug',
       unique: true,
+      admin: {
+        description: 'Used in the URL. Leave blank to generate it from the title.',
+        // Same reason as News.slug: Chrome was autofilling a saved URL here.
+        autoComplete: 'off',
+      },
       hooks: {
         beforeValidate: [
           ({ value, data }) => {

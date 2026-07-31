@@ -91,6 +91,11 @@ export default buildConfig({
     limits: {
       fileSize: 10_000_000, // 10 MB
     },
+    // This object is spread straight into express-fileupload, which forwards it
+    // to busboy. Busboy defaults to latin1 for the multipart filename, so a
+    // Chinese filename arrived as mojibake ("Rainy75使用说明.jpg" ->
+    // "Rainy75à½¿ç¨è¯´æ¹¦.jpg") and stuck that way in R2 and the admin.
+    defParamCharset: 'utf8',
   },
 
   // Cloudflare R2 object storage (S3-compatible) — proxied mode: bytes are

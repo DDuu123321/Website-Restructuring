@@ -69,7 +69,11 @@ const News: CollectionConfig = {
       required: true,
       unique: true,
       admin: {
-        description: 'Used in the URL. Use lowercase letters, numbers and hyphens only.',
+        description: 'Used in the URL. Use lowercase letters, numbers and hyphens only. Leave blank to generate it from the title.',
+        // Chrome sees an empty text input near a title and offers a saved URL —
+        // it was filling this with "https://www.bluven.com.au/", which is not a
+        // slug and silently breaks the article's address.
+        autoComplete: 'off',
       },
       hooks: {
         beforeValidate: [
