@@ -1,15 +1,15 @@
 # Bluven Energy — CMS Backend
 
 Payload CMS 2.x backend serving the Bluven Energy website. Powers all
-content (news, projects, FAQ, brands, team) and captures all leads
-(quotes, free assessments, testimonials). The Next.js frontend in
+content (news, projects, FAQ) and captures all leads (quotes, free
+assessments, newsletter subscribers). The Next.js frontend in
 `../frontend` talks to this server over REST.
 
 ## Stack
 
 | Layer | Choice |
 |---|---|
-| CMS | Payload 2.32 (REST + GraphQL + Admin UI) |
+| CMS | Payload 2.32 (REST + Admin UI; GraphQL disabled) |
 | Database | PostgreSQL 16 (via `@payloadcms/db-postgres`) |
 | Admin bundler | Webpack (`@payloadcms/bundler-webpack`) |
 | Email | Zoho SMTP via Nodemailer |
@@ -62,7 +62,6 @@ Then edit `.env` and set the **required** values:
 | `EMAIL_FROM` | optional | Sender address shown on outgoing mail. Defaults to `SMTP_USER`. Must match an alias on the same Zoho account or Zoho rejects with 550. |
 | `NOTIFY_EMAIL` | optional | Inbox that receives business notifications. Defaults to `SMTP_USER`. |
 | `GEMINI_API_KEY` | optional | Only needed for the AI chat proxy |
-| `NEXT_PUBLIC_SITE_URL` | optional | Used in sitemap / OG tags |
 
 > ⚠️ `.env` is gitignored (see repo `.gitignore`). Never commit real secrets.
 
@@ -96,17 +95,15 @@ email + password.
 |---|---|---|---|
 | Quotes | `quotes` | 📥 Leads | `/quote` form submissions |
 | Assessments | `assessments` | 📥 Leads | Free Assessment quiz submissions (contact + 8 answers + computed result) |
-| Testimonials | `testimonials` | 📥 Leads | Customer reviews (public submit, admin-only approval) |
-| News | `news` | 📰 Content | Industry articles |
+| Subscribers | `subscribers` | 📥 Leads | Newsletter signups (via `/api/subscribe`) |
+| News | `news` | 📰 Content | Articles (AI import, Page Builder blocks) |
 | Projects | `projects` | 📰 Content | Installation case studies |
 | FAQ | `faq` | 📰 Content | Frequently asked questions |
-| Brands | `brands` | 📰 Content | Partner brand logos |
-| Team | `team` | 📰 Content | Team members |
 | Users | `users` | 🛠 System | Admin accounts |
 | Media | `media` | 🛠 System | Image library |
 
 Globals: **Site Settings** (`/admin/globals/site-settings`) — phone,
-email, address, social URLs.
+email, notification toggles.
 
 ---
 
@@ -120,19 +117,19 @@ to read/update/delete.
 GET  /api/news[?where[category][equals]=policy]
 GET  /api/projects
 GET  /api/faq?where[published][equals]=true
-GET  /api/brands
-GET  /api/team
 GET  /api/globals/site-settings
 POST /api/quotes            Public — /quote form submission
 POST /api/assessments       Public — Free Assessment quiz submission
-POST /api/testimonials      Public — review (pending approval)
+POST /api/subscribe         Public — newsletter signup (idempotent, anti-enumeration)
 POST /api/chat              AI chat proxy (Gemini)
+POST /api/bulk-import       Admin-only — CSV lead import channel
 ```
 
-Both `POST /api/quotes` and `POST /api/assessments` trigger an
-`afterChange` hook that sends two emails via Zoho SMTP (Nodemailer):
-business notification (to `NOTIFY_EMAIL`) and customer confirmation/report
-(to the submitted email). Hooks live in `src/hooks/`.
+`POST /api/quotes` and `POST /api/assessments` trigger an `afterChange`
+hook that sends the customer confirmation/report unconditionally and the
+internal business notification (to `NOTIFY_EMAIL`) when its Site Settings
+toggle is on. New subscribers fire an internal notification only. Hooks
+live in `src/hooks/`.
 
 ---
 
@@ -182,37 +179,37 @@ A lead submission never fails over an SMTP hiccup. Common causes:
 
 ## Production deployment
 
-Two pieces to host: this CMS (Express + Payload + Postgres) and the
-Next.js frontend (`../frontend`, already on Vercel). Suggested split:
+Production runs on **Railway** (this CMS + its Postgres, media on
+Cloudflare R2) with the Next.js frontend on **Netlify**
+(www.bluven.com.au). `railway.json` documents the real build and
+pre-deploy commands.
 
-- **CMS** → Railway / Render / Fly.io as a long-running Node service
-  + a managed Postgres (Neon, Supabase, or Railway-provided)
-- **Frontend** → Vercel (already configured)
+⚠️ Schema changes reach production ONLY through migrations: Railway's
+pre-deploy command is `npm run migrate:prod` — dev-mode schema push is
+never used against the production DB. Create migrations with
+`npm run payload -- migrate:create <name>`.
 
-Steps:
-1. Provision Postgres (Neon free tier or Railway's Postgres plugin).
-2. Deploy this `cms/` directory as a Node service.
-3. Set env vars on the host:
-   - `DATABASE_URL` — the managed Postgres URL (with `?sslmode=require` if needed)
-   - `PAYLOAD_SECRET` — fresh 64-char random (do NOT reuse the dev secret)
-   - `SERVER_URL` — the public URL of the CMS (e.g. `https://cms.bluven.com.au`)
-   - `FRONTEND_URL` — the public frontend origin for CORS/CSRF (e.g. `https://bluven.com.au`)
-   - `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `EMAIL_FROM` / `NOTIFY_EMAIL` — Zoho SMTP (use an App Password)
-   - `NODE_ENV=production`
-4. Start command: `npm run build && npm start` (build runs `tsc`,
-   start runs `node dist/server.js`).
-5. On Vercel for the frontend, set `NEXT_PUBLIC_CMS_URL` and `CMS_URL`
-   to the deployed CMS URL.
-6. First-visit to the deployed `/admin` creates the first admin user
-   on the production DB (the dev account does not carry over).
+Key env vars on Railway:
+- `DATABASE_URL` — Railway Postgres URL
+- `PAYLOAD_SECRET` — fresh 64-char random (do NOT reuse the dev secret)
+- `SERVER_URL` + `PAYLOAD_PUBLIC_SERVER_URL` — the CMS public origin (Railway domain), both set
+- `FRONTEND_URL=https://www.bluven.com.au` — CORS/CSRF allow-list
+- `SMTP_*` / `EMAIL_FROM` / `NOTIFY_EMAIL` — Zoho SMTP (App Password)
+- R2 storage vars (see `src/lib/storage.ts`)
+- `NODE_ENV=production`
+
+On Netlify (frontend), `NEXT_PUBLIC_CMS_URL` and `CMS_URL` point at the
+Railway CMS origin.
 
 ---
 
 ## Scripts reference
 
 ```
-npm run dev       # ts-node + nodemon (watches src/)
-npm run build     # tsc → dist/
-npm start         # node dist/server.js (production)
-npm run payload   # Payload CLI (migrations, codegen, etc.)
+npm run dev           # ts-node + nodemon (watches src/)
+npm run build         # payload build + tsc → dist/
+npm start             # node dist/server.js (production)
+npm run payload       # Payload CLI (use -- to pass args, e.g. migrate:create)
+npm run migrate       # apply migrations against DATABASE_URL (dev config)
+npm run migrate:prod  # apply migrations using the compiled config (Railway pre-deploy)
 ```

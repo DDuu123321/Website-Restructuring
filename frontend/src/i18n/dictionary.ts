@@ -1,7 +1,7 @@
 /**
  * Bluven dictionary (English only).
  *
- * Kept as a Record so existing useI18n() / T / L() consumers keep working.
+ * Kept as a Record so existing useI18n() / T consumers keep working.
  * Locale is locked to 'en'.
  */
 
@@ -20,7 +20,6 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'nav.news': 'Insights',
     'nav.faq': 'FAQ',
     'nav.contact': 'Contact',
-    'nav.call': '1300 258 836',
     'nav.callLabel': 'CALL US',
     'nav.quote': 'Get a Quote',
 
@@ -76,23 +75,16 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'sticky.quote': 'Free quote',
 
     // ── Home: hero ──
-    'h.eyebrow': 'AUSTRALIA · CLEAN ENERGY',
     'h.title1': 'Your Home.',
     'h.title2': 'Your Power.',
     'h.title3': 'Your Savings.',
     'h.lede': 'Stop renting your electricity. Own it. We empower Australian homes with reliable battery systems designed for day and night energy independence.',
-    'h.cta1': 'Get a free quote',
     'h.cta2': 'Watch how it works',
     'h.s1': 'Homes powered',
     'h.s2': 'kWh installed',
     'h.s4': 'Electrical partners',
 
     // ── Home: sections ──
-    'sect.products.eye': 'WHAT WE BUILD',
-    'sect.products.h': 'Four packages.<br/>One for every Australian roof.',
-    'sect.products.lede': "Whether you're starting small with a 6.6 kW solar starter, or running a warehouse with 100 kW + battery — there's a Bluven pack engineered for it.",
-    'sect.products.see': 'See all packages',
-
     'sect.process.h': 'From Concept to Power:<br/>Your A-to-Z Energy Solution',
     'p.s1.t': 'Consult & System Design',
     'p.s1.d': 'In-depth consultation, site assessment, and a tailored system design led by engineers — built around your home, energy usage, and long-term goals.',
@@ -104,39 +96,5 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'p.s4.d': 'Reliable after-sales support, warranty assistance, and long-term service from a local team you can count on.',
 
     'sect.brands.h': "Our Trusted Partners",
-    'sect.brands.btn': 'Explore our brand partners',
-
-    'sect.proj.eye': "PROJECTS WE'VE BUILT",
-    'sect.proj.h': '600+ Australian roofs.<br/>Every one engineered.',
-    'sect.proj.see': 'See all projects',
-
-    'sect.news.eye': 'INSIGHTS',
-    'sect.news.h': 'Plain-English advice for<br/>Australian solar owners.',
-    'sect.news.see': 'All articles',
-
-    'sect.cta.eye': 'READY?',
-    'sect.cta.h': "Let's design something brilliant.",
-    'sect.cta.lede': 'A senior engineer will respond within 24 business hours, free of charge.',
-    'sect.cta.cta1': 'Get my free quote',
-    'sect.cta.cta2': 'Talk to a human',
-
-    // ── Cards ──
-    'card.starter.t': 'Starter Pack', 'card.starter.s': '6.6 kW solar · No battery',
-    'card.essential.t': 'Essential', 'card.essential.s': '10 kW solar · 10 kWh battery',
-    'card.premium.t': 'Premium', 'card.premium.s': '13 kW solar · 16 kWh battery + EV',
-    'card.commercial.t': 'Commercial', 'card.commercial.s': '30–250 kW · Engineering-led',
-    'card.from': 'From', 'card.month': '/mo on green loan',
-    'card.popular': 'MOST POPULAR',
-
-    // ── Generic ──
-    'common.loading': 'Loading…',
-    'common.error': 'Something went wrong.',
-    'common.retry': 'Try again',
-    'common.readMore': 'Read more',
-    'common.viewAll': 'View all',
-    'common.back': 'Back',
-    'common.next': 'Next',
-    'common.submit': 'Submit',
-    'common.required': 'Required',
   },
 }

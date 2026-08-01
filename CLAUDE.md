@@ -3,7 +3,7 @@
 用途：Bluven Energy（澳大利亚太阳能 + 储能服务商）官网重构。对外是营销展示站（视频 Hero / 产品 / Who We Are / 新闻等），对内用 Payload CMS 管理内容，并收集三类销售线索：询价（/quote）、客户评价（reviews）、新闻订阅。
 
 技术栈：
-- 前端 `frontend/`：Next.js 14.2（App Router）+ React 18 + TypeScript 5 + TanStack Query，部署在 Vercel。
+- 前端 `frontend/`：Next.js 14.2（App Router）+ React 18 + TypeScript 5 + TanStack Query，部署在 Netlify（www.bluven.com.au）。
 - 后端 `cms/`：Payload CMS 2.32 + PostgreSQL（@payloadcms/db-postgres）+ Express + Nodemailer（Zoho SMTP）+ webpack bundler。
 - 结构：monorepo 风格，`frontend/` 与 `cms/` 是两个独立 npm 包，**根目录没有 package.json**；另有 `uploads/`（CMS 运行时上传，不入 git）。旧站存档已于 2026-07-27 从 HEAD 删除，需要时从 tag 取回：`git checkout legacy-archive-2026-07-27 -- legacy/`。
 

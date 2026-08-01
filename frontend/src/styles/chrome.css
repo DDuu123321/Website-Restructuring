@@ -301,10 +301,6 @@
   display: grid; place-items: center;
   color: var(--bv-navy-900);
 }
-.bv-mm-ico-line {
-  background: var(--bv-gray-50);
-  border: 1px solid var(--bv-gray-100);
-}
 .bv-mm-card h6 {
   font-family: var(--font-display);
   font-size: 15.5px;
@@ -354,28 +350,6 @@
   color: var(--bv-navy-900);
   transform: translate(-50%, -2px) scale(1.02);
 }
-.bv-sticky-quote.compact {
-  left: auto;
-  right: 96px;
-  bottom: 30px;
-  transform: translate(0, 0);
-  padding: 11px 16px 11px 13px;
-  font-size: 13px;
-}
-.bv-sticky-quote.compact:hover { transform: translate(0, -2px) scale(1.02); }
-.bv-sticky-quote.compact .bv-sq-label {
-  max-width: 0;
-  opacity: 0;
-  margin: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: all 0.3s var(--ease-out);
-}
-.bv-sticky-quote.compact:hover .bv-sq-label {
-  max-width: 120px;
-  opacity: 1;
-  margin-right: 4px;
-}
 .bv-sq-icon {
   width: 28px; height: 28px;
   border-radius: 50%;
@@ -400,7 +374,6 @@
   animation: bvSqPulse 2.4s infinite;
   pointer-events: none;
 }
-.bv-sticky-quote.compact .bv-sq-pulse { left: 13px; }
 @keyframes bvSqPulse {
   0% { transform: translate(-50%, -50%) scale(1); opacity: 0.55; }
   70% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
@@ -413,10 +386,8 @@
   display: inline-block;
 }
 .bv-sticky-quote:hover .bv-sq-arrow { transform: translateX(3px); }
-.bv-sticky-quote.compact .bv-sq-arrow { display: none; }
 @media (max-width: 600px) {
   .bv-sticky-quote { bottom: 16px; padding: 11px 18px 11px 14px; font-size: 13px; }
-  .bv-sticky-quote.compact { right: 86px; bottom: 18px; }
 }
 
 /* Burger */
@@ -537,20 +508,6 @@
   gap: 16px;
 }
 .bv-footer-meta { display: flex; gap: 22px; flex-wrap: wrap; }
-.bv-footer-social { display: flex; gap: 8px; }
-.bv-footer-social a {
-  width: 36px; height: 36px;
-  display: grid; place-items: center;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-  transition: all 0.3s;
-  color: rgba(255,255,255,0.7);
-}
-.bv-footer-social a:hover {
-  background: var(--bv-amber-500);
-  color: var(--bv-navy-900);
-  transform: translateY(-2px);
-}
 
 @media (max-width: 900px) {
   .bv-footer-top { grid-template-columns: 1fr; gap: 50px; }

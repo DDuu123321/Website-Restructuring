@@ -271,29 +271,6 @@ p  { margin: 0; }
   transform: translateY(0);
 }
 
-/* Image placeholder — light */
-.img-placeholder {
-  background:
-    linear-gradient(135deg, transparent 49%, rgba(0,0,0,0.04) 49%, rgba(0,0,0,0.04) 51%, transparent 51%) 0 0 / 14px 14px,
-    linear-gradient(180deg, var(--bv-ink-100), var(--bv-ink-200));
-  color: var(--bv-ink-500);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
-}
-.img-placeholder::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: radial-gradient(60% 60% at 50% 50%, transparent 60%, rgba(12,34,54,0.08));
-  pointer-events: none;
-}
-
 /* Pulse glow — teal */
 @keyframes pulseGlow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(231, 182, 88, 0.45); }
@@ -315,37 +292,6 @@ p  { margin: 0; }
 }
 .tag-amber { background: var(--bv-amber-100); color: var(--bv-amber-700); }
 .tag-navy  { background: rgba(12,34,54,0.06); color: var(--bv-ink-800); }
-
-/* Form controls — shared */
-.bv-input,
-.bv-textarea,
-.bv-select {
-  width: 100%;
-  padding: 11px 14px;
-  font: inherit;
-  font-size: 15px;
-  color: var(--bv-ink-900);
-  background: var(--bv-white);
-  border: 1px solid var(--bv-ink-200);
-  border-radius: var(--radius-md);
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.bv-input:focus,
-.bv-textarea:focus,
-.bv-select:focus {
-  outline: none;
-  border-color: var(--bv-teal-500);
-  box-shadow: 0 0 0 3px rgba(231, 182, 88, 0.18);
-}
-.bv-textarea { min-height: 110px; resize: vertical; }
-.bv-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--bv-ink-700);
-  margin-bottom: 6px;
-  letter-spacing: 0.01em;
-}
 
 /* Scrollbar — inner scroll areas (carousels, modals) keep a thin styled bar;
    the main PAGE scrollbar is hidden per request. Scrolling still works via

@@ -108,12 +108,10 @@ export const api = {
     ).then(r => r.docs[0] ?? null)
   },
 
-  // FAQ
-  faq(args: { category?: string; locale?: string } = {}) {
-    const where: WhereClause = { published: { equals: true } }
-    if (args.category) where.category = { equals: args.category }
+  // FAQ — category filtering happens client-side in _FAQView
+  faq() {
     return request<PaginatedResponse<FAQItem>>(
-      '/faq' + buildQuery({ limit: 100, sort: 'sortOrder', depth: 0, locale: args.locale, where })
+      '/faq' + buildQuery({ limit: 100, sort: 'sortOrder', depth: 0, where: { published: { equals: true } } })
     )
   },
 
@@ -170,5 +168,3 @@ export const api = {
     return url
   },
 }
-
-export { ApiError }

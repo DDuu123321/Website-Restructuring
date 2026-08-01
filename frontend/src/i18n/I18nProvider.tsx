@@ -5,7 +5,7 @@ import { dictionary, Locale, DictKey } from './dictionary'
 
 interface I18nContextValue {
   lang: Locale
-  t: (key: DictKey, fallback?: string) => string
+  t: (key: DictKey) => string
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null)
@@ -18,7 +18,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const value = useMemo<I18nContextValue>(
     () => ({
       lang: 'en',
-      t: (key, fallback) => dictionary.en[key] ?? fallback ?? key,
+      t: (key) => dictionary.en[key] ?? key,
     }),
     [],
   )
@@ -31,21 +31,7 @@ export function useI18n() {
   return ctx
 }
 
-export function T({
-  k,
-  fallback,
-  html = false,
-  as: Tag = 'span',
-}: {
-  k: DictKey
-  fallback?: string
-  html?: boolean
-  as?: keyof JSX.IntrinsicElements
-}) {
+export function T({ k }: { k: DictKey }) {
   const { t } = useI18n()
-  const value = t(k, fallback)
-  if (html) {
-    return <Tag dangerouslySetInnerHTML={{ __html: value }} />
-  }
-  return <Tag>{value}</Tag>
+  return <span>{t(k)}</span>
 }

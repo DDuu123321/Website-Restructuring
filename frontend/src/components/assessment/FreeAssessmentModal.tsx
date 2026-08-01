@@ -1386,25 +1386,6 @@ function Stat({ label, value }: { label: string; value: string }) {
    5. PUBLIC BUTTON COMPONENTS
    ============================================================ */
 
-/** Sticky "Free Assessment" pill — sits next to the existing sticky-quote in <Nav>. */
-export function FreeAssessmentStickyButton({ show }: { show: boolean }) {
-  const { open } = useFreeAssessment()
-  return (
-    <button
-      type="button"
-      className={`${styles.stickyBtn} ${show ? styles.show : ''}`}
-      onClick={open}
-      aria-label="Start free home energy assessment"
-    >
-      <span className={styles.stickyBtnIcon}>
-        <Sparkles size={14} />
-      </span>
-      <span>Free Assessment</span>
-      <span className={styles.stickyBtnArrow}>→</span>
-    </button>
-  )
-}
-
 /** Hero primary CTA — "Get Free Assessment" yellow pill (matches old site). */
 export function FreeAssessmentHeroButton() {
   const { open } = useFreeAssessment()

@@ -6,9 +6,11 @@ Full-stack website for Bluven Energy — Australian solar, battery and EV chargi
 bluven/
 ├── frontend/                Next.js 14 (App Router) · TypeScript · React 18
 ├── cms/                     Payload CMS 2 backend · Express · PostgreSQL
-├── uploads/                 Payload-managed media (gitignored in prod, S3-mounted)
-└── legacy/                  Original static HTML — for reference only
+└── uploads/                 Payload media in local dev (production uses Cloudflare R2)
 ```
+
+(The original static HTML site was removed from HEAD — recover it with
+`git checkout legacy-archive-2026-07-27 -- legacy/` if ever needed.)
 
 ## Architecture
 
@@ -79,22 +81,23 @@ cd frontend && npm run build && npm start         # Next.js on :3000
 cd cms      && npm run build && npm start         # Payload + Express on :3001
 ```
 
-## Deployment
-
-Recommended: **2-service deploy**
+## Deployment (production)
 
 | Service | Platform | What it serves |
 |---------|----------|----------------|
-| Frontend | **Vercel** (or Railway) | bluven.com.au — Next.js, auto SSL, edge CDN |
-| CMS backend | **Railway** | cms.bluven.com.au — Payload + Postgres |
+| Frontend | **Netlify** | www.bluven.com.au (bare domain 301s to www) — Next.js via @netlify/plugin-nextjs |
+| CMS backend | **Railway** | Payload + Express on the Railway-issued domain; media on Cloudflare R2 |
 
-Set in frontend env:
-- `NEXT_PUBLIC_SITE_URL=https://bluven.com.au`
-- `CMS_URL=https://cms.bluven.com.au`        (server-side fetches)
-- `NEXT_PUBLIC_CMS_URL=https://cms.bluven.com.au`  (client-side fetches)
+Schema changes reach production ONLY through migrations — Railway runs
+`npm run migrate:prod` as its pre-deploy command (see cms/railway.json).
 
-Set in CMS env:
-- `FRONTEND_URL=https://bluven.com.au`       (CORS allow-list)
+Set in frontend env (Netlify):
+- `NEXT_PUBLIC_SITE_URL=https://www.bluven.com.au`
+- `CMS_URL=<railway CMS origin>`             (server-side fetches)
+- `NEXT_PUBLIC_CMS_URL=<railway CMS origin>` (client-side fetches)
+
+Set in CMS env (Railway):
+- `FRONTEND_URL=https://www.bluven.com.au`   (CORS allow-list)
 - `DATABASE_URL=postgres://...?sslmode=require`
 
 ## Routes
@@ -105,27 +108,25 @@ Set in CMS env:
 | `/products` | Static | Hardcoded 4 packs |
 | `/projects` | ISR | CMS · filter by system type |
 | `/projects/[slug]` | SSG | CMS · pre-built for all projects |
-| `/brands` | ISR | CMS · grouped by category |
-| `/who-we-are` | ISR | Static + Team from CMS |
-| `/news` | ISR | CMS · filter by category |
+| `/who-we-are` | Static | Hardcoded (no team collection) |
+| `/news` | ISR | CMS · filter by category, Load More pagination |
 | `/news/[slug]` | SSG | CMS · with article JSON-LD |
 | `/faq` | ISR | CMS · with FAQPage JSON-LD |
 | `/contact` | ISR | Site Settings from CMS |
-| `/quote` | Client | 5-step wizard, submits to CMS |
+| `/quote` | Client | Single-page contact form, submits to CMS |
 | `/privacy` `/terms` `/cookies` | Static | Legal pages |
 
 ## What the client manages from `/admin`
 
 | Section | What they edit |
 |---------|----------------|
-| News | Industry articles, with Lexical rich-text editor |
+| News | Articles — Lexical rich text, AI-article import, Page Builder blocks |
 | Projects | Installation case studies + photo galleries |
 | FAQ | Questions + answers, drag to reorder |
-| Brands | Brand logos and categorization |
-| Team | Who We Are page members |
-| Quotes | View incoming leads (read-only inbox) |
-| Testimonials | Approve customer reviews before they appear |
-| Site Settings | Phone, email, social links, announcement bar |
+| Quotes | Incoming quote leads (status workflow, CSV export/import) |
+| Assessments | Free Assessment quiz leads |
+| Subscribers | Newsletter signups (CSV export for mail-outs) |
+| Site Settings | Phone, email, notification toggles |
 
 ## Tech stack
 
