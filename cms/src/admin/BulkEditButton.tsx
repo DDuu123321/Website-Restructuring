@@ -26,6 +26,7 @@ import { detectCollectionSlug } from './csv-utils'
 const BULK_FIELDS: Record<string, string[]> = {
   quotes:      ['status'],
   assessments: ['status'],
+  subscribers: ['status'],
   projects:    ['featured'],
   news:        ['featured'],
 }

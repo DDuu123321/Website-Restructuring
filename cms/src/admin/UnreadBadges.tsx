@@ -10,7 +10,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-type Counts = { quotes: number; assessments: number }
+type Counts = { quotes: number; assessments: number; subscribers: number }
 
 const POLL_INTERVAL_MS = 30_000
 
@@ -77,17 +77,18 @@ const Badge: React.FC<{ label: string; count: number; href: string }> = ({
 }
 
 const UnreadBadges: React.FC = () => {
-  const [counts, setCounts] = useState<Counts>({ quotes: 0, assessments: 0 })
+  const [counts, setCounts] = useState<Counts>({ quotes: 0, assessments: 0, subscribers: 0 })
 
   useEffect(() => {
     let alive = true
     const refresh = async () => {
-      const [q, a] = await Promise.all([
+      const [q, a, s] = await Promise.all([
         fetchCount('quotes'),
         fetchCount('assessments'),
+        fetchCount('subscribers'),
       ])
       if (!alive) return
-      setCounts({ quotes: q, assessments: a })
+      setCounts({ quotes: q, assessments: a, subscribers: s })
     }
     refresh()
     const id = window.setInterval(refresh, POLL_INTERVAL_MS)
@@ -100,7 +101,7 @@ const UnreadBadges: React.FC = () => {
     }
   }, [])
 
-  const total = counts.quotes + counts.assessments
+  const total = counts.quotes + counts.assessments + counts.subscribers
 
   return (
     <div
@@ -133,6 +134,7 @@ const UnreadBadges: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <Badge label="Quotes"      count={counts.quotes}        href="/admin/collections/quotes?where[status][equals]=new" />
         <Badge label="Assessments" count={counts.assessments}   href="/admin/collections/assessments?where[status][equals]=new" />
+        <Badge label="Subscribers" count={counts.subscribers}   href="/admin/collections/subscribers?where[status][equals]=new" />
       </div>
     </div>
   )

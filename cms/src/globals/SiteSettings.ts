@@ -129,6 +129,13 @@ const SiteSettings: GlobalConfig = {
             { name: 'adminOnAssessment', type: 'checkbox', label: '🔔 Show unread assessments in admin', defaultValue: true },
           ],
         },
+        {
+          type: 'row',
+          fields: [
+            { name: 'emailOnSubscriber', type: 'checkbox', label: '📧 Email me about new subscribers',   defaultValue: true },
+            { name: 'adminOnSubscriber', type: 'checkbox', label: '🔔 Show unread subscribers in admin', defaultValue: true },
+          ],
+        },
       ],
     },
   ],
