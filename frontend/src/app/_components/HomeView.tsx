@@ -55,7 +55,8 @@ const CERT_ROW: { name: string; img: string }[] = [
 const LOGO_EXTS = ['svg', 'png', 'webp'] as const
 // Reversed logos (white artwork made for dark backgrounds) get a dark inset so they
 // stay visible on the white card. Every other logo is colour and sits on the card.
-const DARK_LOGOS = new Set(['aiko', 'sigenergy', 'jasolar'])
+// zappi: the myenergi wordmark SVG is white with a green bolt.
+const DARK_LOGOS = new Set(['aiko', 'sigenergy', 'jasolar', 'zappi'])
 
 // One brand card. A resolved logo is shown on its own (the wordmark already carries
 // the name); a brand with no logo file yet falls back to a monogram + name. The <img>
