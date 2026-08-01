@@ -14,11 +14,22 @@ const CATEGORIES = [
   ...Object.entries(NEWS_CATEGORY_LABEL).map(([id, label]) => ({ id, label })),
 ]
 
-export function NewsListView({ articles, initialCategory }: { articles: News[]; initialCategory: string }) {
+const PAGE_SIZE = 24
+
+export function NewsListView({
+  articles, initialCategory, initialHasMore,
+}: {
+  articles: News[]; initialCategory: string; initialHasMore: boolean
+}) {
   const [category, setCategory] = useState(initialCategory)
   const [subState, setSubState] = useState<'idle' | 'busy' | 'done' | 'error'>('idle')
   const [subEmail, setSubEmail] = useState('')
   const [subHp, setSubHp] = useState('')
+  // Pagination: the server hands over page 1; Load More appends further pages.
+  const [loaded, setLoaded] = useState(articles)
+  const [pageNum, setPageNum] = useState(1)
+  const [hasMore, setHasMore] = useState(initialHasMore)
+  const [loadingMore, setLoadingMore] = useState(false)
 
   const filterCategory = (c: string) => {
     setCategory(c)
@@ -26,10 +37,28 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
     else   window.history.replaceState(null, '', '/news')
   }
 
-  // Client-side category filter over the server-fetched list
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return
+    setLoadingMore(true)
+    try {
+      const res = await api.news({ limit: PAGE_SIZE, page: pageNum + 1 })
+      setLoaded(prev => {
+        const seen = new Set(prev.map(a => a.id))
+        return [...prev, ...res.docs.filter(a => !seen.has(a.id))]
+      })
+      setPageNum(p => p + 1)
+      setHasMore(Boolean(res.hasNextPage))
+    } catch {
+      // Keep hasMore so the button stays and the click can be retried.
+    } finally {
+      setLoadingMore(false)
+    }
+  }
+
+  // Client-side category filter over everything loaded so far
   const visible = useMemo(
-    () => (category ? articles.filter(a => a.category === category) : articles),
-    [articles, category]
+    () => (category ? loaded.filter(a => a.category === category) : loaded),
+    [loaded, category]
   )
 
   const featured = visible.find(a => a.featured) || visible[0]
@@ -37,7 +66,7 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
 
   // "Latest articles" sidebar — honest label: there is no view tracking, so
   // this is simply the newest five. Hidden until the list is worth showing.
-  const latest = articles.slice(0, 5)
+  const latest = loaded.slice(0, 5)
 
   const onSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -132,8 +161,9 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
             </Reveal>
           )}
 
-          {/* Empty state — honest, no fabricated placeholder articles */}
-          {visible.length === 0 && (
+          {/* Empty state — honest, no fabricated placeholder articles. Only a
+              definitive claim once every page is loaded. */}
+          {visible.length === 0 && !hasMore && (
             <p style={{ textAlign: 'center', padding: 60, color: 'var(--bv-ink-500)' }}>
               {category
                 ? `No ${NEWS_CATEGORY_LABEL[category] || ''} articles yet — check back soon.`
@@ -183,6 +213,14 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
               </aside>
             )}
           </div>
+          )}
+
+          {hasMore && (
+            <div style={{ textAlign: 'center', marginTop: 36 }}>
+              <button type="button" className="news-loadmore" onClick={loadMore} disabled={loadingMore}>
+                {loadingMore ? 'Loading…' : 'Load more articles'}
+              </button>
+            </div>
           )}
         </div>
       </section>

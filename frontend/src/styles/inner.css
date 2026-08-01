@@ -467,6 +467,22 @@
   border-color: var(--bv-ink-900);
 }
 
+/* Load-more — same pill language as the filter tabs. */
+.news-loadmore {
+  padding: 11px 26px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--bv-white);
+  border: 1px solid var(--bv-ink-200);
+  color: var(--bv-ink-700);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.news-loadmore:hover:not(:disabled) { border-color: var(--bv-ink-900); }
+.news-loadmore:disabled { opacity: 0.6; cursor: default; }
+
 /* FAQ */
 .faq-list { max-width: 880px; margin: 0 auto; }
 .faq-item {
