@@ -45,6 +45,7 @@ interface Parsed {
   systemType: string
   summary: string
   solarKw?: number
+  inverterKw?: number
   batteryKwh?: number
   battery?: string
   warnings: string[]
@@ -76,31 +77,49 @@ function parse(file: string): Parsed {
   const batteryKwh = kwhMatch ? parseFloat(kwhMatch[1]) : undefined
 
   // kW figures that are NOT the kWh battery figure. Two values (13.3KW_10KW)
-  // mean panel array + inverter — the array size is the headline number.
+  // mean panel array + inverter — the array size is the headline number. A
+  // SINGLE value is the inverter rating, not the array (client confirmed
+  // 2026-08-01), so it headlines as "Inverter" and stays out of specs.solarKw.
   // "WK" is accepted as a transposition of "KW" (present in the source files).
   const kws = [...key.matchAll(/([\d.]+)\s*(?:KW|WK)(?!H)/gi)].map((m) => parseFloat(m[1]))
-  const solarKw = kws.length ? Math.max(...kws) : undefined
+  const solarKw = kws.length >= 2 ? Math.max(...kws) : undefined
+  const inverterKw = kws.length === 1 ? kws[0] : kws.length >= 2 ? Math.min(...kws) : undefined
   if (/\d\s*WK/i.test(key)) warnings.push('filename says "WK" — read as kW')
-  if (solarKw === undefined) warnings.push('solar kW not found')
+  if (kws.length === 0) warnings.push('no kW figure found')
   if (batteryKwh === undefined) warnings.push('battery kWh not found')
 
   // The filename is the only source for a brand; never invent one.
   const battery = /tesla/i.test(key) ? 'Tesla' : undefined
 
   const location = state ? STATE_NAMES[state] : 'Australia'
-  const sizeLabel = solarKw !== undefined ? `${solarKw}kW` : 'Rooftop'
+  const headline =
+    solarKw !== undefined ? `${solarKw}kW Solar`
+    : inverterKw !== undefined ? `${inverterKw}kW Inverter`
+    : 'Rooftop Solar'
   const title = batteryKwh !== undefined
-    ? `${sizeLabel} Solar + ${batteryKwh}kWh Battery${ev ? ' + EV Charger' : ''}${state ? ` — ${state}` : ''}`
-    : `${sizeLabel} Rooftop Solar${state ? ` — ${state}` : ''}`
+    ? `${headline} + ${batteryKwh}kWh Battery${ev ? ' + EV Charger' : ''}${state ? ` — ${state}` : ''}`
+    : solarKw !== undefined
+      ? `${solarKw}kW Rooftop Solar${state ? ` — ${state}` : ''}`
+      : inverterKw !== undefined
+        ? `${inverterKw}kW Inverter Rooftop Solar${state ? ` — ${state}` : ''}`
+        : `Rooftop Solar${state ? ` — ${state}` : ''}`
+  const sizePhrase =
+    solarKw !== undefined ? `${solarKw} kW of solar with `
+    : inverterKw !== undefined ? `a ${inverterKw} kW inverter with `
+    : ''
   const summary = batteryKwh !== undefined
-    ? `Real Bluven installation in ${location}: ${solarKw !== undefined ? `${solarKw} kW of solar with ` : ''}${batteryKwh} kWh of battery storage${ev ? ' and EV charging' : ''}.`
-    : `Real Bluven installation in ${location}: ${solarKw} kW rooftop solar system.`
+    ? `Real Bluven installation in ${location}: ${sizePhrase}${batteryKwh} kWh of battery storage${ev ? ' and EV charging' : ''}.`
+    : solarKw !== undefined
+      ? `Real Bluven installation in ${location}: ${solarKw} kW rooftop solar system.`
+      : inverterKw !== undefined
+        ? `Real Bluven installation in ${location}: rooftop solar with a ${inverterKw} kW inverter.`
+        : `Real Bluven installation in ${location}.`
 
   const base = file.replace(/\.(jpe?g|png|webp)$/i, '').trim()
   return {
     file,
     slug: base.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
-    title, location, summary, solarKw, batteryKwh, battery, warnings,
+    title, location, summary, solarKw, inverterKw, batteryKwh, battery, warnings,
     systemType: ev ? 'solar-ev' : batteryKwh !== undefined ? 'solar-battery' : 'solar',
   }
 }
@@ -158,7 +177,7 @@ async function run() {
   for (const p of plan) {
     console.log(`  ${p.file}`)
     console.log(`    -> ${p.title}  [${p.systemType}]  slug=${p.slug}`)
-    console.log(`       solar=${p.solarKw ?? '—'}kW  battery=${p.batteryKwh ?? '—'}kWh${p.battery ? `  brand=${p.battery}` : ''}`)
+    console.log(`       solar=${p.solarKw ?? '—'}kW  inverter=${p.inverterKw ?? '—'}kW  battery=${p.batteryKwh ?? '—'}kWh${p.battery ? `  brand=${p.battery}` : ''}`)
     if (p.warnings.length) console.log(`       WARN ${p.warnings.join('; ')}`)
   }
 
@@ -197,7 +216,12 @@ async function run() {
         location: p.location,
         systemType: p.systemType,
         summary: p.summary,
-        specs: { solarKw: p.solarKw, batteryKwh: p.batteryKwh, battery: p.battery },
+        specs: {
+          solarKw: p.solarKw,
+          batteryKwh: p.batteryKwh,
+          battery: p.battery,
+          inverter: p.inverterKw !== undefined ? `${p.inverterKw} kW` : undefined,
+        },
         // Editorial choice — left to the admin, never set by an importer.
         featured: false,
         sortOrder: maxSort + 10 * (i + 1),
