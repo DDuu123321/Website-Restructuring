@@ -78,7 +78,9 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
   // Favicon + apple-touch-icon are auto-served by Next.js file convention
-  // from app/icon.png and app/apple-icon.jpg (real Bluven logo).
+  // from app/favicon.ico, app/icon.png and app/apple-icon.jpg (real Bluven
+  // logo). favicon.ico matters: Google's favicon crawler and legacy tools
+  // request /favicon.ico directly, which 404'd before it existed.
   manifest: '/manifest.webmanifest',
   // Google Search Console ownership proof — set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
   // on the host to the token from the "HTML tag" verification method; the meta

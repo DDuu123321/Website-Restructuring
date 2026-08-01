@@ -11,8 +11,8 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#ffffff',
     theme_color: '#0c2236',
     icons: [
-      { src: '/bluven-mark.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-      { src: '/bluven-mark.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      { src: '/bluven-mark.png', sizes: '800x800', type: 'image/png', purpose: 'any' },
+      { src: '/bluven-mark.png', sizes: '800x800', type: 'image/png', purpose: 'maskable' },
     ],
   }
 }
