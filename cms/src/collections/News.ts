@@ -2,6 +2,7 @@ import { CollectionConfig } from 'payload/types'
 import { layoutField } from '../blocks/layoutBlocks'
 import BulkEditButton from '../admin/BulkEditButton'
 import ArticleImportPanel from '../admin/ArticleImportPanel'
+import { readingMinutes } from '../admin/html-to-lexical'
 
 const News: CollectionConfig = {
   slug: 'news',
@@ -16,7 +17,7 @@ const News: CollectionConfig = {
     },
   },
   // Public-read everything — draft state removed at user request.
-  // Hide an article by deleting or temporarily clearing its slug.
+  // There is no hide/unpublish: to take an article down, delete it.
   access: {
     read: () => true,
   },
@@ -143,6 +144,18 @@ const News: CollectionConfig = {
       label: 'Read Time (minutes)',
       admin: {
         description: 'Leave blank to auto-calculate.',
+      },
+      hooks: {
+        // Make the description true: blank = computed from the body at 200 wpm
+        // on every save, not only when the AI import panel filled it.
+        beforeValidate: [
+          ({ value, data }) => {
+            if ((value === undefined || value === null) && data?.content) {
+              return readingMinutes(data.content)
+            }
+            return value
+          },
+        ],
       },
     },
 

@@ -132,10 +132,11 @@ export const api = {
   // Newsletter signup — goes to the dedicated /subscribe endpoint, which
   // answers identically whether or not the address was already on the list
   // (posting to the collection directly would leak that via a unique-key
-  // error, letting anyone test who is subscribed).
-  subscribe(email: string) {
+  // error, letting anyone test who is subscribed). `hp` is the honeypot
+  // value; the endpoint silently drops any submission where it is set.
+  subscribe(email: string, hp?: string) {
     return request<{ ok: true }>('/subscribe', {
-      method: 'POST', body: JSON.stringify({ email, source: 'news-page' }),
+      method: 'POST', body: JSON.stringify({ email, source: 'news-page', ...(hp ? { hp } : {}) }),
     })
   },
 

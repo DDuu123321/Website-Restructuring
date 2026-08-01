@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { api } from '@/api/client'
-import { RichText } from '@/components/ui/RichText'
+import { RichText, safeHref } from '@/components/ui/RichText'
 import type { LayoutBlock, Media } from '@/types/cms'
 
 /**
@@ -88,7 +88,9 @@ function BlockSection({ block }: { block: LayoutBlock }) {
             <h2 className="bvb-cta-h">{block.heading}</h2>
             {block.text && <p className="bvb-cta-t">{block.text}</p>}
           </div>
-          <Link className="btn btn-primary" href={block.buttonHref || '/quote'}>
+          {/* safeHref: same scheme filter as rich-text links — editor input
+              must not become a javascript: URL. */}
+          <Link className="btn btn-primary" href={safeHref(block.buttonHref) || '/quote'}>
             <span>{block.buttonLabel || 'Get a free quote'}</span> <span className="arrow">→</span>
           </Link>
         </section>
@@ -96,6 +98,8 @@ function BlockSection({ block }: { block: LayoutBlock }) {
 
     case 'video': {
       const yt = youtubeId(block.url)
+      const src = yt ? undefined : safeHref(block.url)
+      if (!yt && !src) return null
       return (
         <section className="bvb-video">
           <div className="bvb-video-frame">
@@ -107,7 +111,7 @@ function BlockSection({ block }: { block: LayoutBlock }) {
                 allowFullScreen
               />
             ) : (
-              <video src={block.url} controls preload="metadata" playsInline />
+              <video src={src} controls preload="metadata" playsInline />
             )}
           </div>
           {block.caption && <p className="bvb-video-caption">{block.caption}</p>}

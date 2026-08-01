@@ -93,6 +93,7 @@ export function articleLd(args: {
   description: string
   slug: string
   publishedAt?: string
+  updatedAt?: string
   author?: string
   image?: string
 }) {
@@ -102,7 +103,7 @@ export function articleLd(args: {
     headline: args.title,
     description: args.description,
     datePublished: args.publishedAt,
-    dateModified: args.publishedAt,
+    dateModified: args.updatedAt || args.publishedAt,
     author: { '@type': 'Organization', name: args.author || SITE.name },
     publisher: { '@type': 'Organization', name: SITE.name, logo: { '@type': 'ImageObject', url: SITE.url + '/bluven-logo.png' } },
     image: args.image ? [args.image] : [SITE.url + '/og-default.jpg'],

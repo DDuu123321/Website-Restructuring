@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { api } from '@/api/client'
+import { NEWS_CATEGORY_LABEL } from '@/lib/newsCategories'
 
 export const runtime = 'nodejs'
 export const alt = 'Bluven Energy article'
@@ -20,7 +21,9 @@ function logoDataUri(): string {
 export default async function OG({ params }: { params: { slug: string } }) {
   const article = await api.newsBySlug(params.slug).catch(() => null)
   const title = article?.title || 'Bluven Energy'
-  const category = article?.category?.toUpperCase() || 'INSIGHTS'
+  const category = article?.category
+    ? (NEWS_CATEGORY_LABEL[article.category] || article.category).toUpperCase()
+    : 'INSIGHTS'
   const mark = logoDataUri()
 
   return new ImageResponse(

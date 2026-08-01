@@ -5,8 +5,9 @@ import { api } from '@/api/client'
 import { buildMetadata, articleLd, breadcrumbLd } from '@/lib/seo'
 import { JsonLd } from '@/components/ui/JsonLd'
 import { Reveal } from '@/components/ui/Reveal'
-import { RichText, richTextToPlain } from '@/components/ui/RichText'
+import { RichText } from '@/components/ui/RichText'
 import { BlockRenderer } from '@/components/blocks/BlockRenderer'
+import { NEWS_CATEGORY_LABEL } from '@/lib/newsCategories'
 
 export const revalidate = 60
 
@@ -26,10 +27,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   })
 }
 
-// Pre-generate static params for known articles
+// Pre-generate static params for known articles (same ceiling as sitemap.ts)
 export async function generateStaticParams() {
   try {
-    const data = await api.news({ limit: 100 })
+    const data = await api.news({ limit: 200 })
     return data.docs.map(a => ({ slug: a.slug }))
   } catch {
     return []
@@ -40,16 +41,15 @@ export default async function NewsArticlePage({ params }: PageProps) {
   const article = await api.newsBySlug(params.slug).catch(() => null)
   if (!article) notFound()
 
-  const description = article.summary || richTextToPlain(article.content, 160)
-
   return (
     <>
       <JsonLd data={[
         articleLd({
           title: article.title,
-          description,
+          description: article.summary,
           slug: article.slug,
           publishedAt: article.publishedAt,
+          updatedAt: article.updatedAt,
           author: article.author,
           image: article.coverImage ? api.imgUrl(article.coverImage, 'hero') : undefined,
         }),
@@ -65,7 +65,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
           <Reveal>
             <Link href="/news" style={{ fontSize: 13.5, color: 'var(--bv-gray-500)' }}>← All articles</Link>
             <div className="meta" style={{ display: 'flex', gap: 12, fontSize: 12.5, color: 'var(--bv-gray-500)', margin: '20px 0' }}>
-              <span>{article.category.toUpperCase()}</span>
+              <span>{(NEWS_CATEGORY_LABEL[article.category] || article.category).toUpperCase()}</span>
               {article.readTime && <span>· {article.readTime} min read</span>}
               {article.publishedAt && <span>· {new Date(article.publishedAt).toLocaleDateString()}</span>}
             </div>

@@ -4,26 +4,21 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Reveal } from '@/components/ui/Reveal'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { HoneypotField } from '@/components/ui/HoneypotField'
 import { api } from '@/api/client'
+import { NEWS_CATEGORY_LABEL } from '@/lib/newsCategories'
 import type { News } from '@/types/cms'
 
-// Category ids/labels mirror cms/src/collections/News.ts exactly.
 const CATEGORIES = [
-  { id: '',           label: 'All' },
-  { id: 'industry',   label: 'Industry News' },
-  { id: 'policy',     label: 'Policy & Rebates' },
-  { id: 'knowledge',  label: 'Solar Knowledge' },
-  { id: 'company',    label: 'Company Updates' },
-  { id: 'case-study', label: 'Case Studies' },
+  { id: '', label: 'All' },
+  ...Object.entries(NEWS_CATEGORY_LABEL).map(([id, label]) => ({ id, label })),
 ]
-const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
-  CATEGORIES.filter(c => c.id).map(c => [c.id, c.label])
-)
 
 export function NewsListView({ articles, initialCategory }: { articles: News[]; initialCategory: string }) {
   const [category, setCategory] = useState(initialCategory)
   const [subState, setSubState] = useState<'idle' | 'busy' | 'done' | 'error'>('idle')
   const [subEmail, setSubEmail] = useState('')
+  const [subHp, setSubHp] = useState('')
 
   const filterCategory = (c: string) => {
     setCategory(c)
@@ -40,16 +35,16 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
   const featured = visible.find(a => a.featured) || visible[0]
   const others   = visible.filter(a => a.id !== featured?.id)
 
-  // "Most read" sidebar — real article titles only; hidden until there are
-  // enough published articles for a ranking to mean anything.
-  const mostRead = articles.slice(0, 5)
+  // "Latest articles" sidebar — honest label: there is no view tracking, so
+  // this is simply the newest five. Hidden until the list is worth showing.
+  const latest = articles.slice(0, 5)
 
   const onSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!subEmail || subState === 'busy' || subState === 'done') return
     setSubState('busy')
     try {
-      await api.subscribe(subEmail)
+      await api.subscribe(subEmail, subHp)
       setSubState('done')
     } catch {
       setSubState('error')
@@ -85,6 +80,7 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
                 <p>One email a month. Rebate changes, real install numbers, no fluff.</p>
               </div>
               <form onSubmit={onSubscribe}>
+                <HoneypotField value={subHp} onChange={setSubHp} />
                 <input
                   type="email"
                   placeholder="you@email.com"
@@ -119,7 +115,7 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
                 />
                 <div className="body">
                   <div className="meta">
-                    <span className="tag tag-amber">{CATEGORY_LABEL[featured.category as string] || featured.category}</span>
+                    <span className="tag tag-amber">{NEWS_CATEGORY_LABEL[featured.category as string] || featured.category}</span>
                     <span>{featured.readTime ? `${featured.readTime} min read` : ''}</span>
                   </div>
                   <h2>{featured.title}</h2>
@@ -140,16 +136,16 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
           {visible.length === 0 && (
             <p style={{ textAlign: 'center', padding: 60, color: 'var(--bv-ink-500)' }}>
               {category
-                ? `No ${CATEGORY_LABEL[category] || ''} articles yet — check back soon.`
+                ? `No ${NEWS_CATEGORY_LABEL[category] || ''} articles yet — check back soon.`
                 : 'No articles published yet — check back soon.'}
             </p>
           )}
 
-          {/* Article list — the sidebar column only exists once "Most read"
-              has enough articles; a fixed 2-col grid would otherwise leave a
-              dead 320px gutter (or an orphaned sidebar) on a short list. */}
+          {/* Article list — the sidebar column only exists once "Latest
+              articles" has enough entries; a fixed 2-col grid would otherwise
+              leave a dead 320px gutter (or an orphaned sidebar) on a short list. */}
           {others.length > 0 && (
-          <div className={mostRead.length >= 3 ? 'news-side' : undefined} style={{ marginTop: 32 }}>
+          <div className={latest.length >= 3 ? 'news-side' : undefined} style={{ marginTop: 32 }}>
             <div className="article-list">
               {others.map((a, i) => (
                 <Reveal key={a.id} delay={Math.min(i * 60, 300)}>
@@ -161,7 +157,7 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
                     }} />
                     <div className="body">
                       <div className="meta">
-                        <span className="tag tag-navy">{CATEGORY_LABEL[a.category as string] || a.category}</span>
+                        <span className="tag tag-navy">{NEWS_CATEGORY_LABEL[a.category as string] || a.category}</span>
                         <span>{a.readTime ? `${a.readTime} min` : ''}</span>
                       </div>
                       <h3>{a.title}</h3>
@@ -173,11 +169,11 @@ export function NewsListView({ articles, initialCategory }: { articles: News[]; 
               ))}
             </div>
 
-            {mostRead.length >= 3 && (
+            {latest.length >= 3 && (
               <aside>
                 <div className="side-card">
-                  <h5>Most read this month</h5>
-                  {mostRead.map((a, i) => (
+                  <h5>Latest articles</h5>
+                  {latest.map((a, i) => (
                     <Link key={a.id} href={`/news/${a.slug}`} className="news-item">
                       <span className="num">{String(i + 1).padStart(2, '0')}</span>
                       <span>{a.title}</span>
