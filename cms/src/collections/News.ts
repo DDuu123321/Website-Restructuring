@@ -27,6 +27,9 @@ const News: CollectionConfig = {
       name: 'publishedAt',
       type: 'date',
       label: 'Publish Date',
+      // Defaults to "now": a blank date sank the article to the bottom of the
+      // -publishedAt sort and hid its date line on the site.
+      defaultValue: () => new Date().toISOString(),
       admin: {
         position: 'sidebar',
         date: { pickerAppearance: 'dayAndTime' },
