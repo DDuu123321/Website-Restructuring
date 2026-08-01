@@ -56,11 +56,11 @@ const Quotes: CollectionConfig = {
         // holds the API response hostage — with no reachable mail host (Railway
         // trial blackholes SMTP egress) the form spun for minutes and then
         // reported failure for a submission that had actually been created.
-        if (emailOn) {
-          void sendQuoteEmails(doc, notifyTo).catch((err) =>
-            req.payload.logger.error(`quote notification email failed: ${err?.message || err}`),
-          )
-        }
+        // Always called: the customer's promised confirmation is unconditional;
+        // emailOn gates only the internal notification inside the hook.
+        void sendQuoteEmails(doc, notifyTo, emailOn).catch((err) =>
+          req.payload.logger.error(`quote notification email failed: ${err?.message || err}`),
+        )
       },
     ],
   },
@@ -116,6 +116,9 @@ const Quotes: CollectionConfig = {
         { label: 'Afternoons (12–5)',       value: 'afternoon' },
         { label: 'After 5 pm',              value: 'evening' },
         { label: 'Email only please',       value: 'email-only' },
+        // Appended last: Postgres enums only grow at the end (see the
+        // 20260802 add_best_time_weekend migration).
+        { label: 'Weekends',                value: 'weekend' },
       ],
     },
 

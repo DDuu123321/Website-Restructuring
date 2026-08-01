@@ -44,7 +44,7 @@ export function Nav() {
   }, [pathname])
 
   // Routes whose PageHeader uses a light (cream/white) background — keep nav text dark there
-  const LIGHT_HERO_ROUTES = ['/quote']
+  const LIGHT_HERO_ROUTES = ['/quote', '/privacy', '/terms', '/cookies']
   const isDarkHero = !LIGHT_HERO_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'))
 
   const isActive = (paths: string[]) => paths.some(p => pathname.startsWith(p))

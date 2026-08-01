@@ -5,13 +5,19 @@ function fmtComponents(c: string[] | undefined) {
   return c.join(', ')
 }
 
-export async function sendQuoteEmails(doc: any, notifyTo?: string) {
+/**
+ * `internalOn` gates ONLY the business notification (the admin toggle's
+ * documented meaning). The customer confirmation always goes out — the /quote
+ * success page promises "check your inbox for a confirmation email", and an
+ * internal-notification switch must not silently break that promise.
+ */
+export async function sendQuoteEmails(doc: any, notifyTo?: string, internalOn = true) {
   const NOTIFY = () => notifyEmail(notifyTo)
   const name = `${doc.firstName || ''} ${doc.lastName || ''}`.trim()
   const location = [doc.suburb, doc.state, doc.postcode].filter(Boolean).join(' ')
 
   // ── 1. Notify the business ──────────────────────────────
-  try {
+  if (internalOn) try {
     await sendMail({
       to: NOTIFY(),
       replyTo: doc.email,

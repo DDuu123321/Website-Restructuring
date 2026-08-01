@@ -152,6 +152,13 @@ export function InterconnectedTeams() {
   useEffect(() => {
     const root = ref.current
     if (!root) return
+    // Activate the CSS kill switch (.iet[data-rm="true"] * { animation:none })
+    // for prefers-reduced-motion users — the embedded HTML hardcodes "false".
+    const iet = root.querySelector('.iet') as HTMLElement | null
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const applyRm = () => iet?.setAttribute('data-rm', String(mq.matches))
+    applyRm()
+    try { mq.addEventListener('change', applyRm) } catch {}
     const stage = root.querySelector('[data-iet-stage]') as HTMLElement | null
     if (!stage) return
     const fit = () => {

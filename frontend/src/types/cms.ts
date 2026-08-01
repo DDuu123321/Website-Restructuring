@@ -79,20 +79,11 @@ export interface FAQItem {
   id: string
   question: string
   answer: any
-  category: 'general' | 'pricing' | 'installation' | 'products' | 'support' | 'grid'
+  // Mirrors cms/src/collections/FAQ.ts — the live tabs filter on
+  // general/solar/battery/support; the rest only show under "All".
+  category: 'general' | 'pricing' | 'installation' | 'products' | 'support' | 'grid' | 'solar' | 'battery'
   sortOrder: number
   published: boolean
-}
-
-export interface TeamMember {
-  id: string
-  name: string
-  title: string
-  photo?: Media
-  bio?: string
-  certifications?: { cert: string }[]
-  linkedin?: string
-  sortOrder: number
 }
 
 export interface QuoteRequest {
@@ -108,6 +99,7 @@ export interface QuoteRequest {
   state?: string
   postcode?: string
   timeline?: string
+  bestTime?: string
   components?: string[]
   systemKw?: number
   batteryKwh?: number

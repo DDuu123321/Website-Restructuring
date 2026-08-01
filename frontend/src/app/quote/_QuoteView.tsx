@@ -17,12 +17,12 @@ export function QuoteView() {
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState<Partial<QuoteRequest> & { hearAbout?: string; journeyStage?: string }>({
     // Only fields the visitor actually sees/controls are pre-filled. System specs
-    // (propertyType/roofType/systemKw/batteryKwh/components/usagePattern) are NOT
-    // defaulted — a lead should only record what the customer really told us.
-    // They're still set when the visitor arrives via a package preset (?pack=).
+    // (propertyType/systemKw/batteryKwh/components) are NOT defaulted — a lead
+    // should only record what the customer really told us. They're still set
+    // when the visitor arrives via a package preset (?pack=).
     monthlyBill: 350,
     state: 'NSW',
-    timeline: 'asap',
+    bestTime: 'anytime',
     journeyStage: 'considering',
     hearAbout: 'google',
   })
@@ -187,9 +187,12 @@ export function QuoteView() {
                 </div>
 
                 <div className="field">
-                  <label htmlFor="q-timeline">When would you like us to contact you?</label>
-                  <select id="q-timeline" value={form.timeline} onChange={e => update({ timeline: e.target.value })}>
-                    <option value="asap">ASAP (business hours)</option>
+                  {/* Posts to bestTime — these are contact-time values. Posting them
+                      into `timeline` (purchase timeline) made Payload's select
+                      validation 400 every non-default choice and lose the lead. */}
+                  <label htmlFor="q-best-time">When would you like us to contact you?</label>
+                  <select id="q-best-time" value={form.bestTime} onChange={e => update({ bestTime: e.target.value })}>
+                    <option value="anytime">Anytime (business hours)</option>
                     <option value="morning">Mornings (9 am – 12 pm)</option>
                     <option value="afternoon">Afternoons (12 pm – 5 pm)</option>
                     <option value="evening">Evenings (after 5 pm)</option>

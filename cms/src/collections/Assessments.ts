@@ -54,11 +54,11 @@ const Assessments: CollectionConfig = {
         } catch { /* default on */ }
         // Fire-and-forget — same reasoning as Quotes: never block the API
         // response on SMTP; failures go to the deploy logs instead.
-        if (emailOn) {
-          void sendAssessmentEmails(doc, notifyTo).catch((err) =>
-            req.payload.logger.error(`assessment notification email failed: ${err?.message || err}`),
-          )
-        }
+        // Always called: the customer's promised report email is unconditional;
+        // emailOn gates only the internal notification inside the hook.
+        void sendAssessmentEmails(doc, notifyTo, emailOn).catch((err) =>
+          req.payload.logger.error(`assessment notification email failed: ${err?.message || err}`),
+        )
       },
     ],
   },

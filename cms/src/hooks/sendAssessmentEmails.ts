@@ -9,7 +9,13 @@ function row(label: string, value: string | number | undefined | null) {
   return `<tr><td style="padding:6px 0;color:#6b7280;width:170px;font-size:14px">${label}</td><td style="font-size:14px;color:#0f172a">${esc(value) || '—'}</td></tr>`
 }
 
-export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
+/**
+ * `internalOn` gates ONLY the business notification (the admin toggle's
+ * documented meaning). The customer report always goes out — the assessment
+ * modal promises "plus email you a copy", and an internal-notification switch
+ * must not silently break that promise.
+ */
+export async function sendAssessmentEmails(doc: any, notifyTo?: string, internalOn = true) {
   const NOTIFY = () => notifyEmail(notifyTo)
   const name = `${doc.firstName || ''} ${doc.lastName || ''}`.trim()
   const location = [doc.suburb, doc.state, doc.postcode].filter(Boolean).join(' ')
@@ -20,7 +26,7 @@ export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
     : []
 
   // ── 1. Notify the business ──────────────────────────────
-  try {
+  if (internalOn) try {
     await sendMail({
       to: NOTIFY(),
       replyTo: doc.email,
@@ -128,7 +134,7 @@ export async function sendAssessmentEmails(doc: any, notifyTo?: string) {
             </p>
 
             <div style="text-align:center;margin:18px 0 6px">
-              <a href="${process.env.SERVER_URL || 'https://bluven.com.au'}/quote"
+              <a href="${process.env.FRONTEND_URL || 'https://www.bluven.com.au'}/quote"
                  style="display:inline-block;background:#ffc61f;color:#042744;padding:13px 26px;border-radius:999px;text-decoration:none;font-weight:900;font-size:15px">
                 Get My Tailored Energy Plan →
               </a>

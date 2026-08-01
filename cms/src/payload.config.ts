@@ -32,10 +32,11 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
+    // meta.favicon / meta.ogImage removed: they pointed at URLs the CMS never
+    // serves (express mounts only /uploads) and 404'd — Payload's bundled
+    // defaults take over.
     meta: {
       titleSuffix: ' — Bluven CMS',
-      favicon: '/favicon.svg',
-      ogImage: '/uploads/og-default.jpg',
     },
     css: path.resolve(__dirname, 'admin-overrides.css'),
     components: {
@@ -179,9 +180,7 @@ export default buildConfig({
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
 
-  localization: {
-    locales: ['en', 'zh'],
-    defaultLocale: 'en',
-    fallback: true,
-  },
+  // No localization block: the bilingual site was abandoned (2026-05-26,
+  // admin is English-only) and not a single field was ever `localized: true`,
+  // so the en/zh locale switcher only ever showed identical content.
 })

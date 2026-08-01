@@ -8,7 +8,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-type Counts = { quotes: number; assessments: number }
+type Counts = { quotes: number; assessments: number; subscribers: number }
 
 const POLL_INTERVAL_MS = 30_000
 
@@ -104,17 +104,18 @@ const StatCard: React.FC<{
 }
 
 const DashboardLeadStats: React.FC = () => {
-  const [counts, setCounts] = useState<Counts>({ quotes: 0, assessments: 0 })
+  const [counts, setCounts] = useState<Counts>({ quotes: 0, assessments: 0, subscribers: 0 })
 
   useEffect(() => {
     let alive = true
     const refresh = async () => {
-      const [q, a] = await Promise.all([
+      const [q, a, s] = await Promise.all([
         fetchCount('quotes'),
         fetchCount('assessments'),
+        fetchCount('subscribers'),
       ])
       if (!alive) return
-      setCounts({ quotes: q, assessments: a })
+      setCounts({ quotes: q, assessments: a, subscribers: s })
     }
     refresh()
     const id = window.setInterval(refresh, POLL_INTERVAL_MS)
@@ -127,7 +128,7 @@ const DashboardLeadStats: React.FC = () => {
     }
   }, [])
 
-  const total = counts.quotes + counts.assessments
+  const total = counts.quotes + counts.assessments + counts.subscribers
 
   return (
     <div style={{ margin: '0 0 32px' }}>
@@ -172,6 +173,12 @@ const DashboardLeadStats: React.FC = () => {
           emoji="🧠"
           count={counts.assessments}
           href="/admin/collections/assessments?where[status][equals]=new"
+        />
+        <StatCard
+          label="Subscribers"
+          emoji="📰"
+          count={counts.subscribers}
+          href="/admin/collections/subscribers?where[status][equals]=new"
         />
       </div>
     </div>

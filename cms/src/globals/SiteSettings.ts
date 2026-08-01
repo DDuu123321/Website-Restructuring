@@ -28,7 +28,7 @@ const SiteSettings: GlobalConfig = {
           name: 'quoteEmail',
           type: 'email',
           label: 'Lead Notification Email',
-          admin: { description: 'Optional — internal new-lead emails (quotes, assessments) are sent here. Leave blank to use the NOTIFY_EMAIL env var. Not published on the website.' },
+          admin: { description: 'Optional — internal new-lead emails (quotes, assessments, subscribers) are sent here. Leave blank to use the NOTIFY_EMAIL env var. Not published on the website.' },
           // This global is public-read (the site needs phone/address/social),
           // which was handing this internal inbox to any scraper that called
           // /api/globals/site-settings. Server-side reads (the notification
