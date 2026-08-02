@@ -179,9 +179,6 @@ export function AboutView() {
             <Link className="btn btn-primary" href="/quote">
               <span>Get a quote</span> <span className="arrow">→</span>
             </Link>
-            <Link className="btn btn-ghost" href="/contact" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.3)' }}>
-              <span>Visit a showroom</span>
-            </Link>
           </div>
         </Reveal>
       </section>

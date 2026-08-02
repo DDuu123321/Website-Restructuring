@@ -5,7 +5,7 @@ const SiteSettings: GlobalConfig = {
   label: '⚙️ Site Settings',
   admin: {
     group: '⚙️ System',
-    description: 'Global settings — phone, email, address, social links.',
+    description: 'Global settings — contact details, AI chat, lead notifications.',
   },
   access: {
     read: () => true,
@@ -37,57 +37,10 @@ const SiteSettings: GlobalConfig = {
         },
       ],
     },
-    {
-      name: 'address',
-      type: 'group',
-      label: 'Business Address',
-      fields: [
-        { name: 'street', type: 'text' },
-        { name: 'suburb', type: 'text' },
-        { name: 'state', type: 'text' },
-        { name: 'postcode', type: 'text' },
-        { name: 'country', type: 'text', defaultValue: 'Australia' },
-      ],
-    },
-
-    // ── Social ──
-    {
-      name: 'social',
-      type: 'group',
-      label: 'Social Media',
-      fields: [
-        { name: 'facebook', type: 'text', label: 'Facebook URL' },
-        { name: 'instagram', type: 'text', label: 'Instagram URL' },
-        { name: 'linkedin', type: 'text', label: 'LinkedIn URL' },
-        { name: 'youtube', type: 'text', label: 'YouTube URL' },
-      ],
-    },
-
-    // ── SEO defaults ──
-    {
-      name: 'seo',
-      type: 'group',
-      label: 'Default SEO',
-      fields: [
-        { name: 'siteName', type: 'text', label: 'Site Name', defaultValue: 'Bluven Energy' },
-        { name: 'defaultDescription', type: 'textarea', label: 'Default Meta Description' },
-        { name: 'ogImage', type: 'upload', label: 'Default OG Image', relationTo: 'media' },
-        { name: 'googleAnalyticsId', type: 'text', label: 'Google Analytics ID', admin: { description: 'e.g. G-XXXXXXXXXX' } },
-      ],
-    },
-
-    // ── Announcement bar ──
-    {
-      name: 'announcement',
-      type: 'group',
-      label: 'Announcement Bar',
-      fields: [
-        { name: 'enabled', type: 'checkbox', label: 'Show announcement bar', defaultValue: false },
-        { name: 'text', type: 'text', label: 'Announcement text' },
-        { name: 'linkText', type: 'text', label: 'Link text (optional)' },
-        { name: 'linkUrl', type: 'text', label: 'Link URL (optional)' },
-      ],
-    },
+    // address / social / Default-SEO / announcement-bar groups removed
+    // 2026-08-02 (owner decision): stored for months, rendered by nothing —
+    // admins were editing dead switches. Columns dropped in the
+    // 20260802_020000 migration.
 
     // ── AI Chat ──
     {

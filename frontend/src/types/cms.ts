@@ -93,7 +93,6 @@ export interface QuoteRequest {
   email: string
   phone: string
   propertyType?: string
-  roofType?: string
   address?: string
   suburb?: string
   state?: string
@@ -104,15 +103,11 @@ export interface QuoteRequest {
   systemKw?: number
   batteryKwh?: number
   monthlyBill?: number
-  usagePattern?: string
   notes?: string
   /** Honeypot — always empty for real users; bots that fill it are rejected. */
   hp?: string
   source?: {
     referrer?: string
-    utm_source?: string
-    utm_campaign?: string
-    packagePreset?: string
   }
 }
 
@@ -159,41 +154,15 @@ export interface AssessmentRequest {
   }
   source?: {
     referrer?: string
-    utm_source?: string
-    utm_campaign?: string
   }
 }
 
+// Mirrors cms/src/globals/SiteSettings.ts — only the public, frontend-consumed
+// fields (quoteEmail/notifications are admin-only and never reach this type).
 export interface SiteSettings {
   phone?: string
   phoneHref?: string
   email?: string
-  quoteEmail?: string
-  address?: {
-    street?: string
-    suburb?: string
-    state?: string
-    postcode?: string
-    country?: string
-  }
-  social?: {
-    facebook?: string
-    instagram?: string
-    linkedin?: string
-    youtube?: string
-  }
-  seo?: {
-    siteName?: string
-    defaultDescription?: string
-    ogImage?: Media
-    googleAnalyticsId?: string
-  }
-  announcement?: {
-    enabled?: boolean
-    text?: string
-    linkText?: string
-    linkUrl?: string
-  }
   chat?: {
     enabled?: boolean
     greeting?: string

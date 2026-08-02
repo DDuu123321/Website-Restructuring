@@ -133,7 +133,6 @@ const Quotes: CollectionConfig = {
         { label: 'Commercial',       value: 'Commercial' },
       ],
     },
-    { name: 'roofType', type: 'text', label: 'Roof Type' },
     { name: 'address',  type: 'text', label: 'Street Address' },
     { name: 'suburb',   type: 'text', label: 'Suburb' },
     {
@@ -171,16 +170,10 @@ const Quotes: CollectionConfig = {
     { name: 'systemKw',    type: 'number', label: 'Desired System Size (kW)' },
     { name: 'batteryKwh',  type: 'number', label: 'Desired Battery Size (kWh)' },
     { name: 'monthlyBill', type: 'number', label: 'Monthly Power Bill (AUD)' },
-    {
-      name: 'usagePattern',
-      type: 'select',
-      label: 'Usage Pattern',
-      options: [
-        { label: 'Mostly daytime', value: 'daytime' },
-        { label: 'Mixed',           value: 'mixed' },
-        { label: 'Mostly evening',  value: 'evening' },
-      ],
-    },
+    // roofType / usagePattern / utm_* / packagePreset removed 2026-08-02
+    // (owner decision): no channel ever populated them — the multi-step form
+    // and ?pack= presets that fed them are gone. Columns dropped in the
+    // 20260802_020000 migration.
     { name: 'notes', type: 'textarea', label: 'Additional Notes', maxLength: 5000 },
 
     // ── Source tracking ──
@@ -190,10 +183,7 @@ const Quotes: CollectionConfig = {
       label: 'Source',
       admin: { description: 'Where the lead came from. Referrer "ai-chat" = captured by Sunny, the AI chat assistant.' },
       fields: [
-        { name: 'referrer',      type: 'text', label: 'Referrer URL' },
-        { name: 'utm_source',    type: 'text', label: 'UTM Source' },
-        { name: 'utm_campaign',  type: 'text', label: 'UTM Campaign' },
-        { name: 'packagePreset', type: 'text', label: 'Package Preset (if entered from package button)' },
+        { name: 'referrer', type: 'text', label: 'Referrer URL' },
       ],
     },
     honeypotField,

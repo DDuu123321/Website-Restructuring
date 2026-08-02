@@ -60,7 +60,7 @@ export function ProjectsListView({ projects, totalDocs }: { projects: Project[];
       <PageHeader
         eyebrow={installCount > 0 ? `Our work · ${installCount} documented installs` : 'Our work'}
         title="Real Australian projects.<br/>Real numbers."
-        lede="Every install is documented — design, delivery, performance after one year. Browse by location, system size or use case."
+        lede="Every install here is a real Bluven job, photographed on site. Browse by system type or state."
       />
 
       <section className="section" style={{ background: 'var(--bv-paper-2)', paddingTop: 60 }}>

@@ -41,7 +41,6 @@ export function Footer() {
               <Link href="/who-we-are">{t('footer.who')}</Link>
               <Link href="/projects">{t('footer.proj')}</Link>
               <Link href="/news">{t('footer.insights')}</Link>
-              <Link href="/contact">{t('footer.careers')}</Link>
             </div>
             <div>
               <h5>{t('footer.support')}</h5>

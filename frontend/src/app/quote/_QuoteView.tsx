@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useMutation } from '@tanstack/react-query'
 import { api } from '@/api/client'
@@ -12,43 +12,17 @@ import type { QuoteRequest } from '@/types/cms'
 const STATES = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT']
 
 export function QuoteView() {
-  const [presetPack, setPresetPack] = useState('')
-
   const [submitted, setSubmitted] = useState(false)
   const [form, setForm] = useState<Partial<QuoteRequest> & { hearAbout?: string; journeyStage?: string }>({
     // Only fields the visitor actually sees/controls are pre-filled. System specs
     // (propertyType/systemKw/batteryKwh/components) are NOT defaulted — a lead
-    // should only record what the customer really told us. They're still set
-    // when the visitor arrives via a package preset (?pack=).
+    // should only record what the customer really told us.
     monthlyBill: 350,
     state: 'NSW',
     bestTime: 'anytime',
     journeyStage: 'considering',
     hearAbout: 'google',
   })
-
-  // Read URL params after mount instead of useSearchParams(). The hook forces the
-  // whole page into client-side rendering (no SSR'd form → the footer renders high,
-  // then jumps down on hydration: 0.4 CLS). Reading window.location.search in an
-  // effect keeps the form server-rendered with defaults, then applies any presets.
-  useEffect(() => {
-    const sp = new URLSearchParams(window.location.search)
-    setPresetPack(sp.get('pack') || '')
-    const kw = sp.get('kw')
-    const bill = sp.get('bill')
-    setForm(f => ({
-      ...f,
-      ...(kw ? { systemKw: Number(kw) } : {}),
-      ...(bill ? { monthlyBill: Number(bill) } : {}),
-    }))
-  }, [])
-
-  useEffect(() => {
-    if (presetPack === 'starter')    setForm(f => ({ ...f, components: ['Solar'], systemKw: 6.6, batteryKwh: 0 }))
-    if (presetPack === 'essential')  setForm(f => ({ ...f, components: ['Solar', 'Battery'], systemKw: 10, batteryKwh: 10 }))
-    if (presetPack === 'premium')    setForm(f => ({ ...f, components: ['Solar', 'Battery', 'EV'], systemKw: 13, batteryKwh: 16 }))
-    if (presetPack === 'commercial') setForm(f => ({ ...f, propertyType: 'Commercial', components: ['Solar', 'Battery'], systemKw: 50, batteryKwh: 30 }))
-  }, [presetPack])
 
   const update = (patch: Partial<typeof form>) => setForm(f => ({ ...f, ...patch }))
 
@@ -68,7 +42,7 @@ export function QuoteView() {
         journeyStage ? `[Journey] ${journeyStage}` : '',
         hearAbout ? `[Hear about us] ${hearAbout}` : '',
       ].filter(Boolean).join('\n'),
-      source: { ...(form.source || {}), packagePreset: presetPack || undefined, referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined },
+      source: { ...(form.source || {}), referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined },
     })
   }
 

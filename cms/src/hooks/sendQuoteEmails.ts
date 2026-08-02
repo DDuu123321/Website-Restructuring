@@ -41,7 +41,6 @@ export async function sendQuoteEmails(doc: any, notifyTo?: string, internalOn = 
             <h3 style="margin:0 0 12px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#6b7280">Property & Location</h3>
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
               <tr><td style="padding:6px 0;color:#6b7280;width:140px;font-size:14px">Property type</td><td style="font-size:14px">${esc(doc.propertyType) || '—'}</td></tr>
-              <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Roof type</td><td style="font-size:14px">${esc(doc.roofType) || '—'}</td></tr>
               <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Address</td><td style="font-size:14px">${esc([doc.address, location].filter(Boolean).join(', ')) || '—'}</td></tr>
               <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Timeline</td><td style="font-weight:600;font-size:14px;color:#d97706">${esc(doc.timeline) || '—'}</td></tr>
             </table>
@@ -52,7 +51,6 @@ export async function sendQuoteEmails(doc: any, notifyTo?: string, internalOn = 
               <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">System size</td><td style="font-size:14px">${doc.systemKw ? esc(doc.systemKw) + ' kW' : '—'}</td></tr>
               <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Battery size</td><td style="font-size:14px">${doc.batteryKwh ? esc(doc.batteryKwh) + ' kWh' : '—'}</td></tr>
               <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Monthly bill</td><td style="font-size:14px">${doc.monthlyBill ? '$' + esc(doc.monthlyBill) : '—'}</td></tr>
-              <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Usage pattern</td><td style="font-size:14px">${esc(doc.usagePattern) || '—'}</td></tr>
             </table>
 
             ${doc.notes ? `<div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:16px;margin-bottom:16px;font-size:14px;color:#374151"><b>Notes:</b><br/>${esc(doc.notes).replace(/\n/g, '<br>')}</div>` : ''}

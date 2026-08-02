@@ -205,8 +205,6 @@ const Assessments: CollectionConfig = {
       admin: { description: 'Where the lead came from.' },
       fields: [
         { name: 'referrer',     type: 'text', label: 'Referrer URL' },
-        { name: 'utm_source',   type: 'text', label: 'UTM Source' },
-        { name: 'utm_campaign', type: 'text', label: 'UTM Campaign' },
       ],
     },
     honeypotField,

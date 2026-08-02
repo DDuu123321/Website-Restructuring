@@ -15,8 +15,10 @@ export function ProductsView() {
       specs: [
         { l: 'Panel Power',          v: '410 – 795 W' },
         { l: 'System Size',          v: '6.6 kW – 200 kW' },
-        { l: 'Product Warranty',     v: '25 Years' },
-        { l: 'Performance Warranty', v: '30 Years' },
+        // Client-confirmed 2026-08-02: product warranty is typically 15 years
+        // and tops out at 25 on premium panels — "Up to", never a blanket 25.
+        { l: 'Product Warranty',     v: 'Up to 25 Years' },
+        { l: 'Performance Warranty', v: 'Up to 30 Years' },
       ],
       img: '/picture1.png',
       reverse: false,
