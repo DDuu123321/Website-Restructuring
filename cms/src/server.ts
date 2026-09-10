@@ -57,6 +57,36 @@ app.use('/api/assessments',  submitLimiter)
 app.use('/api/subscribers',  submitLimiter)
 app.use('/api/subscribe',    submitLimiter)   // public newsletter endpoint
 
+// ── Partner import: 30 batches/min per IP ─────────────────
+// A leaked partner key must not become an unmetered firehose into `quotes`
+// (and on into the CRM sync). 30 × 200 rows/min is far above any real feed;
+// the public 10/min bucket above is deliberately not shared so a partner's
+// server never competes with website visitors.
+app.use(
+  '/api/partner-import',
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 30,
+    message: { error: 'Too many requests. Send at most 30 batches per minute.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+  }),
+)
+
+// ── Partner API keys: one door only ───────────────────────
+// Users.auth.useAPIKey makes Payload accept `Authorization: users API-Key x`
+// on EVERY route, and each collection's access rule is a plain `!!req.user` —
+// so a partner's key would otherwise read all leads and content. Refuse the
+// header anywhere except the partner-import endpoint (which re-checks the
+// role itself). Runs before payload.init() so the key is never even looked up.
+app.use('/api', (req, res, next) => {
+  const auth = req.header('authorization') || ''
+  if (/^users API-Key /i.test(auth) && req.path !== '/partner-import') {
+    return res.status(403).json({ error: 'API keys may only be used with POST /api/partner-import.' })
+  }
+  return next()
+})
+
 // ── AI Chat proxy — keeps Gemini API key server-side ──────
 // Rate-limited and size-capped: each call costs real money on the Gemini
 // quota, so an unthrottled proxy is an open billing-drain endpoint.

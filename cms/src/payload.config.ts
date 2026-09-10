@@ -7,6 +7,7 @@ import UnreadBadges from './admin/UnreadBadges'
 import DashboardLeadStats from './admin/DashboardLeadStats'
 
 import { bulkImportEndpoint } from './endpoints/bulkImport'
+import { partnerImportEndpoint } from './endpoints/partnerImport'
 import { subscribeEndpoint } from './endpoints/subscribe'
 import Users from './collections/Users'
 import Media from './collections/Media'
@@ -70,7 +71,7 @@ export default buildConfig({
 
   // Root-level custom endpoints (mounted at /api/<path>, outside the
   // per-collection paths — see endpoints/bulkImport.ts for why that matters).
-  endpoints: [bulkImportEndpoint, subscribeEndpoint],
+  endpoints: [bulkImportEndpoint, partnerImportEndpoint, subscribeEndpoint],
 
   db: postgresAdapter({
     pool: {

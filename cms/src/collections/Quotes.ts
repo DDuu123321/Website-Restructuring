@@ -181,7 +181,7 @@ const Quotes: CollectionConfig = {
       name: 'source',
       type: 'group',
       label: 'Source',
-      admin: { description: 'Where the lead came from. Referrer "ai-chat" = captured by Sunny, the AI chat assistant.' },
+      admin: { description: 'Where the lead came from. Referrer "ai-chat" = captured by Sunny, the AI chat assistant; "partner:<name>" = imported by that partner via /api/partner-import.' },
       fields: [
         { name: 'referrer', type: 'text', label: 'Referrer URL' },
       ],

@@ -123,6 +123,7 @@ POST /api/assessments       Public — Free Assessment quiz submission
 POST /api/subscribe         Public — newsletter signup (idempotent, anti-enumeration)
 POST /api/chat              AI chat proxy (Gemini)
 POST /api/bulk-import       Admin-only — CSV lead import channel
+POST /api/partner-import    Partner API key — external batch lead import (docs/partner-lead-import-api.md)
 ```
 
 `POST /api/quotes` and `POST /api/assessments` trigger an `afterChange`
