@@ -22,6 +22,11 @@ import type { Endpoint } from 'payload/config'
  * string for the hasMany `components` is wrapped (db-postgres silently drops
  * a non-array there).
  *
+ * householdSize / goals / productPreference are partner-supplied context the
+ * website form never asks for (2026-09-12). They are stored as free text so no
+ * partner vocabulary can reject a row: arrays are joined, numbers stringified.
+ * The partner's own snake_case spellings are accepted as aliases.
+ *
  * The row cap is sized to Payload's default 100 KB JSON body limit: 200 fully
  * populated leads are ~75 KB. Bigger bodies get a 413 from body-parser
  * before this handler runs.
@@ -35,8 +40,14 @@ const ALLOWED_FIELDS = [
   'firstName', 'lastName', 'email', 'phone', 'bestTime',
   'propertyType', 'address', 'suburb', 'state', 'postcode',
   'timeline', 'components', 'systemKw', 'batteryKwh', 'monthlyBill', 'notes',
+  'householdSize', 'goals', 'productPreference',
 ] as const
 const NUMERIC_FIELDS = new Set(['systemKw', 'batteryKwh', 'monthlyBill'])
+const LOOSE_TEXT_FIELDS = new Set(['householdSize', 'goals', 'productPreference'])
+const ALIASES: Record<string, string> = {
+  household_size: 'householdSize',
+  product_preference: 'productPreference',
+}
 
 export const partnerImportEndpoint: Endpoint = {
   path: '/partner-import',
@@ -67,10 +78,14 @@ export const partnerImportEndpoint: Endpoint = {
         results.push({ index: i, ok: false, error: 'Lead must be a JSON object.' })
         continue
       }
+      const src = { ...(row as Record<string, unknown>) }
+      for (const [alias, canonical] of Object.entries(ALIASES)) {
+        if (src[canonical] === undefined && src[alias] !== undefined) src[canonical] = src[alias]
+      }
       const data: Record<string, unknown> = { source: { referrer } }
       let rowError: string | undefined
       for (const key of ALLOWED_FIELDS) {
-        let v = (row as Record<string, unknown>)[key]
+        let v = src[key]
         if (v === undefined || v === null || v === '') continue
         if (NUMERIC_FIELDS.has(key)) {
           const n = typeof v === 'number' ? v : typeof v === 'string' ? Number(v) : NaN
@@ -78,6 +93,10 @@ export const partnerImportEndpoint: Endpoint = {
           v = n
         } else if (key === 'components' && typeof v === 'string') {
           v = [v]
+        } else if (LOOSE_TEXT_FIELDS.has(key)) {
+          if (Array.isArray(v)) v = v.map((x) => String(x)).join(', ')
+          else if (typeof v === 'number' || typeof v === 'boolean') v = String(v)
+          else if (typeof v !== 'string') { rowError = `${key}: must be text`; break }
         }
         data[key] = v
       }

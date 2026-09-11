@@ -322,11 +322,20 @@ app.get('/api/crm/leads', async (req, res) => {
         suburb: q.suburb || '',
         state: q.state || '',
         postcode: q.postcode || '',
-        source: q?.source?.referrer === 'ai-chat' ? 'AI_CHAT' : 'WEBSITE_QUOTE',
+        source:
+          q?.source?.referrer === 'ai-chat'
+            ? 'AI_CHAT'
+            : String(q?.source?.referrer || '').startsWith('partner:')
+              ? 'PARTNER'
+              : 'WEBSITE_QUOTE',
         title:
           Array.isArray(q.components) && q.components.length
             ? q.components.join(' + ')
             : 'Website quote',
+        // Partner-supplied context (2026-09-12); empty for website-form quotes.
+        householdSize: q.householdSize || '',
+        goals: q.goals || '',
+        productPreference: q.productPreference || '',
       })),
       ...assessments.docs.map((a: any) => ({
         kind: 'assessment',

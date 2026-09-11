@@ -33,7 +33,10 @@ Bluven issues each partner its own API key. Keep it server-side; it can be revok
       "monthlyBill": 350,
       "timeline": "1-month",
       "bestTime": "afternoon",
-      "notes": "Referred from our website enquiry form."
+      "notes": "Referred from our website enquiry form.",
+      "householdSize": "4",
+      "goals": ["Lower my bills", "Backup during blackouts"],
+      "productPreference": "Tesla Powerwall 3"
     }
   ]
 }
@@ -61,6 +64,9 @@ Bluven issues each partner its own API key. Keep it server-side; it can be revok
 | `timeline` | string | no | `asap` · `1-month` · `1-3-months` · `researching` |
 | `bestTime` | string | no | `anytime` · `morning` · `afternoon` · `evening` · `email-only` · `weekend` |
 | `notes` | string | no | Free text, max 5000 characters |
+| `householdSize` | string or number | no | Number of people in the household, e.g. `4` or `"3-4"`. Alias: `household_size` |
+| `goals` | string or string[] | no | What the customer wants to achieve, in your own words. An array is joined with commas |
+| `productPreference` | string or string[] | no | Preferred product type, brand or model. Alias: `product_preference` |
 
 ## Response
 

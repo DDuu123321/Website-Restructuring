@@ -12,7 +12,7 @@ const Quotes: CollectionConfig = {
     useAsTitle: 'fullName',
     group: '📥 Leads',
     description: 'Quote requests submitted via the website form.',
-    defaultColumns: ['fullName', 'phone', 'email', 'components', 'state', 'status', 'createdAt'],
+    defaultColumns: ['fullName', 'phone', 'email', 'components', 'householdSize', 'goals', 'productPreference', 'state', 'status', 'createdAt'],
     listSearchableFields: ['firstName', 'lastName', 'email', 'phone', 'suburb'],
     components: {
       BeforeListTable: [BulkEditButton, ExportCsvButton, ImportCsvButton],
@@ -175,6 +175,14 @@ const Quotes: CollectionConfig = {
     // and ?pack= presets that fed them are gone. Columns dropped in the
     // 20260802_020000 migration.
     { name: 'notes', type: 'textarea', label: 'Additional Notes', maxLength: 5000 },
+
+    // ── Partner-supplied context (2026-09-12) ──
+    // Free text on purpose: partner feeds send their own vocabularies, and an
+    // enum here would reject whole rows. Populated via /api/partner-import;
+    // the website form does not ask these.
+    { name: 'householdSize',     type: 'text',     label: 'Household size',     maxLength: 100 },
+    { name: 'goals',             type: 'textarea', label: 'Goals',              maxLength: 2000 },
+    { name: 'productPreference', type: 'text',     label: 'Product preference', maxLength: 500 },
 
     // ── Source tracking ──
     {
