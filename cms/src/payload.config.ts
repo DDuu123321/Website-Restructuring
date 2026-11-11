@@ -18,6 +18,7 @@ import Quotes from './collections/Quotes'
 import Assessments from './collections/Assessments'
 import Subscribers from './collections/Subscribers'
 import SupportRequests from './collections/SupportRequests'
+import ChatConversations from './collections/ChatConversations'
 import SiteSettings from './globals/SiteSettings'
 import { r2Enabled } from './lib/storage'
 
@@ -56,6 +57,7 @@ export default buildConfig({
     Assessments,
     Subscribers,
     SupportRequests,
+    ChatConversations,
 
     // ── Content ──
     News,

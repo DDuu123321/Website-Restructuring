@@ -8,7 +8,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-type Counts = { quotes: number; assessments: number; subscribers: number; support: number }
+type Counts = { quotes: number; assessments: number; subscribers: number; support: number; chats: number }
 
 const POLL_INTERVAL_MS = 30_000
 
@@ -104,19 +104,20 @@ const StatCard: React.FC<{
 }
 
 const DashboardLeadStats: React.FC = () => {
-  const [counts, setCounts] = useState<Counts>({ quotes: 0, assessments: 0, subscribers: 0, support: 0 })
+  const [counts, setCounts] = useState<Counts>({ quotes: 0, assessments: 0, subscribers: 0, support: 0, chats: 0 })
 
   useEffect(() => {
     let alive = true
     const refresh = async () => {
-      const [q, a, s, t] = await Promise.all([
+      const [q, a, s, t, c] = await Promise.all([
         fetchCount('quotes'),
         fetchCount('assessments'),
         fetchCount('subscribers'),
         fetchCount('support-requests'),
+        fetchCount('chat-conversations'),
       ])
       if (!alive) return
-      setCounts({ quotes: q, assessments: a, subscribers: s, support: t })
+      setCounts({ quotes: q, assessments: a, subscribers: s, support: t, chats: c })
     }
     refresh()
     const id = window.setInterval(refresh, POLL_INTERVAL_MS)
@@ -129,7 +130,7 @@ const DashboardLeadStats: React.FC = () => {
     }
   }, [])
 
-  const total = counts.quotes + counts.assessments + counts.subscribers + counts.support
+  const total = counts.quotes + counts.assessments + counts.subscribers + counts.support + counts.chats
 
   return (
     <div style={{ margin: '0 0 32px' }}>
@@ -186,6 +187,12 @@ const DashboardLeadStats: React.FC = () => {
           emoji="🛠️"
           count={counts.support}
           href="/admin/collections/support-requests?where[status][equals]=new"
+        />
+        <StatCard
+          label="AI Chats"
+          emoji="🤖"
+          count={counts.chats}
+          href="/admin/collections/chat-conversations?where[status][equals]=new"
         />
       </div>
     </div>

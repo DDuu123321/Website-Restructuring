@@ -69,7 +69,7 @@ const SiteSettings: GlobalConfig = {
       type: 'group',
       label: 'AI Chat Settings',
       admin: {
-        description: 'Sunny, the AI assistant bubble shown on every page. Turning it off hides the widget and disables the chat API. Leads Sunny captures appear under Quotes with source "ai-chat".',
+        description: 'Sunny, the AI assistant bubble shown on every page. Turning it off hides the widget and disables the chat API. Every conversation is stored under AI Chats; when Sunny hands a case over, its summary is emailed to the owning team (new enquiries → Lead Notification Email, or info@bluven.com.au if blank; order questions → Operations Inbox; after-sales → Support Inbox). New enquiries with a phone number also appear under Quotes with source "ai-chat".',
       },
       fields: [
         { name: 'enabled', type: 'checkbox', label: 'Enable AI chat widget', defaultValue: true },
@@ -115,6 +115,13 @@ const SiteSettings: GlobalConfig = {
           fields: [
             { name: 'emailOnSupport',    type: 'checkbox', label: '📧 Email the team about new support requests', defaultValue: true, admin: { description: 'Goes to the Support / Operations inbox above, not the Lead Notification Email.' } },
             { name: 'adminOnSupport',    type: 'checkbox', label: '🔔 Show unread support requests in admin',    defaultValue: true },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'emailOnChat',       type: 'checkbox', label: '📧 Email the team when the AI chat hands a case over', defaultValue: true, admin: { description: 'Routed by type to the sales, operations or support inbox.' } },
+            { name: 'adminOnChat',       type: 'checkbox', label: '🔔 Show unread AI chat hand-overs in admin',         defaultValue: true },
           ],
         },
       ],

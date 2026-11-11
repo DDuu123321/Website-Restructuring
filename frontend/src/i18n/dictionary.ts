@@ -50,13 +50,14 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     // ── AI Chat ──
     'chat.title': 'Sunny · Bluven Assistant',
     'chat.status': 'Online · Replies in seconds',
-    'chat.welcome': "G'day! 👋 I'm <b>Sunny</b>, Bluven's AI assistant. Ask me anything about solar, batteries, rebates or pricing — or pick a quick topic below.",
-    'chat.q1': 'NSW rebates', 'chat.q1q': 'What rebates are available in NSW?',
-    'chat.q2': 'Sizing help', 'chat.q2q': 'How big a system do I need?',
-    'chat.q3': 'Compare packs', 'chat.q3q': 'Compare your Standard and Premium packs.',
-    'chat.q4': 'Green finance', 'chat.q4q': 'Tell me about your zero-deposit green loan.',
+    'chat.welcome': "G'day! 👋 I'm <b>Sunny</b>, Bluven's AI assistant. Ask me about solar, batteries and rebates, start a quote, or get help with an existing order or system.",
+    'chat.q1': 'Get a quote', 'chat.q1q': "I'd like a quote.",
+    'chat.q2': 'Check my order', 'chat.q2q': 'I have a question about my existing order.',
+    'chat.q3': 'Help with my system', 'chat.q3q': 'I need help with my solar or battery system.',
+    'chat.q4': 'Rebates', 'chat.q4q': 'What rebates are available?',
     'chat.placeholder': 'Ask Sunny anything…',
     'chat.foot': 'Powered by Bluven AI',
+    'chat.recorded': 'Chats are saved',
 
     // ── Mega menu ──
     'mm.products.eye': 'BUILD YOUR SYSTEM',

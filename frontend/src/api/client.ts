@@ -153,9 +153,11 @@ export const api = {
   },
 
   // AI Chat
-  chat(messages: { role: 'user' | 'assistant'; content: string }[]) {
+  // conversationId groups the turns of one chat so the CMS can store the
+  // transcript and attach Sunny's hand-over summary to it.
+  chat(messages: { role: 'user' | 'assistant'; content: string }[], conversationId?: string) {
     return request<{ reply: string }>('/chat', {
-      method: 'POST', body: JSON.stringify({ messages }),
+      method: 'POST', body: JSON.stringify({ messages, conversationId }),
     })
   },
 

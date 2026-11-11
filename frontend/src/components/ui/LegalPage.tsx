@@ -56,6 +56,7 @@ const CONTENT: Record<'privacy' | 'terms' | 'cookies', { title: string; sections
         h: '5. Our AI chat assistant',
         p: [
           'The support chat on this website is an artificial-intelligence assistant. Messages you send to it are processed by Google (Gemini) to generate responses.',
+          'We keep a record of chat conversations so our team can understand and follow up your enquiry. When you ask the assistant to pass your enquiry on, a summary of the conversation and the contact details you provided are sent to our sales, operations or technical support team.',
           'Please do not enter sensitive personal information (for example health or financial account details) into the chat. Chat answers are general information only — your quote and system design always come from our engineers.',
         ],
       },

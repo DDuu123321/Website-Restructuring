@@ -17,6 +17,9 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
   const [busy, setBusy] = useState(false)
   const bodyRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  // One id per page session: every turn is stored against it server-side so the
+  // team can read the whole conversation, not just the final hand-over.
+  const conversationId = useRef<string>('')
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
@@ -51,8 +54,13 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
     const next: Message[] = [...messages, { role: 'user', content: text }]
     setMessages(next)
     setBusy(true)
+    if (!conversationId.current) {
+      conversationId.current = typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `c-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
+    }
     try {
-      const { reply } = await api.chat(next)
+      const { reply } = await api.chat(next, conversationId.current)
       setMessages([...next, { role: 'assistant', content: reply }])
     } catch {
       setMessages([
@@ -163,7 +171,7 @@ export function ChatWidget({ greeting }: { greeting?: string }) {
         </form>
 
         <div className="bv-chat-foot">
-          <span>{t('chat.foot')}</span> · <a href="/privacy">{t('footer.privacy')}</a>
+          <span>{t('chat.foot')}</span> · <span>{t('chat.recorded')}</span> · <a href="/privacy">{t('footer.privacy')}</a>
         </div>
       </div>
     </div>
