@@ -6,7 +6,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { SUNNY_SYSTEM_PROMPT } from './lib/sunnyPrompt'
-import { extractHandover, recordChatTurn } from './lib/chatHandover'
+import { extractHandover, recordChatTurn, isHandedOver, ALREADY_HANDED_OVER_NOTE } from './lib/chatHandover'
 import crypto from 'crypto'
 import { r2Enabled } from './lib/storage'
 
@@ -153,6 +153,8 @@ app.post('/api/chat', chatLimiter, express.json({ limit: '200kb' }), async (req,
     ].filter((m, i, a) => a.indexOf(m) === i)
     const startIdx = Math.max(0, models.indexOf(workingGeminiModel || models[0]))
 
+    const systemPrompt = SUNNY_SYSTEM_PROMPT + ((await isHandedOver(payload, conversationId)) ? ALREADY_HANDED_OVER_NOTE : '')
+
     let response: Awaited<ReturnType<typeof fetch>> | null = null
     for (let i = startIdx; i < models.length; i++) {
       response = await fetch(
@@ -161,7 +163,7 @@ app.post('/api/chat', chatLimiter, express.json({ limit: '200kb' }), async (req,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            system_instruction: { parts: [{ text: SUNNY_SYSTEM_PROMPT }] },
+            system_instruction: { parts: [{ text: systemPrompt }] },
             contents: messages.map((m: any) => ({
               role: m.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: m.content }],

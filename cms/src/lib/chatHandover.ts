@@ -196,6 +196,41 @@ async function sendHandoverEmail(opts: {
 }
 
 /**
+ * The chat endpoint is stateless and the marker is stripped from what the
+ * visitor's browser keeps, so on later turns the model cannot see that it has
+ * already handed the case over — against the real model it re-sent the
+ * hand-over on every following turn (five emails for one enquiry). The
+ * endpoint appends this note to the system prompt once a conversation has been
+ * handed over.
+ */
+export const ALREADY_HANDED_OVER_NOTE = `
+
+STATE OF THIS CONVERSATION: it has ALREADY been handed over to the team — the ##HANDOVER## marker was sent on an earlier turn. Do NOT output the marker again, unless the visitor has since given substantial new facts (new contact details, equipment details, a new problem, or a safety issue); in that case send the complete, updated JSON once. For thanks, goodbyes, confirmations or small talk, just reply normally with no marker.`
+
+export async function isHandedOver(payload: Payload, conversationId: unknown): Promise<boolean> {
+  if (!isConversationId(conversationId)) return false
+  try {
+    const found = await payload.find({
+      collection: 'chat-conversations' as any,
+      where: { conversationId: { equals: conversationId } },
+      limit: 1, depth: 0,
+    })
+    const doc: any = found.docs[0]
+    return !!doc && doc.status !== 'open'
+  } catch { return false }
+}
+
+/** Does a repeat hand-over tell the team anything the first email did not? */
+function addsNewFacts(existing: any, h: Handover): boolean {
+  const rank = { normal: 0, high: 1, urgent: 2 } as Record<string, number>
+  if ((rank[h.priority] ?? 0) > (rank[existing.priority] ?? 0)) return true
+  if (h.type !== existing.type) return true
+  if ((h.phone && h.phone !== existing.customerPhone) || (h.email && h.email !== existing.customerEmail)) return true
+  const before = existing.details && typeof existing.details === 'object' ? existing.details : {}
+  return Object.entries(h.details).some(([k, v]) => v && !before[k])
+}
+
+/**
  * Persist one chat turn. Called fire-and-forget after the reply is sent, so a
  * slow database or mail relay never delays the visitor.
  */
@@ -265,10 +300,10 @@ export async function recordChatTurn(payload: Payload, opts: {
     ? await payload.update({ collection: 'chat-conversations' as any, id: existing.id, data: data as any })
     : await payload.create({ collection: 'chat-conversations' as any, data: data as any })
 
-  if (handover && settings?.notifications?.emailOnChat !== false) {
-    await sendHandoverEmail({
-      to, h: handover, transcript, docId: doc.id, quoteId,
-      isUpdate: !!existing && existing.status !== 'open',
-    })
+  // A repeat hand-over always refreshes the stored record, but only earns a
+  // second email when it carries something the team has not been told.
+  const isUpdate = !!existing && existing.status !== 'open'
+  if (handover && settings?.notifications?.emailOnChat !== false && (!isUpdate || addsNewFacts(existing, handover))) {
+    await sendHandoverEmail({ to, h: handover, transcript, docId: doc.id, quoteId, isUpdate })
   }
 }
