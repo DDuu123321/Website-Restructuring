@@ -255,12 +255,18 @@ export async function recordChatTurn(payload: Payload, opts: {
 
   let settings: any = null
   let to = ''
+  let recipients: string[] = []
   let quoteId: number | string | undefined = existing?.quoteId || undefined
   if (handover) {
     try { settings = await payload.findGlobal({ slug: 'site-settings' }) } catch { /* defaults */ }
     to = handover.type === 'service' ? settings?.supportEmail || 'support@bluven.com.au'
       : handover.type === 'existing_order' ? settings?.operationsEmail || 'operations@bluven.com.au'
       : settings?.quoteEmail || 'info@bluven.com.au'
+    // Urgent (safety issue / system completely down) alerts all three teams at
+    // once, owning team first — nobody should be waiting on a forward.
+    recipients = handover.priority === 'urgent'
+      ? Array.from(new Set([to, settings?.supportEmail || 'support@bluven.com.au', settings?.operationsEmail || 'operations@bluven.com.au', settings?.quoteEmail || 'info@bluven.com.au']))
+      : [to]
 
     if (handover.type === 'new_enquiry' && handover.phone && !quoteId) {
       try {
@@ -282,7 +288,7 @@ export async function recordChatTurn(payload: Payload, opts: {
       status: settings?.notifications?.adminOnChat === false ? 'reviewed' : 'new',
       type: handover.type,
       priority: handover.priority,
-      routedTo: to,
+      routedTo: recipients.join(', '),
       quoteId,
       summary: handover.summary,
       request: handover.request,
@@ -304,6 +310,10 @@ export async function recordChatTurn(payload: Payload, opts: {
   // second email when it carries something the team has not been told.
   const isUpdate = !!existing && existing.status !== 'open'
   if (handover && settings?.notifications?.emailOnChat !== false && (!isUpdate || addsNewFacts(existing, handover))) {
-    await sendHandoverEmail({ to, h: handover, transcript, docId: doc.id, quoteId, isUpdate })
+    // The relay takes one address per call; one failed inbox must not stop the others.
+    const results = await Promise.allSettled(recipients.map((addr) =>
+      sendHandoverEmail({ to: addr, h: handover, transcript, docId: doc.id, quoteId, isUpdate })))
+    const failed = results.filter((r) => r.status === 'rejected') as PromiseRejectedResult[]
+    if (failed.length) throw new Error('hand-over email failed for ' + failed.length + ' of ' + recipients.length + ' inboxes: ' + (failed[0].reason?.message || failed[0].reason))
   }
 }

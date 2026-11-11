@@ -120,7 +120,7 @@ const SiteSettings: GlobalConfig = {
         {
           type: 'row',
           fields: [
-            { name: 'emailOnChat',       type: 'checkbox', label: '📧 Email the team when the AI chat hands a case over', defaultValue: true, admin: { description: 'Routed by type to the sales, operations or support inbox.' } },
+            { name: 'emailOnChat',       type: 'checkbox', label: '📧 Email the team when the AI chat hands a case over', defaultValue: true, admin: { description: 'Routed by type to the sales, operations or support inbox. Urgent hand-overs go to all three.' } },
             { name: 'adminOnChat',       type: 'checkbox', label: '🔔 Show unread AI chat hand-overs in admin',         defaultValue: true },
           ],
         },
