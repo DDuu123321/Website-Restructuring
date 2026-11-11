@@ -91,6 +91,7 @@ export function MegaMenu({ active, onClose }: Props) {
           <div className="bv-mm-grid">
             <CompanyCard href="/faq" t={t('mm.support.faq')} s={t('mm.support.faq.s')} icon={<QuestionIcon />} bg="linear-gradient(135deg,#C9E4FB,#5DA9F5)" onClose={onClose} />
             <CompanyCard href="/contact" t={t('mm.support.contact')} s={t('mm.support.contact.s')} icon={<ChatIcon />} bg="linear-gradient(135deg,#C7F0D2,#4FB678)" onClose={onClose} />
+            <CompanyCard href="/support" t={t('mm.support.afterSales')} s={t('mm.support.afterSales.s')} icon={<WrenchIcon />} bg="linear-gradient(135deg,#FFD6D6,#F07A7A)" onClose={onClose} />
             <CompanyCard href="/quote" t={t('nav.quote')} s="Free quote — engineer reply" icon={<CheckIcon />} bg="linear-gradient(135deg,#FFE9A8,#F5B742)" onClose={onClose} />
             <CompanyCard href={`${process.env.NEXT_PUBLIC_CMS_URL || ''}/admin`} t={t('mm.support.admin')} s={t('mm.support.admin.s')} icon={<LockIcon />} bg="linear-gradient(135deg,#DCE2EC,#8C9BB5)" onClose={onClose} />
           </div>
@@ -121,3 +122,4 @@ const QuestionIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill=
 const ChatIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1f3a" strokeWidth="1.7"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 const CheckIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1f3a" strokeWidth="1.7"><path d="M9 12l2 2 4-4M5 5h14v14H5z"/></svg>
 const LockIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1f3a" strokeWidth="1.7"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+const WrenchIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1f3a" strokeWidth="1.7"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-2-2 8-8-1.7-1.7a4 4 0 0 1-5-5l2.4 2.4 2-2L14.7 6.3zM3 21l6-6"/></svg>

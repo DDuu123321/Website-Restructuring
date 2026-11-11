@@ -41,8 +41,8 @@ app.use(cors({ origin: allowedOrigins, credentials: true }))
 // ── Anti-spam: 10 POST submissions per minute per IP ──────
 // GETs (admin list views, UnreadBadges polling, frontend ISR) are
 // not counted thanks to the `skip` filter.
-// Shared bucket across both lead endpoints — an attacker
-// spreading their requests across quotes/assessments
+// Shared bucket across all public form endpoints — an attacker
+// spreading their requests across quotes/assessments/support
 // still gets only 10 POSTs/min total.
 const submitLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -56,6 +56,7 @@ app.use('/api/quotes',       submitLimiter)
 app.use('/api/assessments',  submitLimiter)
 app.use('/api/subscribers',  submitLimiter)
 app.use('/api/subscribe',    submitLimiter)   // public newsletter endpoint
+app.use('/api/support-requests', submitLimiter)
 
 // ── Partner import: 30 batches/min per IP ─────────────────
 // A leaked partner key must not become an unmetered firehose into `quotes`

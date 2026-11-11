@@ -37,6 +37,27 @@ const SiteSettings: GlobalConfig = {
         },
       ],
     },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'supportEmail',
+          type: 'email',
+          label: 'Support Inbox',
+          defaultValue: 'support@bluven.com.au',
+          admin: { description: 'Technical / after-sales requests from the /support form are sent here. Not published on the website.' },
+          access: { read: ({ req }) => Boolean(req.user) },
+        },
+        {
+          name: 'operationsEmail',
+          type: 'email',
+          label: 'Operations Inbox',
+          defaultValue: 'operations@bluven.com.au',
+          admin: { description: '"Installation or delivery follow-up" requests from the /support form are sent here instead. Not published on the website.' },
+          access: { read: ({ req }) => Boolean(req.user) },
+        },
+      ],
+    },
     // address / social / Default-SEO / announcement-bar groups removed
     // 2026-08-02 (owner decision): stored for months, rendered by nothing —
     // admins were editing dead switches. Columns dropped in the
@@ -87,6 +108,13 @@ const SiteSettings: GlobalConfig = {
           fields: [
             { name: 'emailOnSubscriber', type: 'checkbox', label: '📧 Email me about new subscribers',   defaultValue: true },
             { name: 'adminOnSubscriber', type: 'checkbox', label: '🔔 Show unread subscribers in admin', defaultValue: true },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'emailOnSupport',    type: 'checkbox', label: '📧 Email the team about new support requests', defaultValue: true, admin: { description: 'Goes to the Support / Operations inbox above, not the Lead Notification Email.' } },
+            { name: 'adminOnSupport',    type: 'checkbox', label: '🔔 Show unread support requests in admin',    defaultValue: true },
           ],
         },
       ],

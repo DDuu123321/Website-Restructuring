@@ -17,6 +17,7 @@ import FAQ from './collections/FAQ'
 import Quotes from './collections/Quotes'
 import Assessments from './collections/Assessments'
 import Subscribers from './collections/Subscribers'
+import SupportRequests from './collections/SupportRequests'
 import SiteSettings from './globals/SiteSettings'
 import { r2Enabled } from './lib/storage'
 
@@ -54,6 +55,7 @@ export default buildConfig({
     Quotes,
     Assessments,
     Subscribers,
+    SupportRequests,
 
     // ── Content ──
     News,

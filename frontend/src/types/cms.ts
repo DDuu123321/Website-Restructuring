@@ -111,6 +111,27 @@ export interface QuoteRequest {
   }
 }
 
+/** After-sales support request (POST /support-requests). */
+export interface SupportRequest {
+  id?: string
+  firstName: string
+  lastName?: string
+  email: string
+  phone: string
+  address?: string
+  state?: string
+  postcode: string
+  issueType: string
+  product?: string
+  installedWhen?: string
+  description: string
+  /** Honeypot — always empty for real users; bots that fill it are rejected. */
+  hp?: string
+  source?: {
+    referrer?: string
+  }
+}
+
 export interface AssessmentRequest {
   id?: string
   // Contact

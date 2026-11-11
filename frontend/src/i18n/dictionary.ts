@@ -22,6 +22,7 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'nav.contact': 'Contact',
     'nav.callLabel': 'CALL US',
     'nav.quote': 'Get a Quote',
+    'nav.afterSales': 'After-sales Support',
 
     // ── Footer ──
     'footer.tagline': "Australia's trusted partner for residential & commercial solar, battery and EV charging — designed, installed and supported locally.",
@@ -38,6 +39,7 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'footer.faq': 'FAQ',
     'footer.contact': 'Contact',
     'footer.quote': 'Get a Quote',
+    'footer.afterSales': 'After-sales Support',
     'footer.admin': 'Admin Portal',
     'footer.legal': 'Legal',
     'footer.privacy': 'Privacy Policy',
@@ -70,6 +72,7 @@ export const dictionary: Record<Locale, Record<string, string>> = {
     'mm.support.eye': 'SUPPORT',
     'mm.support.faq': 'FAQ', 'mm.support.faq.s': 'Rebates · sizing · install',
     'mm.support.contact': 'Contact', 'mm.support.contact.s': 'Sydney · Brisbane · Perth',
+    'mm.support.afterSales': 'After-sales support', 'mm.support.afterSales.s': 'Faults · warranty · follow-ups',
     'mm.support.admin': 'Admin portal', 'mm.support.admin.s': 'For partners & staff',
     'sticky.quote': 'Free quote',
 

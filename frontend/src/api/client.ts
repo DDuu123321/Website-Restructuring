@@ -6,7 +6,7 @@
  */
 
 import type {
-  News, Project, FAQItem, SiteSettings, QuoteRequest, AssessmentRequest,
+  News, Project, FAQItem, SiteSettings, QuoteRequest, AssessmentRequest, SupportRequest,
   PaginatedResponse, Media,
 } from '@/types/cms'
 
@@ -123,6 +123,13 @@ export const api = {
   // Quote submission
   submitQuote(data: Partial<QuoteRequest>) {
     return request<{ doc: QuoteRequest }>('/quotes', {
+      method: 'POST', body: JSON.stringify(data),
+    })
+  },
+
+  // After-sales support request
+  submitSupport(data: SupportRequest) {
+    return request<{ doc: SupportRequest }>('/support-requests', {
       method: 'POST', body: JSON.stringify(data),
     })
   },

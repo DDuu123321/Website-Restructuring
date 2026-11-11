@@ -94,6 +94,10 @@ export function ContactView({ settings }: { settings: Partial<SiteSettings> }) {
                   <b>Start →</b>
                 </Link>
               </div>
+              <p style={{ marginTop: 20, fontSize: 15, color: 'var(--bv-ink-500)' }}>
+                Already a Bluven customer with a system issue or warranty question?{' '}
+                <Link href="/support" style={{ fontWeight: 600 }}>Use our after-sales support form →</Link>
+              </p>
 
               {/* Office locations — no longer listed as cards; the map below reveals
                  each city name only on hover (see .map-pin-label in inner.css). */}

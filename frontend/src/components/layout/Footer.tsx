@@ -46,6 +46,7 @@ export function Footer() {
               <h5>{t('footer.support')}</h5>
               <Link href="/faq">{t('footer.faq')}</Link>
               <Link href="/contact">{t('footer.contact')}</Link>
+              <Link href="/support">{t('footer.afterSales')}</Link>
               <Link href="/quote">{t('footer.quote')}</Link>
               {/* Prod: link to the CMS admin domain; dev: /admin rewrite works */}
               <a
